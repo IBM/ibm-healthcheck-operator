@@ -26,12 +26,12 @@ spec:
   -
     name: Service Name
     type: string
-    description:  The name of the service
+    description: The name of the service
     JSONPath: .metadata.labels.clusterhealth\.ibm\.com/service-name
   -
     name: Service Version
     type: string
-    description:  The version of the service
+    description: The version of the service
     JSONPath: .metadata.labels.clusterhealth\.ibm\.com/service-version
   -
     name: Status
@@ -47,7 +47,7 @@ spec:
               type: string
             statusDependencies:
               type: array
-              items : {
+              items: {
                 type: string
               }
             podFailureStatus:

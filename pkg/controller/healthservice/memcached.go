@@ -1,3 +1,19 @@
+//
+// Copyright 2020 IBM Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 package healthservice
 
 import (
@@ -8,19 +24,18 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
-	intstr "k8s.io/apimachinery/pkg/util/intstr"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	intstr "k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
 var cpu50 = resource.NewMilliQuantity(50, resource.DecimalSI)          // 50m
-var cpu500 = resource.NewMilliQuantity(500, resource.DecimalSI)          // 500m
+var cpu500 = resource.NewMilliQuantity(500, resource.DecimalSI)        // 500m
 var memory64 = resource.NewQuantity(64*1024*1024, resource.BinarySI)   // 64Mi
-var memory128 = resource.NewQuantity(128*1024*1024, resource.BinarySI)   // 128Mi
-
+var memory128 = resource.NewQuantity(128*1024*1024, resource.BinarySI) // 128Mi
 
 func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alpha1.HealthService) error {
 	memName := h.Spec.Memcached.Name
@@ -39,12 +54,12 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alph
 			return err
 		}
 	} else if err != nil {
-		reqLogger.Error(err, "Failed to get Deployment","Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
+		reqLogger.Error(err, "Failed to get Deployment", "Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 		return err
-	} else if err == nil {
-		if err := r.updateMemcachedDeployment(current, desired); err != nil {
-			return err
-		}
+	}
+
+	if err := r.updateMemcachedDeployment(current, desired); err != nil {
+		return err
 	}
 
 	// Update the HealthService status with the pod names
@@ -77,7 +92,7 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedSvc(h *operatorv1alpha1.
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 
 	// Define a new service
- 	desired := r.desiredMemcachedService(h)
+	desired := r.desiredMemcachedService(h)
 	// Check if the service already exists, if not create a new one
 	current := &corev1.Service{}
 	err := r.client.Get(context.TODO(), types.NamespacedName{Name: memSvcName, Namespace: h.Namespace}, current)
@@ -91,14 +106,10 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedSvc(h *operatorv1alpha1.
 	} else if err != nil {
 		reqLogger.Error(err, "Failed to get Service", "Service.Namespace", current.Namespace, "Service.Name", current.Name)
 		return err
-	} /* else if err == nil {
-		reqLogger.Info("Updating Service is unavailable. Please try to delete the target service and operator will create a new one", "Service.Namespace", current.Namespace, "Service.Name", current.Name)
 	}
-	*/
 
 	return nil
 }
-
 
 func (r *ReconcileHealthService) updateMemcachedDeployment(current, desired *appsv1.Deployment) error {
 	reqLogger := log.WithValues("Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
@@ -119,8 +130,8 @@ func (r *ReconcileHealthService) updateMemcachedDeployment(current, desired *app
 func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.HealthService) *appsv1.Deployment {
 	memName := h.Spec.Memcached.Name
 	labels := labelsForMemcached(memName, h.Name)
-	annotations := annotationsForMemcached(memName)
-	defaultCommand := []string{"memcached","-m 64","-o", "modern","-v"}
+	annotations := annotationsForMemcached()
+	defaultCommand := []string{"memcached", "-m 64", "-o", "modern", "-v"}
 	if h.Spec.Memcached.Command != nil && len(h.Spec.Memcached.Command) > 0 {
 		defaultCommand = h.Spec.Memcached.Command
 	}
@@ -141,13 +152,13 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Labels: labels,
+					Labels:      labels,
 					Annotations: annotations,
 				},
 				Spec: corev1.PodSpec{
 					HostNetwork: false,
-					HostPID: false,
-					HostIPC: false,
+					HostPID:     false,
+					HostIPC:     false,
 					Containers: []corev1.Container{{
 						Name:            memName,
 						Image:           h.Spec.Memcached.Image.Repository + ":" + h.Spec.Memcached.Image.Tag,
@@ -165,7 +176,7 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 								},
 							},
 							InitialDelaySeconds: 30,
-							TimeoutSeconds: 5,
+							TimeoutSeconds:      5,
 						},
 						ReadinessProbe: &corev1.Probe{
 							Handler: corev1.Handler{
@@ -174,19 +185,19 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 								},
 							},
 							InitialDelaySeconds: 5,
-							TimeoutSeconds: 1,
+							TimeoutSeconds:      1,
 						},
 						Resources: corev1.ResourceRequirements{
 							Limits: map[corev1.ResourceName]resource.Quantity{
-									corev1.ResourceCPU:    *cpu500,
-									corev1.ResourceMemory: *memory128},
+								corev1.ResourceCPU:    *cpu500,
+								corev1.ResourceMemory: *memory128},
 							Requests: map[corev1.ResourceName]resource.Quantity{
-									corev1.ResourceCPU:    *cpu50,
-									corev1.ResourceMemory: *memory64},
+								corev1.ResourceCPU:    *cpu50,
+								corev1.ResourceMemory: *memory64},
 						},
 					}},
 					NodeSelector: h.Spec.Memcached.NodeSelector,
-					Tolerations: h.Spec.Memcached.Tolerations,
+					Tolerations:  h.Spec.Memcached.Tolerations,
 				},
 			},
 		},
@@ -194,13 +205,13 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 
 	// Set HealthService instance as the owner and controller
 	if err := controllerutil.SetControllerReference(h, dep, r.scheme); err != nil {
-	    reqLogger.Error(err, "SetControllerReference failed", "Deployment.Namespace", h.Namespace, "Deployment.Name", memName)
+		reqLogger.Error(err, "SetControllerReference failed", "Deployment.Namespace", h.Namespace, "Deployment.Name", memName)
 	}
 
 	return dep
 }
 
-func  (r *ReconcileHealthService) desiredMemcachedService(h *operatorv1alpha1.HealthService) *corev1.Service {
+func (r *ReconcileHealthService) desiredMemcachedService(h *operatorv1alpha1.HealthService) *corev1.Service {
 	memName := h.Spec.Memcached.Name
 	memSvcName := h.Spec.Memcached.ServiceName
 	labels := labelsForMemcached(memName, h.Name)
@@ -210,10 +221,10 @@ func  (r *ReconcileHealthService) desiredMemcachedService(h *operatorv1alpha1.He
 
 	svc := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      memSvcName,
-			Namespace: h.Namespace,
-			Labels:    labels,
-			ResourceVersion:  "",
+			Name:            memSvcName,
+			Namespace:       h.Namespace,
+			Labels:          labels,
+			ResourceVersion: "",
 		},
 		Spec: corev1.ServiceSpec{
 			Ports: []corev1.ServicePort{
@@ -229,7 +240,9 @@ func  (r *ReconcileHealthService) desiredMemcachedService(h *operatorv1alpha1.He
 	}
 
 	// Set HealthService instance as the owner and controller
-	controllerutil.SetControllerReference(h, svc, r.scheme)
+	if err := controllerutil.SetControllerReference(h, svc, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "Service.Namespace", h.Namespace, "Service.Name", memSvcName)
+	}
 
 	return svc
 }
@@ -245,14 +258,20 @@ func getPodNames(pods []corev1.Pod) []string {
 
 func labelsForMemcached(name, releaseName string) map[string]string {
 	return map[string]string{
-		"app": name,
-		"release": releaseName,
+		"app":                          name,
+		"release":                      releaseName,
+		"app.kubernetes.io/name":       "",
+		"app.kubernetes.io/instance":   "",
+		"app.kubernetes.io/managed-by": "",
 	}
 }
 
-func annotationsForMemcached(name string) map[string]string {
+func annotationsForMemcached() map[string]string {
 	return map[string]string{
 		"scheduler.alpha.kubernetes.io/critical-pod": "",
-		"seccomp.security.alpha.kubernetes.io/pod": "docker/default",
+		"seccomp.security.alpha.kubernetes.io/pod":   "docker/default",
+		"productName":    "",
+		"productID":      "",
+		"productVersion": "",
 	}
 }

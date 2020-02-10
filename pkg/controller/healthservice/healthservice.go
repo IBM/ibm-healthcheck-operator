@@ -1,3 +1,19 @@
+//
+// Copyright 2020 IBM Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 package healthservice
 
 import (
@@ -40,10 +56,10 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceDeploy(h *operatorv1
 	} else if err != nil {
 		reqLogger.Error(err, "Failed to get Deployment", "Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 		return err
-	} else if err == nil {
-		if err := r.updateHealthServiceDeployment(current, desired); err != nil {
-			return err
-		}
+	}
+
+	if err := r.updateHealthServiceDeployment(current, desired); err != nil {
+		return err
 	}
 
 	// Update the HealthService status with the pod names
@@ -89,8 +105,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceSvc(h *operatorv1alp
 	} else if err != nil {
 		reqLogger.Error(err, "Failed to get Service", "Service.Namespace", found.Namespace, "Service.Name", found.Name)
 		return err
-	}/* else if err == nil {
-		reqLogger.Info("Updating Service is unavailable. Please try to delete the target service and operator will create a new one", "Service.Namespace", found.Namespace, "Service.Name", found.Name)
+	} /* else if err == nil {
 		//TODO : compare and update
 		reqLogger.Info("Updating Service", "Service.Namespace", svc.Namespace, "Service.Name", svc.Name)
 		err = r.client.Update(context.TODO(), svc)
@@ -123,7 +138,6 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceIngress(h *operatorv
 		reqLogger.Error(err, "Failed to get Ingress", "Ingress.Namespace", found.Namespace, "Ingress.Name", found.Name)
 		return err
 	} /* else if err == nil {
-		reqLogger.Info("Updating Ingress is unavailable. Please try to delete the target ingress and operator will create a new one", "Ingress.Namespace", found.Namespace, "Ingress.Name", found.Name)
 		// TODO : compare
 		reqLogger.Info("Updating Ingress", "Ingress.Namespace", ing.Namespace, "Ingress.Name", ing.Name)
 		err = r.client.Update(context.TODO(), ing)
@@ -157,7 +171,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 	hsName := h.Spec.HealthService.Name
 	cfgName := h.Spec.HealthService.ConfigmapName
 	labels := labelsForHealthService(hsName, h.Name)
-	annotations := annotationsForHealthService(hsName)
+	annotations := annotationsForHealthService()
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	reqLogger.Info("Building HealthService Deployment", "Deployment.Namespace", h.Namespace, "Deployment.Name", hsName)
@@ -314,7 +328,9 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 	}
 
 	// Set HealthService instance as the owner and controller
-	controllerutil.SetControllerReference(h, dep, r.scheme)
+	if err := controllerutil.SetControllerReference(h, dep, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "Deployment.Namespace", h.Namespace, "Deployment.Name", hsName)
+	}
 
 	return dep
 }
@@ -324,7 +340,7 @@ func (r *ReconcileHealthService) desiredHealthServiceService(h *operatorv1alpha1
 	labels := labelsForHealthService(hsName, h.Name)
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
-	reqLogger.Info("Building HealthService Service", "Deployment.Namespace", h.Namespace, "Deployment.Name", hsName)
+	reqLogger.Info("Building HealthService Service", "Service.Namespace", h.Namespace, "Service.Name", hsName)
 
 	svc := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
@@ -346,7 +362,9 @@ func (r *ReconcileHealthService) desiredHealthServiceService(h *operatorv1alpha1
 	}
 
 	// Set HealthService instance as the owner and controller
-	controllerutil.SetControllerReference(h, svc, r.scheme)
+	if err := controllerutil.SetControllerReference(h, svc, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "Service.Namespace", h.Namespace, "Service.Name", hsName)
+	}
 
 	return svc
 }
@@ -357,7 +375,7 @@ func (r *ReconcileHealthService) desiredHealthServiceIngress(h *operatorv1alpha1
 	annotations := annotationsForHealthServiceIngress()
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
-	reqLogger.Info("Building HealthService Ingress", "Deployment.Namespace", h.Namespace, "Deployment.Name", hsName)
+	reqLogger.Info("Building HealthService Ingress", "Ingress.Namespace", h.Namespace, "Ingress.Name", hsName)
 
 	ing := &extensionsv1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
@@ -387,7 +405,9 @@ func (r *ReconcileHealthService) desiredHealthServiceIngress(h *operatorv1alpha1
 	}
 
 	// Set HealthService instance as the owner and controller
-	controllerutil.SetControllerReference(h, ing, r.scheme)
+	if err := controllerutil.SetControllerReference(h, ing, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "Ingress.Namespace", h.Namespace, "Ingress.Name", hsName)
+	}
 
 	return ing
 }
@@ -407,14 +427,20 @@ func annotationsForHealthServiceIngress() map[string]string {
 
 func labelsForHealthService(name string, releaseName string) map[string]string {
 	return map[string]string{
-		"app": name,
-		"release": releaseName,
+		"app":                          name,
+		"release":                      releaseName,
+		"app.kubernetes.io/name":       "",
+		"app.kubernetes.io/instance":   "",
+		"app.kubernetes.io/managed-by": "",
 	}
 }
 
-func annotationsForHealthService(name string) map[string]string {
+func annotationsForHealthService() map[string]string {
 	return map[string]string{
 		"scheduler.alpha.kubernetes.io/critical-pod": "",
-		"seccomp.security.alpha.kubernetes.io/pod": "docker/default",
+		"seccomp.security.alpha.kubernetes.io/pod":   "docker/default",
+		"productName":    "",
+		"productID":      "",
+		"productVersion": "",
 	}
 }
