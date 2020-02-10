@@ -1,0 +1,56 @@
+apiVersion: operator.ibm.com/v1alpha1
+kind: HealthService
+metadata:
+  name: default-health-service
+spec:
+  memcached:
+    name: icp-memcached
+    serviceName: memchched-svc
+    image:
+      repository: ibmcom/icp-memcached
+      tag: 3.2.1
+    replicaCount: 1
+    nodeSelector:
+      node-role.kubernetes.io/worker: ""
+    tolerations:
+    - effect: NoSchedule
+      key: dedicated
+      operator: Exists
+    - key: CriticalAddonsOnly
+      operator: Exists
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsUser: 1001
+    command:
+    - memcached
+    - -m 128
+    - -o
+    - modern
+    - -v
+  healthService:
+    name: system-healthcheck-service
+    configmapName: system-healthcheck-service-config
+    image:
+      repository: ibmcom/system-healthcheck-service
+      tag: 3.2.1
+    replicaCount: 1
+    nodeSelector:
+      node-role.kubernetes.io/worker: ""
+    tolerations:
+    - effect: NoSchedule
+      key: dedicated
+      operator: Exists
+    - key: CriticalAddonsOnly
+      operator: Exists
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+    hostNetwork: false

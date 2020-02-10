@@ -1,0 +1,19 @@
+apiVersion: operator.ibm.com/v1alpha1
+kind: HealthService
+metadata:
+  name: default-health-service
+spec:
+  memcached:
+    name: icp-memcached
+    serviceName: memchched-svc
+    image:
+      repository: ibmcom/icp-memcached
+      tag: 3.2.1
+    replicaCount: 1
+  healthService:
+    name: system-healthcheck-service
+    configmapName: system-healthcheck-service-config
+    image:
+      repository: ibmcom/system-healthcheck-service
+      tag: 3.2.1
+    replicaCount: 1
