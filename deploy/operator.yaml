@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-service-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: health-service-operator
+  template:
+    metadata:
+      labels:
+        name: health-service-operator
+    spec:
+      serviceAccountName: health-service-operator
+      containers:
+        - name: health-service-operator
+          # Replace this with the built image name
+          image: quay.io/haoqing/health-service-operator:v0.0.1
+          command:
+          - health-service-operator
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "health-service-operator"
