@@ -28,7 +28,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1 "k8s.io/api/extensions/v1beta1"
-	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -138,7 +137,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceIngress(h *operatorv
 	return nil
 }
 
-func (r *ReconcileHealthService) createOrUpdateHealthServiceCRD(h *operatorv1alpha1.HealthService) error {
+/* func (r *ReconcileHealthService) createOrUpdateHealthServiceCRD(h *operatorv1alpha1.HealthService) error {
 	hsName := h.Spec.HealthService.Name
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	labels := labelsForHealthService(hsName, h.Name)
@@ -154,7 +153,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceCRD(h *operatorv1alp
 
 	crd := new(apiextensions.CustomResourceDefinition)
 	if err := yaml.Unmarshal(byteValue, crd); err != nil {
-		reqLogger.Error(err, "Error parsing the configmap value from /manifests/system-healthcheck-service-config.yaml")
+		reqLogger.Error(err, "Error parsing the CRD value from /manifests/system-healthcheck-service-config.yaml")
 		return err
 	}
 	yamlFile.Close()
@@ -169,16 +168,17 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceCRD(h *operatorv1alp
 		// Define a new configmap
 		reqLogger.Info("Creating a new CRD", "CRD.Name", crd.Name)
 		if err := r.client.Create(context.TODO(), crd); err != nil {
-			reqLogger.Error(err, "Failed to create new configmap", "crd.Name", crd.Name)
+			reqLogger.Error(err, "Failed to create new CRD", "crd.Name", crd.Name)
 			return err
 		}
 	} else if err != nil {
-		reqLogger.Error(err, "Failed to get Ingress", "crd.Name", found.Name)
+		reqLogger.Error(err, "Failed to get CRD", "crd.Name", found.Name)
 		return err
 	}
 
 	return nil
 }
+*/
 
 func (r *ReconcileHealthService) createOrUpdateHealthServiceConfigmap(h *operatorv1alpha1.HealthService) error {
 	hsName := h.Spec.HealthService.Name
