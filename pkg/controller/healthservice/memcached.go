@@ -36,6 +36,7 @@ var cpu50 = resource.NewMilliQuantity(50, resource.DecimalSI)          // 50m
 var cpu500 = resource.NewMilliQuantity(500, resource.DecimalSI)        // 500m
 var memory64 = resource.NewQuantity(64*1024*1024, resource.BinarySI)   // 64Mi
 var memory128 = resource.NewQuantity(128*1024*1024, resource.BinarySI) // 128Mi
+var memSvcName = "memcached"
 
 func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alpha1.HealthService) error {
 	memName := h.Spec.Memcached.Name
@@ -88,7 +89,6 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alph
 }
 
 func (r *ReconcileHealthService) createOrUpdateMemcachedSvc(h *operatorv1alpha1.HealthService) error {
-	memSvcName := h.Spec.Memcached.ServiceName
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 
 	// Define a new service
@@ -213,7 +213,6 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 
 func (r *ReconcileHealthService) desiredMemcachedService(h *operatorv1alpha1.HealthService) *corev1.Service {
 	memName := h.Spec.Memcached.Name
-	memSvcName := h.Spec.Memcached.ServiceName
 	labels := labelsForMemcached(memName, h.Name)
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)

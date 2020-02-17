@@ -38,8 +38,6 @@ type image struct {
 type HealthServiceSpecMemcached struct {
 	// memcached deployment name
 	Name string `json:"name,"`
-	// memcached service name
-	ServiceName string `json:"serviceName"`
 	// memcached image repository, tag and imagepullpolicy
 	Image image `json:"image,"`
 	// memcached deployment replicas, default is 0

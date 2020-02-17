@@ -8,6 +8,7 @@ ENV OPERATOR=/usr/local/bin/health-service-operator \
 COPY build/_output/bin/health-service-operator ${OPERATOR}
 
 COPY build/bin /usr/local/bin
+COPY manifests /manifests
 RUN  /usr/local/bin/user_setup
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]

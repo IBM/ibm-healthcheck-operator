@@ -1,0 +1,349 @@
+###############################################################################
+# Licensed Materials - Property of IBM
+# 5737-E67
+# (C) Copyright IBM Corporation 2019, 2020 All Rights Reserved
+# US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+###############################################################################
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: system-healthcheck-service-config
+data:
+  NAMESPACE: "kube-system"
+  foundation.yaml: |
+    services:
+    - name: k8s-deprecated
+      label: app in (kube-master)
+    - name: mongodb
+      label: app in (icp-mongodb)
+    - name: kube-dns-deprecated
+      label: app in (kube-dns)
+      depends:
+      - k8s
+    - name: monitoring
+      label: app in (monitoring-grafana,monitoring-prometheus-alertmanager,monitoring-prometheus)
+      depends:
+      - k8s
+      - auth-idp
+      - monitoring-crd
+    - name: metering
+      label: app in (metering-dm,metering-reader,metering-ui)
+      depends:
+      - k8s
+      - auth-idp
+      - mongodb
+    - name: auth-idp
+      label: component in (auth-idp)
+      depends:
+      - k8s
+      - mongodb
+      - kube-dns
+      - tiller
+      - cert-manager
+      - calico
+    - name: auth-pap
+      label: component in (auth-pap)
+      depends:
+      - k8s
+      - mongodb
+      - kube-dns
+      - calico
+      - tiller
+      - cert-manager
+    - name: auth-pdp
+      label: component in (auth-pdp)
+      depends:
+      - k8s
+      - mongodb
+      - auth-idp
+      - auth-pap
+      - kube-dns
+      - calico
+      - tiller
+      - cert-manager
+      - auth-apikeys
+    - name: auth-apikeys
+      label: component in (auth-apikeys)
+      depends:
+      - k8s
+      - kube-dns
+      - calico
+      - tiller
+      - cert-manager
+      - mongodb
+    - name: cert-manager
+      label: app in (controller,ibm-cert-manager,cainjector,ibm-cert-manager-webhook)
+      namespace: cert-manager
+      depends:
+      - k8s
+      - tiller
+    - name: audit-logging
+      label: app in (audit-logging-fluentd)
+      depends:
+      - k8s
+      - cert-manager
+    - name: visual-web-terminal-kui
+      label: app in (mcm-kui)
+      depends:
+      - k8s
+    - name: icp-management-ingress
+      label: k8s-app in (icp-management-ingress)
+      depends:
+      - k8s
+      - cert-manager
+    - name: tiller
+      label: app in (helm)
+      depends:
+      - k8s
+      - auth-idp
+      - icp-management-ingress
+    - name: web-terminal-deprecated
+      label: component in (web-terminal)
+      depends:
+      - platform-api
+      - auth-idp
+    - name: platform-ui-deprecated
+      label: k8s-app in (platform-ui)
+      depends:
+      - k8s
+      - auth-idp
+      - mongodb
+      - platform-header
+    - name: platform-header
+      label: app in (platform-header)
+      depends:
+      - k8s
+    - name: catalog-ui
+      label: k8s-app in (catalog-ui)
+      depends:
+      - k8s
+      - helm-api
+      - helm-repo
+      - platform-api
+      - auth-idp
+      - platform-header
+    - name: helm-api
+      label: app in (helm-api)
+      depends:
+      - k8s
+      - auth-idp
+      - auth-pdp
+      - auth-pap
+      - platform-api
+      - helm-repo
+      - mgmt-repo
+      - mongodb
+      - icp-management-ingress
+      - tiller
+      - cert-manager
+    - name: helm-repo
+      label: app in (helm-repo)
+      depends:
+      - mongodb
+      - auth-idp
+    - name: metrics-server-deprecated
+      label: k8s-app in (metrics-server)
+      depends:
+      - k8s
+      - cert-manager
+    - name: mgmt-repo
+      label: app in (mgmt-repo)
+      depends:
+      - mongodb
+      - auth-idp
+    - name: platform-api
+      label: k8s-app in (platform-api)
+      depends:
+      - k8s
+      - auth-idp
+      - auth-pdp
+      - auth-pap
+    - name: nginx-ingress
+      label: app in (nginx-ingress-controller,default-http-backend)
+    - name: secret-watcher
+      label: app in (secret-watcher)
+      depends:
+      - k8s
+      - kube-dns
+      - calico
+      - tiller
+      - auth-apikeys
+    - name: security-onboarding
+      label: job-name in (security-onboarding)
+      depends:
+      - k8s
+      - kube-dns
+      - calico
+      - auth-apikeys
+      - tiller
+      - auth-pap
+    - name: calico-deprecated
+      label: app in (calico-node,calico-kube-controllers)
+      depends:
+      - k8s
+    - name: custom-metrics-adapter-deprecated
+      label: app in (ibm-custom-metrics-adapter)
+      depends:
+      - monitoring
+      - cert-manager
+    - name: storage-glusterfs-deprecated
+      label: app in (storage-glusterfs)
+      depends:
+      - kube-dns
+      - cert-manager
+      - monitoring
+    - name: storage-minio-deprecated
+      label: app in (ibm-minio-objectstore)
+      depends:
+      - kube-dns
+      - cert-manager
+      - monitoring
+      - icp-management-ingress
+    - name: istio-deprecated
+      label: istio in (citadel,galley,ingressgateway,pilot,sidecar-injector,mixer)
+      namespace: istio-system
+      depends:
+      - k8s
+    - name: service-catalog-deprecated
+      label: app in (service-catalog-apiserver,service-catalog-controller-manager)
+      depends:
+      - k8s
+      - metrics-server
+      - kube-dns
+    - name: heapster-deprecated
+      label: k8s-app in (heapster)
+      depends:
+      - k8s
+    - name: logging
+      label: app in (logging-elk-elasticsearch)
+      depends:
+      - k8s
+      - auth-idp
+    - name: node-problem-detector-drain-deprecated
+      label: component in (draino)
+  cpmcm.yaml: |
+    services:
+    - name: cam
+      label: name in (cam-bpd-cds,cam-bpd-mariadb,cam-bpd-mds,cam-bpd-ui,cam-broker,cam-iaas,cam-mongo,cam-orchestration,cam-portal-ui,cam-provider-helm,cam-provider-terraform,cam-proxy,cam-service-composer-api,cam-service-composer-ui,cam-tenant-api,cam-ui-basic)
+      namespace: services
+      depends:
+      - k8s
+      - service-catalog
+      - auth-idp
+      - cert-manager
+      - logging
+      - monitoring
+    - name: icam
+      label: app in (agentbootstrap,agentmgmt,alarmeventsrc,amui,applicationmgmt,mcm-event-forwarder,mcm-hub-monitor,cassandra,config,couchdb,elasticsearch,event-observer,eventevaluator,kafka,layout,linking,metric,metricenrichment,metricprovider,metricstorage,opentt,synthetic,temacomm,temaconfig,temasda,threshold,topology,ui-api,zookeeper)
+      depends:
+      - search
+      - auth-idp
+      - cert-manager
+      - key-management
+      - catalog-ui
+      - metering
+      - tiller
+      - platform-ui
+      - image-manager
+      - service-catalog
+      - icp-management-ingress
+      - kmsplugin
+    - name: icam-ibm-cem
+      label: component in (brokers,cem-users,channelservices,datalayer,datalayer-cron,event-analytics-ui,eventpreprocessor,incidentprocessor,integration-controller,normalizer,notificationprocessor,rba-as,rba-rbs,scheduling-ui)
+      depends:
+      - search
+      - auth-idp
+      - cert-manager
+      - key-management
+      - catalog-ui
+      - metering
+      - tiller
+      - platform-ui
+      - image-manager
+      - service-catalog
+      - icp-management-ingress
+      - kmsplugin
+    - name: icam-ibm-redis
+      label: component in (sentinel,server)
+      depends:
+      - search
+      - auth-idp
+      - cert-manager
+      - key-management
+      - catalog-ui
+      - metering
+      - tiller
+      - platform-ui
+      - image-manager
+      - service-catalog
+      - icp-management-ingress
+      - kmsplugin
+    - name: multicluster-hub
+      label: component in (mcmui,mcmuiapi,mcmapplicationui,mcm-apiserver,mcm-application,mcm-channel,mcm-controller,mcm-operator,mcm-webhook,mcm-etcd,security-advisor-onboarding,findingsapi,grafeas,mcm-grcui,mcm-grcuiapi,legato,policy-adapter,mcm-topology,mcm-topologyapi)
+      depends:
+      - k8s
+      - auth-idp
+    - name: multicluster-endpoint
+      label: app in (policy,search,topology,connection-manager,work-manager)
+      namespace: multicluster-endpoint
+      depends:
+      - k8s
+      - tiller
+      - cert-manager
+      - monitoring
+    - name: image-security-enforcement
+      label: app in (ibmcloud-image-enforcement)
+      depends:
+      - k8s
+    - name: key-management
+      label: app in (key-management-api,key-management-crypto,key-management-lifecycle,key-management-onboarding,key-management-pep,key-management-persistence)
+      depends:
+      - k8s
+      - mongodb
+      - cert-manager
+    - name: key-management-hsm
+      label: app in (key-management-hsm-middleware)
+      depends:
+      - k8s
+      - key-management
+      - mongodb
+    - name: image-manager
+      label: app in (image-manager)
+      depends:
+      - k8s
+      - cert-manager
+    - name: kmsplugin
+      label: app in (k8s-kmsplugin)
+      depends:
+      - k8s
+      - key-management
+      - auth-idp
+    - name: search
+      label: component in (redisgraph,search-aggregator,search-api,search-collector)
+      depends:
+      - k8s
+      - auth-idp
+    - name: vulnerability-advisor
+      label: app in (vulnerability-ad-compliance-annotator,vulnerability-ad-compliance-indexer,vulnerability-ad-config-parser,vulnerability-ad-cos-indexer,kafka,vulnerability-ad-live-crawler,vulnerability-ad-ma-file-annotator,vulnerability-ad-ma-mcm-controller,minio,vulnerability-ad-password-annotator,vulnerability-ad-process-ma-annotator,vulnerability-ad-process-ma-crawler,vulnerability-ad-registry-crawler,vulnerability-ad-rootkit-annotator,vulnerability-ad-rootkit-indexer,vulnerability-ad-sas-apiserver,vulnerability-ad-secconfig-annotator,vulnerability-ad-secconfig-indexer,vulnerability-ad-vulnerability-annotator,vulnerability-ad-vulnerability-indexer,zookeeper)
+      depends:
+      - logging
+      - auth-idp
+      - image-manager
+    - name: common-web-ui
+      label: app in (common-web-ui)
+      depends:
+      - k8s
+    - name: ibm-multitenancy
+      label: app.kubernetes.io/component in (ibm-multitenancy-acctenf)
+      depends:
+      - k8s
+      - auth-idp
+    - name: ibm-configmap-watcher
+      label: app.kubernetes.io/name in (ibm-configmap-watcher)
+      depends:
+      - k8s
+    - name: ibm-licensing
+      label: app.kubernetes.io/name in (ibm-licensing)
+      depends:
+      - k8s

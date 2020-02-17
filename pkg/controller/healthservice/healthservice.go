@@ -18,6 +18,8 @@ package healthservice
 
 import (
 	"context"
+	"io/ioutil"
+	"os"
 	"reflect"
 
 	operatorv1alpha1 "github.ibm.com/IBMPrivateCloud/health-service-operator/pkg/apis/operator/v1alpha1"
@@ -25,6 +27,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1 "k8s.io/api/extensions/v1beta1"
+	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -32,6 +35,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+	"sigs.k8s.io/yaml"
 )
 
 var gracePeriod = int64(60)
@@ -105,16 +109,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceSvc(h *operatorv1alp
 	} else if err != nil {
 		reqLogger.Error(err, "Failed to get Service", "Service.Namespace", found.Namespace, "Service.Name", found.Name)
 		return err
-	} /* else if err == nil {
-		//TODO : compare and update
-		reqLogger.Info("Updating Service", "Service.Namespace", svc.Namespace, "Service.Name", svc.Name)
-		err = r.client.Update(context.TODO(), svc)
-		if err != nil {
-			reqLogger.Error(err, "Failed to update Service", "Service.Namespace", found.Namespace, "Service.Name", found.Name)
-			return err
-		}
 	}
-	*/
 
 	return nil
 }
@@ -137,16 +132,93 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceIngress(h *operatorv
 	} else if err != nil {
 		reqLogger.Error(err, "Failed to get Ingress", "Ingress.Namespace", found.Namespace, "Ingress.Name", found.Name)
 		return err
-	} /* else if err == nil {
-		// TODO : compare
-		reqLogger.Info("Updating Ingress", "Ingress.Namespace", ing.Namespace, "Ingress.Name", ing.Name)
-		err = r.client.Update(context.TODO(), ing)
-		if err != nil {
-			reqLogger.Error(err, "Failed to update Ingress", "Ingress.Namespace", found.Namespace, "Ingress.Name", found.Name)
+	}
+
+	return nil
+}
+
+func (r *ReconcileHealthService) createOrUpdateHealthServiceCRD(h *operatorv1alpha1.HealthService) error {
+	hsName := h.Spec.HealthService.Name
+	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
+	labels := labelsForHealthService(hsName, h.Name)
+
+	//read configmap from yaml
+	yamlFile, err := os.Open("/manifests/cluster-service-status-CRD.yaml")
+	if err != nil {
+		reqLogger.Error(err, "Error opening System CRD file")
+	}
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer yamlFile.Close()
+	byteValue, _ := ioutil.ReadAll(yamlFile)
+
+	crd := new(apiextensions.CustomResourceDefinition)
+	if err := yaml.Unmarshal(byteValue, crd); err != nil {
+		reqLogger.Error(err, "Error parsing the configmap value from /manifests/system-healthcheck-service-config.yaml")
+		return err
+	}
+	yamlFile.Close()
+
+	//setup configmap name, namespace and labels
+	crd.ObjectMeta.Labels = labels
+
+	// Check if the ingress already exists, if not create a new one
+	found := &apiextensions.CustomResourceDefinition{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: crd.Name}, found)
+	if err != nil && errors.IsNotFound(err) {
+		// Define a new configmap
+		reqLogger.Info("Creating a new CRD", "CRD.Name", crd.Name)
+		if err := r.client.Create(context.TODO(), crd); err != nil {
+			reqLogger.Error(err, "Failed to create new configmap", "crd.Name", crd.Name)
 			return err
 		}
+	} else if err != nil {
+		reqLogger.Error(err, "Failed to get Ingress", "crd.Name", found.Name)
+		return err
 	}
-	*/
+
+	return nil
+}
+
+func (r *ReconcileHealthService) createOrUpdateHealthServiceConfigmap(h *operatorv1alpha1.HealthService) error {
+	hsName := h.Spec.HealthService.Name
+	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
+	labels := labelsForHealthService(hsName, h.Name)
+
+	//read configmap from yaml
+	yamlFile, err := os.Open("/manifests/system-healthcheck-service-config.yaml")
+	if err != nil {
+		reqLogger.Error(err, "Error opening System config file")
+	}
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer yamlFile.Close()
+	byteValue, _ := ioutil.ReadAll(yamlFile)
+
+	cm := new(corev1.ConfigMap)
+	if err := yaml.Unmarshal(byteValue, cm); err != nil {
+		reqLogger.Error(err, "Error parsing the configmap value from /manifests/system-healthcheck-service-config.yaml")
+		return err
+	}
+	yamlFile.Close()
+
+	//setup configmap name, namespace and labels
+	cm.ObjectMeta.Name = h.Spec.HealthService.ConfigmapName
+	cm.ObjectMeta.Namespace = h.Namespace
+	cm.ObjectMeta.Labels = labels
+
+	// Check if the ingress already exists, if not create a new one
+	found := &corev1.ConfigMap{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: cm.Name, Namespace: cm.Namespace}, found)
+	if err != nil && errors.IsNotFound(err) {
+		// Define a new configmap
+		reqLogger.Info("Creating a new configmap", "configmap.Namespace", cm.Namespace, "configmap.Name", cm.Name)
+		if err := r.client.Create(context.TODO(), cm); err != nil {
+			reqLogger.Error(err, "Failed to create new configmap", "configmap.Namespace", cm.Namespace, "configmap.Name", cm.Name)
+			return err
+		}
+	} else if err != nil {
+		reqLogger.Error(err, "Failed to get Ingress", "configmap.Namespace", found.Namespace, "configmap.Name", found.Name)
+		return err
+	}
 
 	return nil
 }

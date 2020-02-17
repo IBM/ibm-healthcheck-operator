@@ -398,9 +398,6 @@ spec:
                           type: string
                       type: object
                   type: object
-                serviceName:
-                  description: memcached service name
-                  type: string
                 tolerations:
                   description: memcached deployment tolerations, default is empty
                   items:
@@ -444,7 +441,6 @@ spec:
               required:
               - image
               - name
-              - serviceName
               type: object
           type: object
         status:
