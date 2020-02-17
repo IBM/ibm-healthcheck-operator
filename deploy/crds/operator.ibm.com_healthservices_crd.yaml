@@ -38,6 +38,9 @@ spec:
                   description: configmap which contains health srevice configuration
                     files, deprecated
                   type: string
+                configmod:
+                  description: set true to read health srevice configuration files
+                  type: boolean
                 hostNetwork:
                   description: health srevice deployment hostnetwork, default is false
                   type: boolean
@@ -398,9 +401,6 @@ spec:
                           type: string
                       type: object
                   type: object
-                serviceName:
-                  description: memcached service name
-                  type: string
                 tolerations:
                   description: memcached deployment tolerations, default is empty
                   items:
@@ -444,7 +444,6 @@ spec:
               required:
               - image
               - name
-              - serviceName
               type: object
           type: object
         status:

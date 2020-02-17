@@ -38,8 +38,6 @@ type image struct {
 type HealthServiceSpecMemcached struct {
 	// memcached deployment name
 	Name string `json:"name,"`
-	// memcached service name
-	ServiceName string `json:"serviceName"`
 	// memcached image repository, tag and imagepullpolicy
 	Image image `json:"image,"`
 	// memcached deployment replicas, default is 0
@@ -62,6 +60,8 @@ type HealthServiceSpecHealthService struct {
 	Image image `json:"image"`
 	// configmap which contains health srevice configuration files, deprecated
 	ConfigmapName string `json:"configmapName"`
+	// set true to read health srevice configuration files
+	ConfigMode bool `json:"configmod,omitempty"`
 	// health service deployment replicas, default is 0
 	ReplicaCount int32 `json:"replicaCount,omitempty"`
 	// health srevice deployment node selector, default is empty

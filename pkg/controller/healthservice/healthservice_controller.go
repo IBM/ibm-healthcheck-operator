@@ -127,6 +127,11 @@ func (r *ReconcileHealthService) Reconcile(request reconcile.Request) (reconcile
 		return reconcile.Result{}, err
 	}
 
+	if err = r.createOrUpdateHealthServiceConfigmap(healthService); err != nil {
+		reqLogger.Error(err, "Failed to create or update configmap for health service")
+		return reconcile.Result{}, err
+	}
+
 	if err = r.createOrUpdateHealthServiceDeploy(healthService); err != nil {
 		reqLogger.Error(err, "Failed to create or update Deployment for health service")
 		return reconcile.Result{}, err
