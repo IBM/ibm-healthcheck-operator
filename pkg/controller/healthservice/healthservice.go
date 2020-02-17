@@ -21,6 +21,7 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
+	"strconv"
 
 	operatorv1alpha1 "github.ibm.com/IBMPrivateCloud/health-service-operator/pkg/apis/operator/v1alpha1"
 
@@ -312,6 +313,10 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 									Name:  "MEMCACHEDPORT",
 									Value: "11211",
 								},
+								{
+									Name:  "CONFIG_MODE",
+									Value: strconv.FormatBool(h.Spec.HealthService.ConfigMode),
+								},
 							},
 							Resources: corev1.ResourceRequirements{
 								Limits: map[corev1.ResourceName]resource.Quantity{
@@ -501,8 +506,8 @@ func labelsForHealthService(name string, releaseName string) map[string]string {
 	return map[string]string{
 		"app":                          name,
 		"release":                      releaseName,
-		"app.kubernetes.io/name":       "",
-		"app.kubernetes.io/instance":   "",
+		"app.kubernetes.io/name":       name,
+		"app.kubernetes.io/instance":   releaseName,
 		"app.kubernetes.io/managed-by": "",
 	}
 }

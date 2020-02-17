@@ -33,6 +33,7 @@ spec:
   healthService:
     name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
+    configMod: false
     image:
       repository: ibmcom/system-healthcheck-service
       tag: 3.2.1

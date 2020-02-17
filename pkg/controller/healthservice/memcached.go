@@ -259,8 +259,8 @@ func labelsForMemcached(name, releaseName string) map[string]string {
 	return map[string]string{
 		"app":                          name,
 		"release":                      releaseName,
-		"app.kubernetes.io/name":       "",
-		"app.kubernetes.io/instance":   "",
+		"app.kubernetes.io/name":       name,
+		"app.kubernetes.io/instance":   releaseName,
 		"app.kubernetes.io/managed-by": "",
 	}
 }

@@ -38,6 +38,9 @@ spec:
                   description: configmap which contains health srevice configuration
                     files, deprecated
                   type: string
+                configmod:
+                  description: set true to read health srevice configuration files
+                  type: boolean
                 hostNetwork:
                   description: health srevice deployment hostnetwork, default is false
                   type: boolean
