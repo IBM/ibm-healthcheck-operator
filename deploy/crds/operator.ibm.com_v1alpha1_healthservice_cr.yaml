@@ -23,7 +23,6 @@ spec:
         drop:
         - ALL
       readOnlyRootFilesystem: true
-      runAsUser: 1001
     command:
     - memcached
     - -m 128

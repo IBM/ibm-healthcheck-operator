@@ -144,6 +144,8 @@ ifeq ($(BUILD_LOCALLY),0)
     export CONFIG_DOCKER_TARGET = config-docker
 endif
 
+build-image: build-image-amd64 build-image-ppc64le build-image-s390x
+
 build-image-amd64: build-amd64
 	@docker build -t $(IMAGE_REPO)/$(IMAGE_NAME)-amd64:$(VERSION) -f build/Dockerfile .
 

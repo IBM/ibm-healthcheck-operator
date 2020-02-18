@@ -70,8 +70,7 @@ metadata:
                     "ALL"
                   ]
                 },
-                "readOnlyRootFilesystem": true,
-                "runAsUser": 1001
+                "readOnlyRootFilesystem": true
               },
               "tolerations": [
                 {
@@ -147,7 +146,6 @@ spec:
       - description: MemcachedNodes are the names of the memcached pods
         displayName: Memcached Nodes
         path: memcachedNodes
-    required:
     - description: ClusterServiceStatus is the Schema for the clusterservicestatus API
       kind: ClusterServiceStatus
       name: clusterservicestatuses.clusterhealth.ibm.com
@@ -160,39 +158,7 @@ spec:
     mediatype: image/png
   install:
     spec:
-      deployments:
-      - name: health-service-operator
-        spec:
-          replicas: 1
-          selector:
-            matchLabels:
-              name: health-service-operator
-          strategy: {}
-          template:
-            metadata:
-              labels:
-                name: health-service-operator
-            spec:
-              containers:
-              - command:
-                - health-service-operator
-                env:
-                - name: WATCH_NAMESPACE
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.annotations['olm.targetNamespaces']
-                - name: POD_NAME
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.name
-                - name: OPERATOR_NAME
-                  value: health-service-operator
-                image: quay.io/opencloudio/health-service-operator:v0.0.1
-                imagePullPolicy: Always
-                name: health-service-operator
-                resources: {}
-              serviceAccountName: health-service-operator
-      permissions:
+      clusterPermissions:
       - rules:
         - apiGroups:
           - extensions
@@ -281,6 +247,38 @@ spec:
           - update
           - watch
         serviceAccountName: health-service-operator
+      deployments:
+      - name: health-service-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: health-service-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: health-service-operator
+            spec:
+              containers:
+              - command:
+                - health-service-operator
+                env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: health-service-operator
+                image: quay.io/opencloudio/health-service-operator:v0.0.1
+                imagePullPolicy: Always
+                name: health-service-operator
+                resources: {}
+              serviceAccountName: health-service-operator
     strategy: deployment
   installModes:
   - supported: true

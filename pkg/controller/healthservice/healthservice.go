@@ -514,8 +514,6 @@ func labelsForHealthService(name string, releaseName string) map[string]string {
 
 func annotationsForHealthService() map[string]string {
 	return map[string]string{
-		"scheduler.alpha.kubernetes.io/critical-pod": "",
-		"seccomp.security.alpha.kubernetes.io/pod":   "docker/default",
 		"productName":    "",
 		"productID":      "",
 		"productVersion": "",
