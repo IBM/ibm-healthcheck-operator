@@ -1,7 +1,7 @@
 apiVersion: operator.ibm.com/v1alpha1
 kind: HealthService
 metadata:
-  name: default-health-service
+  name: default-healthcheck-service
 spec:
   memcached:
     name: icp-memcached

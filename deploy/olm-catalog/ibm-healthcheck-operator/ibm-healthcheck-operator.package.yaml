@@ -1,0 +1,5 @@
+channels:
+- currentCSV: ibm-healthcheck-operator.v0.0.1
+  name: alpha
+defaultChannel: alpha
+packageName: ibm-healthcheck-operator-app

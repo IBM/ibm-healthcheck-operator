@@ -1,4 +1,4 @@
-module github.com/IBM/health-service-operator
+module github.com/IBM/ibm-healthcheck-operator
 
 go 1.13
 

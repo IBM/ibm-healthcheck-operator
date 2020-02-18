@@ -21,7 +21,7 @@ BUILD_LOCALLY ?= 1
 # Use your own docker registry and image name for dev/test by overridding the
 # IMAGE_REPO, IMAGE_NAME and RELEASE_TAG environment variable.
 IMAGE_REPO ?= quay.io/opencloudio
-IMAGE_NAME ?= health-service-operator
+IMAGE_NAME ?= ibm-healthcheck-operator
 
 # Github host to use for checking the source tree;
 # Override this variable ue with your own value if you're working on forked repo.

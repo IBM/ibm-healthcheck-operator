@@ -19,23 +19,23 @@ ARG VCS_REF
 ARG VCS_URL
 
 LABEL org.label-schema.vendor="IBM" \
-  org.label-schema.name="health-service-operator" \
-  org.label-schema.description="Health Service Operator" \
+  org.label-schema.name="ibm-healthcheck-operator" \
+  org.label-schema.description="IBM Health Check Operator" \
   org.label-schema.vcs-ref=$VCS_REF \
   org.label-schema.vcs-url=$VCS_URL \
   org.label-schema.license="Licensed Materials - Property of IBM" \
   org.label-schema.schema-version="1.0" \
-  name="health-service-operator" \
+  name="ibm-healthcheck-operator" \
   vendor="IBM" \
-  description="Health Service Operator" \
-  summary="Health Service Operator"
+  description="IBM Health Check Operator" \
+  summary="IBM Health Check Operator"
 
-ENV OPERATOR=/usr/local/bin/health-service-operator \
+ENV OPERATOR=/usr/local/bin/ibm-healthcheck-operator \
     USER_UID=1001 \
-    USER_NAME=health-service-operator
+    USER_NAME=ibm-healthcheck-operator
 
 # install operator binary
-COPY build/_output/bin/health-service-operator ${OPERATOR}
+COPY build/_output/bin/ibm-healthcheck-operator ${OPERATOR}
 
 COPY build/bin /usr/local/bin
 COPY manifests /manifests

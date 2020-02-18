@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: health-service-operator
+  name: ibm-healthcheck-operator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: health-service-operator
+      name: ibm-healthcheck-operator
   template:
     metadata:
       labels:
-        name: health-service-operator
+        name: ibm-healthcheck-operator
     spec:
-      serviceAccountName: health-service-operator
+      serviceAccountName: ibm-healthcheck-operator
       containers:
-        - name: health-service-operator
+        - name: ibm-healthcheck-operator
           # Replace this with the built image name
-          image: quay.io/opencloudio/health-service-operator:v0.0.1
+          image: quay.io/opencloudio/ibm-healthcheck-operator:v0.0.1
           command:
-          - health-service-operator
+          - ibm-healthcheck-operator
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
@@ -30,4 +30,4 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
-              value: "health-service-operator"
+              value: "ibm-healthcheck-operator"
