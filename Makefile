@@ -18,7 +18,7 @@ BUILD_LOCALLY ?= 1
 
 # Image URL to use all building/pushing image targets;
 # Use your own docker registry and image name for dev/test by overridding the IMG and REGISTRY environment variable.
-IMG ?= healthcheck-service-operator
+IMG ?= health-service-operator
 REGISTRY ?= quay.io/opencloudio
 
 # Github host to use for checking the source tree;

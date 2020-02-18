@@ -24,9 +24,16 @@ spec:
         - ALL
       readOnlyRootFilesystem: true
       runAsUser: 1001
+    command:
+    - memcached
+    - -m 128
+    - -o
+    - modern
+    - -v
   healthService:
     name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
+    configMod: false
     image:
       repository: ibmcom/system-healthcheck-service
       tag: 3.2.1
@@ -46,3 +53,4 @@ spec:
         - ALL
       readOnlyRootFilesystem: true
       runAsNonRoot: true
+    hostNetwork: false

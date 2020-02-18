@@ -17,7 +17,7 @@
 package controller
 
 import (
-	"github.ibm.com/IBMPrivateCloud/health-service-operator/pkg/controller/healthservice"
+	"github.com/IBM/health-service-operator/pkg/controller/healthservice"
 )
 
 func init() {

@@ -17,7 +17,7 @@
 package apis
 
 import (
-	"github.ibm.com/IBMPrivateCloud/health-service-operator/pkg/apis/operator/v1alpha1"
+	"github.com/IBM/health-service-operator/pkg/apis/operator/v1alpha1"
 )
 
 func init() {

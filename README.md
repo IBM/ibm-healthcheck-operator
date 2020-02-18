@@ -1,3 +1,3 @@
-# healthcheck-service-operator
+# health-service-operator
 
-Operator used to manage the healthcheck service
+Operator used to manage the health service

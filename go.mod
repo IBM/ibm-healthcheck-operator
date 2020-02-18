@@ -1,4 +1,4 @@
-module github.ibm.com/IBMPrivateCloud/health-service-operator
+module github.com/IBM/health-service-operator
 
 go 1.13
 
