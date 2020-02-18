@@ -16,7 +16,7 @@ spec:
       containers:
         - name: health-service-operator
           # Replace this with the built image name
-          image: quay.io/haoqing/health-service-operator:v0.0.1
+          image: quay.io/opencloudio/health-service-operator:v0.0.1
           command:
           - health-service-operator
           imagePullPolicy: Always

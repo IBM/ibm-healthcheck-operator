@@ -1,6 +1,6 @@
 scorecard:
   # Setting a global scorecard option
-  bundle: deploy/olm-catalog/healthcheck-service-operator
+  bundle: deploy/olm-catalog/health-service-operator
   plugins:
     - basic:
         namespace: "health-service-operator"

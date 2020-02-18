@@ -1,0 +1,285 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "operator.ibm.com/v1alpha1",
+          "kind": "HealthService",
+          "metadata": {
+            "name": "default-health-service"
+          },
+          "spec": {
+            "healthService": {
+              "configMod": false,
+              "configmapName": "system-healthcheck-service-config",
+              "hostNetwork": false,
+              "image": {
+                "repository": "ibmcom/system-healthcheck-service",
+                "tag": "3.2.1"
+              },
+              "name": "system-healthcheck-service",
+              "nodeSelector": {
+                "node-role.kubernetes.io/worker": ""
+              },
+              "replicaCount": 1,
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "readOnlyRootFilesystem": true,
+                "runAsNonRoot": true
+              },
+              "tolerations": [
+                {
+                  "effect": "NoSchedule",
+                  "key": "dedicated",
+                  "operator": "Exists"
+                },
+                {
+                  "key": "CriticalAddonsOnly",
+                  "operator": "Exists"
+                }
+              ]
+            },
+            "memcached": {
+              "command": [
+                "memcached",
+                "-m 128",
+                "-o",
+                "modern",
+                "-v"
+              ],
+              "image": {
+                "repository": "ibmcom/icp-memcached",
+                "tag": "3.2.1"
+              },
+              "name": "icp-memcached",
+              "nodeSelector": {
+                "node-role.kubernetes.io/worker": ""
+              },
+              "replicaCount": 1,
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "readOnlyRootFilesystem": true,
+                "runAsUser": 1001
+              },
+              "tolerations": [
+                {
+                  "effect": "NoSchedule",
+                  "key": "dedicated",
+                  "operator": "Exists"
+                },
+                {
+                  "key": "CriticalAddonsOnly",
+                  "operator": "Exists"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    capabilities: Basic Install
+  name: health-service-operator.v3.5.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: HealthService is the Schema for the healthservices API
+      kind: HealthService
+      name: healthservices.operator.ibm.com
+      version: v1alpha1
+      displayName: IBM Health Services Operator
+      resources:
+      - kind: deployments
+        name: A Kubernetes Deployment
+        version: v1
+      - kind: services
+        name: A Kubernetes Service
+        version: v1
+      - kind: servicemonitors
+        name: A Kubernetes Servicemonitor
+        version: v1
+      - kind: ingresses
+        name: A Kubernetes Ingress
+        version: v1beta1
+      - kind: pods
+        name: A Kubernetes Pod
+        version: v1
+      - kind: configmaps
+        name: A Kubernetes Configmap
+        version: v1
+      - kind: healthservices
+        name: healthservice operator
+        version: v1alpha1
+      - kind: replicasets
+        name: A Kubernetes Replicaset
+        version: v1
+      specDescriptors:
+      - description: HealthService defines the desired state of HealthService.HealthService
+        displayName: Health Service
+        path: healthService
+      - description: Memcached defines the desired state of HealthService.Memcached
+        displayName: Memcached
+        path: memcached
+      statusDescriptors:
+      - description: HealthCheckNodes are the names of the Healch Service pods
+        displayName: Healch Service Nodes
+        path: healthCheckNodes
+      - description: MemcachedNodes are the names of the memcached pods
+        displayName: Memcached Nodes
+        path: memcachedNodes
+    - description: ClusterServiceStatus is the Schema for the clusterservicestatus API
+      kind: ClusterServiceStatus
+      name: clusterservicestatuses.clusterhealth.ibm.com
+      version: v1
+      displayName: IBM Health Services ClusterServiceStatus
+  description: Placeholder description
+  displayName: Health Service Operator
+  install:
+    spec:
+      deployments:
+      - name: health-service-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: health-service-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: health-service-operator
+            spec:
+              containers:
+              - command:
+                - health-service-operator
+                env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: health-service-operator
+                image: quay.io/opencloudio/health-service-operator:v0.0.1
+                imagePullPolicy: Always
+                name: health-service-operator
+                resources: {}
+              serviceAccountName: health-service-operator
+      permissions:
+      - rules:
+        - apiGroups:
+          - extensions
+          resources:
+          - ingresses
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - services/finalizers
+          - endpoints
+          - persistentvolumeclaims
+          - events
+          - configmaps
+          - secrets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          - daemonsets
+          - replicasets
+          - statefulsets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - monitoring.coreos.com
+          resources:
+          - servicemonitors
+          verbs:
+          - get
+          - create
+        - apiGroups:
+          - apps
+          resourceNames:
+          - health-service-operator
+          resources:
+          - deployments/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+        - apiGroups:
+          - apps
+          resources:
+          - replicasets
+          - deployments
+          verbs:
+          - get
+        - apiGroups:
+          - operator.ibm.com
+          resources:
+          - '*'
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        serviceAccountName: health-service-operator
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  maturity: alpha
+  provider: {}
+  replaces: health-service-operator.v0.0.0
+  version: 3.5.0

@@ -92,9 +92,10 @@ type HealthServiceStatus struct {
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
 
-	// MemcachedNodes are the names of the memcached pods
 	// +listType=set
+	// MemcachedNodes are the names of the memcached pods
 	MemcachedNodes   []string `json:"memcachedNodes,omitempty"`
+	// HealthCheckNodes are the names of the Healch Service pods
 	HealthCheckNodes []string `json:"healthCheckNodes,omitempty"`
 }
 
