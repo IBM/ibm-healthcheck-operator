@@ -1,5 +1,5 @@
 channels:
-- currentCSV: health-service-operator.v3.5.0
+- currentCSV: health-service-operator.v0.0.1
   name: alpha
 defaultChannel: alpha
-packageName: health-service-operator
+packageName: health-service-operator-app
