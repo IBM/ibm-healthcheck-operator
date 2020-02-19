@@ -94,7 +94,7 @@ type HealthServiceStatus struct {
 
 	// +listType=set
 	// MemcachedNodes are the names of the memcached pods
-	MemcachedNodes   []string `json:"memcachedNodes,omitempty"`
+	MemcachedNodes []string `json:"memcachedNodes,omitempty"`
 	// HealthCheckNodes are the names of the Healch Service pods
 	HealthCheckNodes []string `json:"healthCheckNodes,omitempty"`
 }

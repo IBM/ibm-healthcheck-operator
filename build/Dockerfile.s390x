@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM alpine as builder
+FROM alpine:3.9 as builder
 
 RUN wget -O /qemu-s390x-static https://github.com/multiarch/qemu-user-static/releases/latest/download/qemu-s390x-static
 
