@@ -20,7 +20,8 @@ import (
 	"context"
 	"reflect"
 
-	operatorv1alpha1 "github.ibm.com/IBMPrivateCloud/health-service-operator/pkg/apis/operator/v1alpha1"
+	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
+
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -267,8 +268,6 @@ func labelsForMemcached(name, releaseName string) map[string]string {
 
 func annotationsForMemcached() map[string]string {
 	return map[string]string{
-		"scheduler.alpha.kubernetes.io/critical-pod": "",
-		"seccomp.security.alpha.kubernetes.io/pod":   "docker/default",
 		"productName":    "",
 		"productID":      "",
 		"productVersion": "",

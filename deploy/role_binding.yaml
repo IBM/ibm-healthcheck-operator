@@ -1,11 +1,12 @@
-kind: RoleBinding
+kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: health-service-operator
+  name: ibm-healthcheck-operator
 subjects:
 - kind: ServiceAccount
-  name: health-service-operator
+  name: ibm-healthcheck-operator
+  namespace: ibm-healthcheck-operator
 roleRef:
-  kind: Role
-  name: health-service-operator
+  kind: ClusterRole
+  name: ibm-healthcheck-operator
   apiGroup: rbac.authorization.k8s.io

@@ -1,3 +1,3 @@
-# healthcheck-service-operator
+# ibm-healthcheck-operator
 
-Operator used to manage the healthcheck service
+Operator used to manage the health check service

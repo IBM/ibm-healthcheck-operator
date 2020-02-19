@@ -5,7 +5,7 @@
 
 if ! whoami &>/dev/null; then
   if [ -w /etc/passwd ]; then
-    echo "${USER_NAME:-health-service-operator}:x:$(id -u):$(id -g):${USER_NAME:-health-service-operator} user:${HOME}:/sbin/nologin" >> /etc/passwd
+    echo "${USER_NAME:-ibm-healthcheck-operator}:x:$(id -u):$(id -g):${USER_NAME:-ibm-healthcheck-operator} user:${HOME}:/sbin/nologin" >> /etc/passwd
   fi
 fi
 
