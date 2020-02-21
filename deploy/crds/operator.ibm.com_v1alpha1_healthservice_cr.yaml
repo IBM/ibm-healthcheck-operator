@@ -6,8 +6,8 @@ spec:
   memcached:
     name: icp-memcached
     image:
-      repository: ibmcom/icp-memcached
-      tag: 3.2.1
+      repository: quay.io/opencloudio/icp-memcached
+      tag: 3.5.0
     replicaCount: 1
     nodeSelector:
       node-role.kubernetes.io/worker: ""
@@ -34,8 +34,8 @@ spec:
     configmapName: system-healthcheck-service-config
     configMod: false
     image:
-      repository: ibmcom/system-healthcheck-service
-      tag: 3.2.1
+      repository: quay.io/opencloudio/system-healthcheck-service
+      tag: 3.5.0
     replicaCount: 1
     nodeSelector:
       node-role.kubernetes.io/worker: ""
