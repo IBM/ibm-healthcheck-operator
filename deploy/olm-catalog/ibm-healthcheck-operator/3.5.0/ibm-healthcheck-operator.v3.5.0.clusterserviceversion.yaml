@@ -12,7 +12,7 @@ metadata:
           },
           "spec": {
             "healthService": {
-              "configMod": false,
+              "configMode": false,
               "configmapName": "system-healthcheck-service-config",
               "hostNetwork": false,
               "image": {

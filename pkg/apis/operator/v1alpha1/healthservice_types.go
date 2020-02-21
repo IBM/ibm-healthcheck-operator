@@ -61,7 +61,7 @@ type HealthServiceSpecHealthService struct {
 	// configmap which contains health srevice configuration files, deprecated
 	ConfigmapName string `json:"configmapName"`
 	// set true to read health srevice configuration files
-	ConfigMode bool `json:"configmod,omitempty"`
+	ConfigMode bool `json:"configMode,omitempty"`
 	// health service deployment replicas, default is 0
 	ReplicaCount int32 `json:"replicaCount,omitempty"`
 	// health srevice deployment node selector, default is empty
