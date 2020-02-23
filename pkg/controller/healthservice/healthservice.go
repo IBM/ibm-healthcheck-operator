@@ -137,49 +137,6 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceIngress(h *operatorv
 	return nil
 }
 
-/* func (r *ReconcileHealthService) createOrUpdateHealthServiceCRD(h *operatorv1alpha1.HealthService) error {
-	hsName := h.Spec.HealthService.Name
-	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
-	labels := labelsForHealthService(hsName, h.Name)
-
-	//read configmap from yaml
-	yamlFile, err := os.Open("/manifests/cluster-service-status-CRD.yaml")
-	if err != nil {
-		reqLogger.Error(err, "Error opening System CRD file")
-	}
-	// defer the closing of our jsonFile so that we can parse it later on
-	defer yamlFile.Close()
-	byteValue, _ := ioutil.ReadAll(yamlFile)
-
-	crd := new(apiextensions.CustomResourceDefinition)
-	if err := yaml.Unmarshal(byteValue, crd); err != nil {
-		reqLogger.Error(err, "Error parsing the CRD value from /manifests/system-healthcheck-service-config.yaml")
-		return err
-	}
-	yamlFile.Close()
-
-	//setup configmap name, namespace and labels
-	crd.ObjectMeta.Labels = labels
-
-	// Check if the ingress already exists, if not create a new one
-	found := &apiextensions.CustomResourceDefinition{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: crd.Name}, found)
-	if err != nil && errors.IsNotFound(err) {
-		// Define a new configmap
-		reqLogger.Info("Creating a new CRD", "CRD.Name", crd.Name)
-		if err := r.client.Create(context.TODO(), crd); err != nil {
-			reqLogger.Error(err, "Failed to create new CRD", "crd.Name", crd.Name)
-			return err
-		}
-	} else if err != nil {
-		reqLogger.Error(err, "Failed to get CRD", "crd.Name", found.Name)
-		return err
-	}
-
-	return nil
-}
-*/
-
 func (r *ReconcileHealthService) createOrUpdateHealthServiceConfigmap(h *operatorv1alpha1.HealthService) error {
 	hsName := h.Spec.HealthService.Name
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
@@ -245,6 +202,10 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 	cfgName := h.Spec.HealthService.ConfigmapName
 	labels := labelsForHealthService(hsName, h.Name)
 	annotations := annotationsForHealthService()
+	serviceAccountName := "default"
+	if len(h.Spec.Memcached.ServiceAccountName) > 0 {
+		serviceAccountName = h.Spec.Memcached.ServiceAccountName
+	}
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	reqLogger.Info("Building HealthService Deployment", "Deployment.Namespace", h.Namespace, "Deployment.Name", hsName)
@@ -271,6 +232,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 					HostNetwork:                   h.Spec.HealthService.HostNetwork,
 					HostPID:                       false,
 					HostIPC:                       false,
+					ServiceAccountName:            serviceAccountName,
 					Containers: []corev1.Container{
 						{
 							Name:            hsName,

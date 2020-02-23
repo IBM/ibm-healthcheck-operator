@@ -133,8 +133,12 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 	labels := labelsForMemcached(memName, h.Name)
 	annotations := annotationsForMemcached()
 	defaultCommand := []string{"memcached", "-m 64", "-o", "modern", "-v"}
+	serviceAccountName := "default"
 	if h.Spec.Memcached.Command != nil && len(h.Spec.Memcached.Command) > 0 {
 		defaultCommand = h.Spec.Memcached.Command
+	}
+	if len(h.Spec.Memcached.ServiceAccountName) > 0 {
+		serviceAccountName = h.Spec.Memcached.ServiceAccountName
 	}
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
@@ -157,9 +161,10 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 					Annotations: annotations,
 				},
 				Spec: corev1.PodSpec{
-					HostNetwork: false,
-					HostPID:     false,
-					HostIPC:     false,
+					HostNetwork:        false,
+					HostPID:            false,
+					HostIPC:            false,
+					ServiceAccountName: serviceAccountName,
 					Containers: []corev1.Container{{
 						Name:            memName,
 						Image:           h.Spec.Memcached.Image.Repository + ":" + h.Spec.Memcached.Image.Tag,
