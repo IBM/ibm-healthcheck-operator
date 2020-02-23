@@ -34,6 +34,7 @@ metadata:
                 "readOnlyRootFilesystem": true,
                 "runAsNonRoot": true
               },
+              "serviceAccountName": "ibm-healthcheck-operator",
               "tolerations": [
                 {
                   "effect": "NoSchedule",
@@ -72,6 +73,7 @@ metadata:
                 },
                 "readOnlyRootFilesystem": true
               },
+              "serviceAccountName": "ibm-healthcheck-operator",
               "tolerations": [
                 {
                   "effect": "NoSchedule",
@@ -92,8 +94,8 @@ metadata:
     certified: "false"
     containerImage: quay.io/opencloudio/ibm-healthcheck-operator:v3.5.0
     createdAt: "2020-02-21"
-    description: The IBM Health Check Operator provides a Kubernetes CRD-Based API to monitor the
-      health check service components.
+    description: The IBM Health Check Operator provides a Kubernetes CRD-Based API
+      to monitor the health check service components.
     repository: https://github.com/IBM/ibm-healthcheck-operator
     support: IBM
   name: ibm-healthcheck-operator.v3.5.0
@@ -245,6 +247,38 @@ spec:
           - list
           - patch
           - update
+          - watch
+        - apiGroups:
+          - clusterhealth.ibm.com
+          resources:
+          - '*'
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - mcm.ibm.com
+          resources:
+          - resourceviews
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - '*'
+          resources:
+          - '*'
+          verbs:
+          - get
+          - list
           - watch
         serviceAccountName: ibm-healthcheck-operator
       deployments:

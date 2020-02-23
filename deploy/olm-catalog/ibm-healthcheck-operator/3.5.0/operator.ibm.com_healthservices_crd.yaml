@@ -34,13 +34,13 @@ spec:
             healthService:
               description: HealthService defines the desired state of HealthService.HealthService
               properties:
+                configMode:
+                  description: set true to read health srevice configuration files
+                  type: boolean
                 configmapName:
                   description: configmap which contains health srevice configuration
                     files, deprecated
                   type: string
-                configMode:
-                  description: set true to read health srevice configuration files
-                  type: boolean
                 hostNetwork:
                   description: health srevice deployment hostnetwork, default is false
                   type: boolean
@@ -196,6 +196,10 @@ spec:
                           type: string
                       type: object
                   type: object
+                serviceAccountName:
+                  description: health service deployment ServiceAccountName, default
+                    is default
+                  type: string
                 tolerations:
                   description: health srevice deployment tolerations, default is empty
                   items:
@@ -401,6 +405,10 @@ spec:
                           type: string
                       type: object
                   type: object
+                serviceAccountName:
+                  description: memcached deployment ServiceAccountName, default is
+                    default
+                  type: string
                 tolerations:
                   description: memcached deployment tolerations, default is empty
                   items:
