@@ -1,14 +1,15 @@
 apiVersion: operator.ibm.com/v1alpha1
 kind: HealthService
 metadata:
-  name: default-healthcheck-service
+  name: system-healthcheck-service
 spec:
   memcached:
     name: icp-memcached
     image:
-      repository: ibmcom/icp-memcached
-      tag: 3.2.1
+      repository: quay.io/opencloudio/icp-memcached
+      tag: 3.5.0
     replicaCount: 1
+    serviceAccountName: ibm-healthcheck-operator
     nodeSelector:
       node-role.kubernetes.io/worker: ""
     tolerations:
@@ -25,18 +26,19 @@ spec:
       readOnlyRootFilesystem: true
     command:
     - memcached
-    - -m 128
+    - -m 64
     - -o
     - modern
     - -v
   healthService:
     name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
-    configMod: false
+    configMode: false
     image:
-      repository: ibmcom/system-healthcheck-service
-      tag: 3.2.1
+      repository: quay.io/opencloudio/system-healthcheck-service
+      tag: 3.5.0
     replicaCount: 1
+    serviceAccountName: ibm-healthcheck-operator
     nodeSelector:
       node-role.kubernetes.io/worker: ""
     tolerations:
