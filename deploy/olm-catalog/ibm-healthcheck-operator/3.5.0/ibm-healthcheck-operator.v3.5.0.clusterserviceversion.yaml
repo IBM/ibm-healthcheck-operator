@@ -8,7 +8,7 @@ metadata:
           "apiVersion": "operator.ibm.com/v1alpha1",
           "kind": "HealthService",
           "metadata": {
-            "name": "default-healthcheck-service"
+            "name": "system-healthcheck-service"
           },
           "spec": {
             "healthService": {
@@ -50,7 +50,7 @@ metadata:
             "memcached": {
               "command": [
                 "memcached",
-                "-m 128",
+                "-m 64",
                 "-o",
                 "modern",
                 "-v"
