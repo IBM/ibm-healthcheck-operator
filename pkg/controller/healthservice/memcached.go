@@ -234,9 +234,9 @@ func (r *ReconcileHealthService) desiredMemcachedService(h *operatorv1alpha1.Hea
 		Spec: corev1.ServiceSpec{
 			Ports: []corev1.ServicePort{
 				{
-					Name:       memSvcName,
+					Name:       memName,
 					Port:       11211,
-					TargetPort: intstr.IntOrString{Type: intstr.String, StrVal: memSvcName},
+					TargetPort: intstr.IntOrString{Type: intstr.String, StrVal: memName},
 				},
 			},
 			Selector:  labels,
