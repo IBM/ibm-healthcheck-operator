@@ -268,6 +268,10 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 									Value: "/etc/health/cpmcm.yaml",
 								},
 								{
+									Name:  "CPNAMESCONFIGPATH",
+									Value: "/etc/health/cpnames.yaml",
+								},
+								{
 									Name:  "LOGLEVEL",
 									Value: "1",
 								},
@@ -355,6 +359,10 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 										{
 											Key:  "cpmcm.yaml",
 											Path: "cpmcm.yaml",
+										},
+										{
+											Key:  "cpnames.yaml",
+											Path: "cpnames.yaml",
 										},
 									},
 								},

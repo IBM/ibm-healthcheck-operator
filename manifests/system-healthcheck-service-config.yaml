@@ -11,6 +11,14 @@ metadata:
   name: system-healthcheck-service-config
 data:
   NAMESPACE: "kube-system"
+  cpnames.yaml: |
+    cpnames:
+    - fullname: IBM Cloud Platform Common Services
+      shortname: cs
+    - fullname: IBM Cloud Pak for MCM
+      shortname: cp4mcm
+    - fullname: undefined
+      shortname: undefined
   foundation.yaml: |
     services:
     - name: k8s-deprecated
