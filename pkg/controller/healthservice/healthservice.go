@@ -163,6 +163,11 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceConfigmap(h *operato
 	cm.ObjectMeta.Namespace = h.Namespace
 	cm.ObjectMeta.Labels = labels
 
+	// Set HealthService instance as the owner and controller
+	if err := controllerutil.SetControllerReference(h, cm, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "configmap.Namespace", cm.Namespace, "configmap.Name", cm.Name)
+	}
+
 	// Check if the ingress already exists, if not create a new one
 	found := &corev1.ConfigMap{}
 	err = r.client.Get(context.TODO(), types.NamespacedName{Name: cm.Name, Namespace: cm.Namespace}, found)
