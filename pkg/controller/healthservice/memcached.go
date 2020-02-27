@@ -273,7 +273,7 @@ func labelsForMemcached(name, releaseName string) map[string]string {
 
 func annotationsForMemcached() map[string]string {
 	return map[string]string{
-		"productName":    "",
+		"productName":    "IBM Cloud Platform Common Services",
 		"productID":      "",
 		"productVersion": "",
 	}

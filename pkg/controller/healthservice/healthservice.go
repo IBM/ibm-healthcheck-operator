@@ -489,7 +489,7 @@ func labelsForHealthService(name string, releaseName string) map[string]string {
 
 func annotationsForHealthService() map[string]string {
 	return map[string]string{
-		"productName":    "",
+		"productName":    "IBM Cloud Platform Common Services",
 		"productID":      "",
 		"productVersion": "",
 	}
