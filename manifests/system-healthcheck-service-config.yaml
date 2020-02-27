@@ -15,8 +15,16 @@ data:
     cpnames:
     - fullname: IBM Cloud Platform Common Services
       shortname: cs
-    - fullname: IBM Cloud Pak for MCM
+    - fullname: IBM Cloud Pak for Multicloud Management
       shortname: cp4mcm
+    - fullname: IBM Cloud Pak for Integration
+      shortname: cp4i
+    - fullname: IBM Cloud Pak for Data
+      shortname: cp4d
+    - fullname: IBM Cloud Pak for Automation
+      shortname: cp4a
+    - fullname: IBM Cloud Pak for Applications
+      shortname: cp4app
     - fullname: undefined
       shortname: undefined
   foundation.yaml: |
