@@ -277,6 +277,18 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 									Name:  "CONFIG_MODE",
 									Value: strconv.FormatBool(h.Spec.HealthService.ConfigMode),
 								},
+								{
+									Name:  "CLOUDPAKNAME_SETTING",
+									Value: h.Spec.HealthService.CloudpakNameSetting,
+								},
+								{
+									Name:  "SERVICENAME_SETTING",
+									Value: h.Spec.HealthService.ServiceNameSetting,
+								},
+								{
+									Name:  "DEPENDS_SETTING",
+									Value: h.Spec.HealthService.DependsSetting,
+								},
 							},
 							Resources: corev1.ResourceRequirements{
 								Limits: map[corev1.ResourceName]resource.Quantity{
