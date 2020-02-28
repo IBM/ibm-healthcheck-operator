@@ -246,17 +246,6 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 							SecurityContext: &h.Spec.HealthService.SecurityContext,
 							Env: []corev1.EnvVar{
 								{
-									Name: "NAMESPACE",
-									ValueFrom: &corev1.EnvVarSource{
-										ConfigMapKeyRef: &corev1.ConfigMapKeySelector{
-											LocalObjectReference: corev1.LocalObjectReference{
-												Name: cfgName,
-											},
-											Key: "NAMESPACE",
-										},
-									},
-								},
-								{
 									Name: "HEALTHNAMESPACE",
 									ValueFrom: &corev1.EnvVarSource{
 										FieldRef: &corev1.ObjectFieldSelector{

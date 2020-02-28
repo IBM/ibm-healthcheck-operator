@@ -10,7 +10,6 @@ kind: ConfigMap
 metadata:
   name: system-healthcheck-service-config
 data:
-  NAMESPACE: "kube-system"
   cpnames.yaml: |
     cpnames:
     - fullname: IBM Cloud Platform Common Services
