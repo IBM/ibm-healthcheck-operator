@@ -34,7 +34,7 @@ metadata:
                 "readOnlyRootFilesystem": true,
                 "runAsNonRoot": true
               },
-              "serviceAccountName": "ibm-healthcheck-operator",
+              "serviceAccountName": "ibm-healthcheck-operator-cluster",
               "tolerations": [
                 {
                   "effect": "NoSchedule",
@@ -73,7 +73,7 @@ metadata:
                 },
                 "readOnlyRootFilesystem": true
               },
-              "serviceAccountName": "ibm-healthcheck-operator",
+              "serviceAccountName": "ibm-healthcheck-operator-cluster",
               "tolerations": [
                 {
                   "effect": "NoSchedule",
@@ -161,6 +161,73 @@ spec:
   install:
     spec:
       clusterPermissions:
+      - rules:
+        - apiGroups:
+          - clusterhealth.ibm.com
+          resources:
+          - '*'
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - mcm.ibm.com
+          resources:
+          - resourceviews
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - '*'
+          resources:
+          - '*'
+          verbs:
+          - get
+          - list
+          - watch
+        serviceAccountName: ibm-healthcheck-operator-cluster
+      deployments:
+      - name: ibm-healthcheck-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: ibm-healthcheck-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: ibm-healthcheck-operator
+            spec:
+              containers:
+              - command:
+                - ibm-healthcheck-operator
+                env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: ibm-healthcheck-operator
+                image: quay.io/haoqing/ibm-healthcheck-operator:v3.5.0
+                imagePullPolicy: Always
+                name: ibm-healthcheck-operator
+                resources: {}
+              serviceAccountName: ibm-healthcheck-operator
+      permissions:
       - rules:
         - apiGroups:
           - extensions
@@ -260,59 +327,7 @@ spec:
           - patch
           - update
           - watch
-        - apiGroups:
-          - mcm.ibm.com
-          resources:
-          - resourceviews
-          verbs:
-          - create
-          - delete
-          - get
-          - list
-          - patch
-          - update
-          - watch
-        - apiGroups:
-          - '*'
-          resources:
-          - '*'
-          verbs:
-          - get
-          - list
-          - watch
         serviceAccountName: ibm-healthcheck-operator
-      deployments:
-      - name: ibm-healthcheck-operator
-        spec:
-          replicas: 1
-          selector:
-            matchLabels:
-              name: ibm-healthcheck-operator
-          strategy: {}
-          template:
-            metadata:
-              labels:
-                name: ibm-healthcheck-operator
-            spec:
-              containers:
-              - command:
-                - ibm-healthcheck-operator
-                env:
-                - name: WATCH_NAMESPACE
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.annotations['olm.targetNamespaces']
-                - name: POD_NAME
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.name
-                - name: OPERATOR_NAME
-                  value: ibm-healthcheck-operator
-                image: quay.io/opencloudio/ibm-healthcheck-operator:v3.5.0
-                imagePullPolicy: Always
-                name: ibm-healthcheck-operator
-                resources: {}
-              serviceAccountName: ibm-healthcheck-operator
     strategy: deployment
   installModes:
   - supported: true

@@ -9,7 +9,7 @@ spec:
       repository: quay.io/opencloudio/icp-memcached
       tag: 3.5.0
     replicaCount: 1
-    serviceAccountName: ibm-healthcheck-operator
+    serviceAccountName: ibm-healthcheck-operator-cluster
     nodeSelector:
       node-role.kubernetes.io/worker: ""
     tolerations:
@@ -38,7 +38,7 @@ spec:
       repository: quay.io/opencloudio/system-healthcheck-service
       tag: 3.5.0
     replicaCount: 1
-    serviceAccountName: ibm-healthcheck-operator
+    serviceAccountName: ibm-healthcheck-operator-cluster
     nodeSelector:
       node-role.kubernetes.io/worker: ""
     tolerations:
