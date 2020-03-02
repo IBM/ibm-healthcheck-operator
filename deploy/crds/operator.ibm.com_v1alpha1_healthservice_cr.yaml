@@ -55,3 +55,6 @@ spec:
       readOnlyRootFilesystem: true
       runAsNonRoot: true
     hostNetwork: false
+    #cloudpakNameSetting: Labels/Annotations:name
+    #serviceNameSetting: Labels/Annotations:name
+    #dependsSetting: Labels/Annotations:name

@@ -65,11 +65,11 @@ type HealthServiceSpecHealthService struct {
 	// set true to read health srevice configuration files
 	ConfigMode bool `json:"configMode,omitempty"`
 	// set labels/annotation name to get pod's cloudpakname
-	CloudpakNameSetting string `json:"cloudpakNameSetting ,omitempty"`
+	CloudpakNameSetting string `json:"cloudpakNameSetting,omitempty"`
 	// set labels/annotation name to get pod's servicename
-	ServiceNameSetting string `json:"serviceNameSetting ,omitempty"`
+	ServiceNameSetting string `json:"serviceNameSetting,omitempty"`
 	// set labels/annotation name to get pod's dependencies
-	DependsSetting string `json:"dependsSetting ,omitempty"`
+	DependsSetting string `json:"dependsSetting,omitempty"`
 	// health service deployment replicas, default is 0
 	ReplicaCount int32 `json:"replicaCount,omitempty"`
 	// health service deployment ServiceAccountName, default is default

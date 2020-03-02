@@ -34,7 +34,7 @@ spec:
             healthService:
               description: HealthService defines the desired state of HealthService.HealthService
               properties:
-                'cloudpakNameSetting ':
+                cloudpakNameSetting:
                   description: set labels/annotation name to get pod's cloudpakname
                   type: string
                 configMode:
@@ -44,7 +44,7 @@ spec:
                   description: configmap which contains health srevice configuration
                     files, deprecated
                   type: string
-                'dependsSetting ':
+                dependsSetting:
                   description: set labels/annotation name to get pod's dependencies
                   type: string
                 hostNetwork:
@@ -206,7 +206,7 @@ spec:
                   description: health service deployment ServiceAccountName, default
                     is default
                   type: string
-                'serviceNameSetting ':
+                serviceNameSetting:
                   description: set labels/annotation name to get pod's servicename
                   type: string
                 tolerations:
