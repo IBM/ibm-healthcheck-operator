@@ -222,7 +222,7 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
-                image: quay.io/haoqing/ibm-healthcheck-operator:v3.5.0
+                image: quay.io/opencloudio/ibm-healthcheck-operator:v3.5.0
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
                 resources: {}
@@ -339,6 +339,14 @@ spec:
   - supported: true
     type: AllNamespaces
   maturity: alpha
-  provider: {}
+  provider:
+    name: IBM
   replaces: ibm-healthcheck-operator.v0.0.0
   version: 3.5.0
+  maintainers:
+  - email: haoqing@cn.ibm.com
+    name: Qing Hao
+  keywords:
+  - Monitoring
+  - IBM
+  - Cloud
