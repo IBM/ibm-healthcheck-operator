@@ -21,7 +21,6 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
-	"strconv"
 
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
 
@@ -254,14 +253,6 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 									},
 								},
 								{
-									Name:  "FOUNDATIONCONFIGPATH",
-									Value: "/etc/health/foundation.yaml",
-								},
-								{
-									Name:  "CPMCMCONFIGPATH",
-									Value: "/etc/health/cpmcm.yaml",
-								},
-								{
 									Name:  "CPNAMESCONFIGPATH",
 									Value: "/etc/health/cpnames.yaml",
 								},
@@ -272,10 +263,6 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 								{
 									Name:  "MEMCACHEDPORT",
 									Value: "11211",
-								},
-								{
-									Name:  "CONFIG_MODE",
-									Value: strconv.FormatBool(h.Spec.HealthService.ConfigMode),
 								},
 								{
 									Name:  "CLOUDPAKNAME_SETTING",
@@ -358,14 +345,6 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 									},
 									DefaultMode: &mode484,
 									Items: []corev1.KeyToPath{
-										{
-											Key:  "foundation.yaml",
-											Path: "foundation.yaml",
-										},
-										{
-											Key:  "cpmcm.yaml",
-											Path: "cpmcm.yaml",
-										},
 										{
 											Key:  "cpnames.yaml",
 											Path: "cpnames.yaml",

@@ -33,7 +33,6 @@ spec:
   healthService:
     name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
-    configMode: false
     image:
       repository: quay.io/opencloudio/system-healthcheck-service
       tag: 3.5.0
