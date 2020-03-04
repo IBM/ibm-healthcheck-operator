@@ -62,8 +62,6 @@ type HealthServiceSpecHealthService struct {
 	Image image `json:"image"`
 	// configmap which contains health srevice configuration files, deprecated
 	ConfigmapName string `json:"configmapName"`
-	// set true to read health srevice configuration files
-	ConfigMode bool `json:"configMode,omitempty"`
 	// set labels/annotation name to get pod's cloudpakname
 	CloudpakNameSetting string `json:"cloudpakNameSetting,omitempty"`
 	// set labels/annotation name to get pod's servicename
