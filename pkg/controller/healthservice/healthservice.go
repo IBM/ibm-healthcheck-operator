@@ -470,7 +470,8 @@ func labelsForHealthService(name string, releaseName string) map[string]string {
 func annotationsForHealthService() map[string]string {
 	return map[string]string{
 		"productName":    "IBM Cloud Platform Common Services",
-		"productID":      "",
-		"productVersion": "",
+		"productID":      "068a62892a1e4db39641342e592daa25",
+		"productVersion": "3.3.0",
+		"productMetric":  "FREE",
 	}
 }
