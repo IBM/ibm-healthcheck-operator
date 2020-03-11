@@ -13,16 +13,23 @@ data:
   cpnames.yaml: |
     cpnames:
     - fullname: IBM Cloud Platform Common Services
-      shortname: cs
-    - fullname: IBM Cloud Pak for Multicloud Management
-      shortname: cp4mcm
+      shortname: ibm-cs
+      id: 068a62892a1e4db39641342e592daa25
     - fullname: IBM Cloud Pak for Integration
-      shortname: cp4i
-    - fullname: IBM Cloud Pak for Data
-      shortname: cp4d
+      shortname: ibm-cp-integration
+      id: c8b82d189e7545f0892db9ef2731b90d
     - fullname: IBM Cloud Pak for Automation
-      shortname: cp4a
+      shortname: ibm-cp-automation
+      id: 94a9c8c358bb43ba8fbdea62e7e166a5
     - fullname: IBM Cloud Pak for Applications
-      shortname: cp4app
-    - fullname: undefined
-      shortname: undefined
+      shortname: ibm-cp-applications
+      id: 4df52d2cdc374ba09f631a650ad2b5bf
+    - fullname: IBM Cloud Pak for Security
+      shortname: ibm-cp-security
+      id: 929bd9017afc410da9dda2dc67c33b75
+    - fullname: IBM Cloud Pak for Multicloud Management
+      shortname: ibm-cp-management
+      id: 7f6eda41081c4e08a255be1f0b4aef2d
+    - fullname: IBM Cloud Pak for Data Enterprise Edition
+      shortname: ibm-cp-data
+      id: eb9998dcc5d24e3eb5b6fb488f750fe2
