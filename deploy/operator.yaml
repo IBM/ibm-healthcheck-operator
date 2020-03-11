@@ -11,12 +11,17 @@ spec:
     metadata:
       labels:
         name: ibm-healthcheck-operator
+      annotations:
+        productName: IBM Cloud Platform Common Services
+        productID: "068a62892a1e4db39641342e592daa25"
+        productVersion: "3.3.0"
+        productMetric: FREE
     spec:
       serviceAccountName: ibm-healthcheck-operator
       containers:
         - name: ibm-healthcheck-operator
           # Replace this with the built image name
-          image: quay.io/opencloudio/ibm-healthcheck-operator:v3.5.0
+          image: quay.io/opencloudio/ibm-healthcheck-operator:latest
           command:
           - ibm-healthcheck-operator
           imagePullPolicy: Always
