@@ -40,6 +40,8 @@ ENV OPERATOR=/usr/local/bin/ibm-healthcheck-operator \
     USER_UID=1001 \
     USER_NAME=ibm-healthcheck-operator
 
+COPY --from=builder /qemu-s390x-static /usr/bin/
+
 # install operator binary
 COPY build/_output/bin/ibm-healthcheck-operator-s390x ${OPERATOR}
 
