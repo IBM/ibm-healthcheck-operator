@@ -55,5 +55,5 @@ spec:
       runAsNonRoot: true
     hostNetwork: false
     #cloudpakNameSetting: Labels/Annotations:name
-    #serviceNameSetting: Labels/Annotations:name
+    serviceNameSetting: Annotations:productName
     #dependsSetting: Labels/Annotations:name

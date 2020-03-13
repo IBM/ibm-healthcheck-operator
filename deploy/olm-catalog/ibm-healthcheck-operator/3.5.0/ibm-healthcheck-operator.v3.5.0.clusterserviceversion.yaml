@@ -34,6 +34,7 @@ metadata:
                 "runAsNonRoot": true
               },
               "serviceAccountName": "ibm-healthcheck-operator-cluster",
+              "serviceNameSetting": "Annotations:productName",
               "tolerations": [
                 {
                   "effect": "NoSchedule",
