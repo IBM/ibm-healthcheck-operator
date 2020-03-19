@@ -59,9 +59,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceDeploy(h *operatorv1
 	} else if err != nil {
 		reqLogger.Error(err, "Failed to get Deployment", "Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 		return err
-	}
-
-	if err := r.updateHealthServiceDeployment(current, desired); err != nil {
+	} else if err := r.updateHealthServiceDeployment(h, current, desired); err != nil {
 		return err
 	}
 
@@ -90,23 +88,25 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceDeploy(h *operatorv1
 	return nil
 }
 
-func (r *ReconcileHealthService) createOrUpdateHealthServiceSvc(h *operatorv1alpha1.HealthService) error {
+func (r *ReconcileHealthService) createOrUpdateHealthServiceService(h *operatorv1alpha1.HealthService) error {
 	hsName := h.Spec.HealthService.Name
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 
+	// Define a new service
+	desired := r.desiredHealthServiceService(h)
 	// Check if the service already exists, if not create a new one
-	found := &corev1.Service{}
-	err := r.client.Get(context.TODO(), types.NamespacedName{Name: hsName, Namespace: h.Namespace}, found)
+	current := &corev1.Service{}
+	err := r.client.Get(context.TODO(), types.NamespacedName{Name: hsName, Namespace: h.Namespace}, current)
 	if err != nil && errors.IsNotFound(err) {
-		// Define a new service
-		svc := r.desiredHealthServiceService(h)
-		reqLogger.Info("Creating a new Service", "Service.Namespace", svc.Namespace, "Service.Name", svc.Name)
-		if err := r.client.Create(context.TODO(), svc); err != nil {
-			reqLogger.Error(err, "Failed to create new Service", "Service.Namespace", svc.Namespace, "Service.Name", svc.Name)
+		reqLogger.Info("Creating a new Service", "Service.Namespace", desired.Namespace, "Service.Name", desired.Name)
+		if err := r.client.Create(context.TODO(), desired); err != nil {
+			reqLogger.Error(err, "Failed to create new Service", "Service.Namespace", desired.Namespace, "Service.Name", desired.Name)
 			return err
 		}
 	} else if err != nil {
-		reqLogger.Error(err, "Failed to get Service", "Service.Namespace", found.Namespace, "Service.Name", found.Name)
+		reqLogger.Error(err, "Failed to get Service", "Service.Namespace", current.Namespace, "Service.Name", current.Name)
+		return err
+	} else if err := r.updateHealthServiceService(h, current, desired); err != nil {
 		return err
 	}
 
@@ -117,19 +117,21 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceIngress(h *operatorv
 	hsName := h.Spec.HealthService.Name
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 
+	// Define a new ingress
+	desired := r.desiredHealthServiceIngress(h)
 	// Check if the ingress already exists, if not create a new one
-	found := &extensionsv1.Ingress{}
-	err := r.client.Get(context.TODO(), types.NamespacedName{Name: hsName, Namespace: h.Namespace}, found)
+	current := &extensionsv1.Ingress{}
+	err := r.client.Get(context.TODO(), types.NamespacedName{Name: hsName, Namespace: h.Namespace}, current)
 	if err != nil && errors.IsNotFound(err) {
-		// Define a new ingress
-		ing := r.desiredHealthServiceIngress(h)
-		reqLogger.Info("Creating a new Ingress", "Ingress.Namespace", ing.Namespace, "Ingress.Name", ing.Name)
-		if err := r.client.Create(context.TODO(), ing); err != nil {
-			reqLogger.Error(err, "Failed to create new Ingress", "Ingress.Namespace", ing.Namespace, "Ingress.Name", ing.Name)
+		reqLogger.Info("Creating a new Ingress", "Ingress.Namespace", desired.Namespace, "Ingress.Name", desired.Name)
+		if err := r.client.Create(context.TODO(), desired); err != nil {
+			reqLogger.Error(err, "Failed to create new Ingress", "Ingress.Namespace", desired.Namespace, "Ingress.Name", desired.Name)
 			return err
 		}
 	} else if err != nil {
-		reqLogger.Error(err, "Failed to get Ingress", "Ingress.Namespace", found.Namespace, "Ingress.Name", found.Name)
+		reqLogger.Error(err, "Failed to get Ingress", "Ingress.Namespace", current.Namespace, "Ingress.Name", current.Name)
+		return err
+	} else if err := r.updateHealthServiceIngress(h, current, desired); err != nil {
 		return err
 	}
 
@@ -185,16 +187,34 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceConfigmap(h *operato
 	return nil
 }
 
-func (r *ReconcileHealthService) updateHealthServiceDeployment(current, desired *appsv1.Deployment) error {
+func (r *ReconcileHealthService) updateHealthServiceDeployment(h *operatorv1alpha1.HealthService, current, desired *appsv1.Deployment) error {
 	reqLogger := log.WithValues("Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 
-	if current.Spec.Replicas != nil && *current.Spec.Replicas == *desired.Spec.Replicas {
-		return nil
+	updated := current.DeepCopy()
+	updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
+	updated.Spec.MinReadySeconds = desired.Spec.MinReadySeconds
+	updated.Spec.Replicas = desired.Spec.Replicas
+	updated.Spec.Selector.MatchLabels = desired.Spec.Selector.MatchLabels
+	updated.Spec.Template.ObjectMeta.Labels = desired.Spec.Template.ObjectMeta.Labels
+	updated.Spec.Template.ObjectMeta.Annotations = desired.Spec.Template.ObjectMeta.Annotations
+	updated.Spec.Template.Spec.TerminationGracePeriodSeconds = desired.Spec.Template.Spec.TerminationGracePeriodSeconds
+	updated.Spec.Template.Spec.HostNetwork = desired.Spec.Template.Spec.HostNetwork
+	updated.Spec.Template.Spec.HostPID = desired.Spec.Template.Spec.HostPID
+	updated.Spec.Template.Spec.HostIPC = desired.Spec.Template.Spec.HostIPC
+	updated.Spec.Template.Spec.ServiceAccountName = desired.Spec.Template.Spec.ServiceAccountName
+	updated.Spec.Template.Spec.Containers = desired.Spec.Template.Spec.Containers
+	updated.Spec.Template.Spec.NodeSelector = desired.Spec.Template.Spec.NodeSelector
+	updated.Spec.Template.Spec.Tolerations = desired.Spec.Template.Spec.Tolerations
+	updated.Spec.Template.Spec.Volumes = desired.Spec.Template.Spec.Volumes
+
+	reqLogger.Info("Updating Deployment")
+	// Set HealthService instance as the owner and controller
+	if err := controllerutil.SetControllerReference(h, updated, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "Deployment.Namespace", updated.Namespace, "Deployment.Name", updated.Name)
 	}
 
-	reqLogger.Info("Updating Deployment", "Deployment.Namespace", desired.Namespace, "Deployment.Name", desired.Name)
-	if err := r.client.Update(context.TODO(), desired); err != nil {
-		reqLogger.Error(err, "Failed to update Deployment", "Deployment.Namespace", desired.Namespace, "Deployment.Name", desired.Name)
+	if err := r.client.Update(context.TODO(), updated); err != nil {
+		reqLogger.Error(err, "Failed to update Deployment", "Deployment.Namespace", updated.Namespace, "Deployment.Name", updated.Name)
 		return err
 	}
 
@@ -367,6 +387,29 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 	return dep
 }
 
+func (r *ReconcileHealthService) updateHealthServiceService(h *operatorv1alpha1.HealthService, current, desired *corev1.Service) error {
+	reqLogger := log.WithValues("Service.Namespace", current.Namespace, "Service.Name", current.Name)
+
+	updated := current.DeepCopy()
+	updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
+	updated.Spec.Ports = desired.Spec.Ports
+	updated.Spec.Selector = desired.Spec.Selector
+	updated.Spec.Type = desired.Spec.Type
+
+	reqLogger.Info("Updating Service")
+	// Set HealthService instance as the owner and controller
+	if err := controllerutil.SetControllerReference(h, updated, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "Service.Namespace", updated.Namespace, "Service.Name", updated.Name)
+	}
+
+	if err := r.client.Update(context.TODO(), updated); err != nil {
+		reqLogger.Error(err, "Failed to update Service", "Service.Namespace", updated.Namespace, "Service.Name", updated.Name)
+		return err
+	}
+
+	return nil
+}
+
 func (r *ReconcileHealthService) desiredHealthServiceService(h *operatorv1alpha1.HealthService) *corev1.Service {
 	hsName := h.Spec.HealthService.Name
 	labels := labelsForHealthService(hsName, h.Name)
@@ -399,6 +442,29 @@ func (r *ReconcileHealthService) desiredHealthServiceService(h *operatorv1alpha1
 	}
 
 	return svc
+}
+
+func (r *ReconcileHealthService) updateHealthServiceIngress(h *operatorv1alpha1.HealthService, current, desired *extensionsv1.Ingress) error {
+	reqLogger := log.WithValues("Ingress.Namespace", current.Namespace, "Ingress.Name", current.Name)
+
+	updated := current.DeepCopy()
+	updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
+	updated.ObjectMeta.Annotations = desired.ObjectMeta.Annotations
+	updated.Spec.Rules = desired.Spec.Rules
+
+	reqLogger.Info("Updating Ingress")
+	// Set HealthService instance as the owner and controller
+	if err := controllerutil.SetControllerReference(h, updated, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "Ingress.Namespace", updated.Namespace, "Ingress.Name", updated.Name)
+	}
+
+	if err := r.client.Update(context.TODO(), updated); err != nil {
+		reqLogger.Error(err, "Failed to update Ingress", "Ingress.Namespace", updated.Namespace, "Ingress.Name", updated.Name)
+		return err
+	}
+
+	return nil
+
 }
 
 func (r *ReconcileHealthService) desiredHealthServiceIngress(h *operatorv1alpha1.HealthService) *extensionsv1.Ingress {
