@@ -58,9 +58,7 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alph
 	} else if err != nil {
 		reqLogger.Error(err, "Failed to get Deployment", "Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 		return err
-	}
-
-	if err := r.updateMemcachedDeployment(current, desired); err != nil {
+	} else if err := r.updateMemcachedDeployment(h, current, desired); err != nil {
 		return err
 	}
 
@@ -89,7 +87,7 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alph
 	return nil
 }
 
-func (r *ReconcileHealthService) createOrUpdateMemcachedSvc(h *operatorv1alpha1.HealthService) error {
+func (r *ReconcileHealthService) createOrUpdateMemcachedService(h *operatorv1alpha1.HealthService) error {
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 
 	// Define a new service
@@ -107,21 +105,38 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedSvc(h *operatorv1alpha1.
 	} else if err != nil {
 		reqLogger.Error(err, "Failed to get Service", "Service.Namespace", current.Namespace, "Service.Name", current.Name)
 		return err
+	} else if err := r.updateMemcachedService(h, current, desired); err != nil {
+		return err
 	}
 
 	return nil
 }
 
-func (r *ReconcileHealthService) updateMemcachedDeployment(current, desired *appsv1.Deployment) error {
+func (r *ReconcileHealthService) updateMemcachedDeployment(h *operatorv1alpha1.HealthService, current, desired *appsv1.Deployment) error {
 	reqLogger := log.WithValues("Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 
-	if current.Spec.Replicas != nil && *current.Spec.Replicas == *desired.Spec.Replicas {
-		return nil
+	updated := current.DeepCopy()
+	updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
+	updated.Spec.Replicas = desired.Spec.Replicas
+	updated.Spec.Selector.MatchLabels = desired.Spec.Selector.MatchLabels
+	updated.Spec.Template.ObjectMeta.Labels = desired.Spec.Template.ObjectMeta.Labels
+	updated.Spec.Template.ObjectMeta.Annotations = desired.Spec.Template.ObjectMeta.Annotations
+	updated.Spec.Template.Spec.Containers = desired.Spec.Template.Spec.Containers
+	updated.Spec.Template.Spec.ServiceAccountName = desired.Spec.Template.Spec.ServiceAccountName
+	updated.Spec.Template.Spec.HostNetwork = desired.Spec.Template.Spec.HostNetwork
+	updated.Spec.Template.Spec.HostPID = desired.Spec.Template.Spec.HostPID
+	updated.Spec.Template.Spec.HostIPC = desired.Spec.Template.Spec.HostIPC
+	updated.Spec.Template.Spec.NodeSelector = desired.Spec.Template.Spec.NodeSelector
+	updated.Spec.Template.Spec.Tolerations = desired.Spec.Template.Spec.Tolerations
+
+	reqLogger.Info("Updating Deployment")
+	// Set HealthService instance as the owner and controller
+	if err := controllerutil.SetControllerReference(h, updated, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "Deployment.Namespace", updated.Namespace, "Deployment.Name", updated.Name)
 	}
 
-	reqLogger.Info("Updating Deployment", "Deployment.Namespace", desired.Namespace, "Deployment.Name", desired.Name)
-	if err := r.client.Update(context.TODO(), desired); err != nil {
-		reqLogger.Error(err, "Failed to update Deployment", "Deployment.Namespace", desired.Namespace, "Deployment.Name", desired.Name)
+	if err := r.client.Update(context.TODO(), updated); err != nil {
+		reqLogger.Error(err, "Failed to update Deployment", "Deployment.Namespace", updated.Namespace, "Deployment.Name", updated.Name)
 		return err
 	}
 
@@ -215,6 +230,29 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 	}
 
 	return dep
+}
+
+func (r *ReconcileHealthService) updateMemcachedService(h *operatorv1alpha1.HealthService, current, desired *corev1.Service) error {
+	reqLogger := log.WithValues("Service.Namespace", current.Namespace, "Service.Name", current.Name)
+
+	updated := current.DeepCopy()
+	updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
+	updated.Spec.Ports = desired.Spec.Ports
+	updated.Spec.Selector = desired.Spec.Selector
+	updated.Spec.ClusterIP = desired.Spec.ClusterIP
+
+	reqLogger.Info("Updating Service")
+	// Set HealthService instance as the owner and controller
+	if err := controllerutil.SetControllerReference(h, updated, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "Service.Namespace", updated.Namespace, "Service.Name", updated.Name)
+	}
+
+	if err := r.client.Update(context.TODO(), updated); err != nil {
+		reqLogger.Error(err, "Failed to update Service", "Service.Namespace", updated.Namespace, "Service.Name", updated.Name)
+		return err
+	}
+
+	return nil
 }
 
 func (r *ReconcileHealthService) desiredMemcachedService(h *operatorv1alpha1.HealthService) *corev1.Service {

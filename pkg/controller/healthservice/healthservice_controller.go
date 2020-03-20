@@ -22,6 +22,8 @@ import (
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
 
 	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	extensionsv1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -65,9 +67,36 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		return err
 	}
 
-	// TODO(user): Modify this to be the types you create that are owned by the primary resource
 	// Watch for changes to secondary resource Pods and requeue the owner HealthService
+	// Deployment
 	err = c.Watch(&source.Kind{Type: &appsv1.Deployment{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType:    &operatorv1alpha1.HealthService{},
+	})
+	if err != nil {
+		return err
+	}
+
+	// Service
+	err = c.Watch(&source.Kind{Type: &corev1.Service{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType:    &operatorv1alpha1.HealthService{},
+	})
+	if err != nil {
+		return err
+	}
+
+	// Ingress
+	err = c.Watch(&source.Kind{Type: &extensionsv1.Ingress{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType:    &operatorv1alpha1.HealthService{},
+	})
+	if err != nil {
+		return err
+	}
+
+	// Configmap
+	err = c.Watch(&source.Kind{Type: &corev1.ConfigMap{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
 		OwnerType:    &operatorv1alpha1.HealthService{},
 	})
@@ -122,7 +151,7 @@ func (r *ReconcileHealthService) Reconcile(request reconcile.Request) (reconcile
 		return reconcile.Result{}, err
 	}
 
-	if err = r.createOrUpdateMemcachedSvc(healthService); err != nil {
+	if err = r.createOrUpdateMemcachedService(healthService); err != nil {
 		reqLogger.Error(err, "Failed to create or update Service for memcached")
 		return reconcile.Result{}, err
 	}
@@ -137,7 +166,7 @@ func (r *ReconcileHealthService) Reconcile(request reconcile.Request) (reconcile
 		return reconcile.Result{}, err
 	}
 
-	if err = r.createOrUpdateHealthServiceSvc(healthService); err != nil {
+	if err = r.createOrUpdateHealthServiceService(healthService); err != nil {
 		reqLogger.Error(err, "Failed to create or update Service for health service")
 		return reconcile.Result{}, err
 	}
