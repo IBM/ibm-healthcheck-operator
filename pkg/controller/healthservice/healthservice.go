@@ -64,7 +64,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceDeploy(h *operatorv1
 	}
 
 	// Update the HealthService status with the pod names
-	podList := &corev1.PodList{}
+	/* podList := &corev1.PodList{}
 	listOpts := []client.ListOption{
 		client.InNamespace(h.Namespace),
 		client.MatchingLabels(labelsForHealthService(hsName, h.Name)),
@@ -83,7 +83,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceDeploy(h *operatorv1
 			reqLogger.Error(err, "Failed to update HealthService status")
 			return err
 		}
-	}
+	}*/
 
 	return nil
 }

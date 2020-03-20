@@ -63,7 +63,7 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alph
 	}
 
 	// Update the HealthService status with the pod names
-	podList := &corev1.PodList{}
+	/* podList := &corev1.PodList{}
 	listOpts := []client.ListOption{
 		client.InNamespace(h.Namespace),
 		client.MatchingLabels(labelsForMemcached(memName, h.Name)),
@@ -82,7 +82,7 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alph
 			reqLogger.Error(err, "Failed to update HealthService status")
 			return err
 		}
-	}
+	}*/
 
 	return nil
 }
