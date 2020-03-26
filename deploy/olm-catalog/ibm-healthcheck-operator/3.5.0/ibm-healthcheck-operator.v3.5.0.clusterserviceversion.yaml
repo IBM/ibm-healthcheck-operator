@@ -92,7 +92,7 @@ metadata:
     capabilities: Basic Install
     categories: Monitoring
     certified: "false"
-    containerImage: quay.io/opencloudio/ibm-healthcheck-operator:latest
+    containerImage: quay.io/opencloudio/ibm-healthcheck-operator:3.5.0
     createdAt: "2020-03-24"
     description: The IBM Health Check Operator provides a Kubernetes CRD-Based API
       to monitor the health check service components.
@@ -215,7 +215,7 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
-                image: quay.io/opencloudio/ibm-healthcheck-operator:latest
+                image: quay.io/opencloudio/ibm-healthcheck-operator:3.5.0
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
                 resources: {}
