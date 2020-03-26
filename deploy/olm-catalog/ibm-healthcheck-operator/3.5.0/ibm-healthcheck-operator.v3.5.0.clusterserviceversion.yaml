@@ -331,17 +331,17 @@ spec:
     type: MultiNamespace
   - supported: true
     type: AllNamespaces
-  maturity: alpha
+  maturity: stable
   provider:
     name: IBM
-  replaces: ibm-healthcheck-operator.v0.0.0
+  # replaces: ibm-healthcheck-operator.v0.0.0
   version: 3.5.0
   links:
   - name: IBM Health Check Operator
     url: https://github.com/IBM/ibm-healthcheck-operator
   maintainers:
-  - email: haoqing@cn.ibm.com
-    name: Qing Hao
+  - email: supports@ibm.com
+    name: IBM Support
   keywords:
   - IBM
   - Cloud
