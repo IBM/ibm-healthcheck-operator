@@ -1,22 +1,30 @@
 
-# IBM Health Check Operator
+# ibm-healthcheck-operator
 
-## Overview
+Operator used to manage the IBM system healthcheck service.
 
-IBM Health Check Operator is used to manage the IBM health check service
+## Supported platforms
+
+## Operator versions
+
+3.5.0
 
 ## Prerequisites
 
 - go version v1.13+.
-- docker version 17.03+
-- kubectl v1.11.3+
+- Docker version 17.03+
+- Kubectl v1.11.3+
 - Access to a Kubernetes v1.11.3+ cluster
+
+## Documentation
+
+For installation and configuration, see the [IBM Cloud Platform Common Services documentation](http://ibm.biz/cpcsdocs).
 
 ## Getting Started
 
 ### Cloning the repository
 
-Checkout this IBM Health Check Operator repository
+Check out the ibm-healthcheck-operator repository.
 
 ```bash
 # git clone https://github.com/IBM/ibm-healthcheck-operator.git
@@ -25,7 +33,7 @@ Checkout this IBM Health Check Operator repository
 
 ### Building the operator
 
-Build the ibm-healthcheck-operator image and push it to a public registry, such as quay.io:
+Build the ibm-healthcheck-operator image and push it to a public registry, such as quay.io.
 
 ```bash
 # make images
@@ -66,9 +74,9 @@ system-healthcheck-service-6bd476b58f-ffc4s   1/1     Running   0          32s
 # kubectl delete -f deploy/
 ```
 
-### Install from OLDM
+### Installing ODLM
 
-[Install OLDM](https://github.com/IBM/operand-deployment-lifecycle-manager/blob/master/docs/install/install.md) in your cluser, and let OLDM help manage all the operators.
+[Install ODLM](https://github.com/IBM/operand-deployment-lifecycle-manager/blob/master/docs/install/install.md) in your cluster to help manage all the operators.
 
 ### Troubleshooting
 
