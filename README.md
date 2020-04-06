@@ -5,6 +5,13 @@ Operator used to manage the IBM system healthcheck service.
 
 ## Supported platforms
 
+- Red Hat OpenShift Container Platform 4.2
+- Red Hat OpenShift Container Platform 4.3
+
+## Operating systems
+
+Linux® x86_64
+
 ## Operator versions
 
 3.5.0
