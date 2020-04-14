@@ -2,6 +2,10 @@ apiVersion: operator.ibm.com/v1alpha1
 kind: HealthService
 metadata:
   name: system-healthcheck-service
+  labels:
+    app.kubernetes.io/instance: system-healthcheck-service
+    app.kubernetes.io/managed-by: ibm-healthcheck-operator
+    app.kubernetes.io/name: ibm-healthcheck-operator
 spec:
   memcached:
     name: icp-memcached

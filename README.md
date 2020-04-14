@@ -23,6 +23,9 @@ Linux® x86_64
 - Kubectl v1.11.3+
 - Access to a Kubernetes v1.11.3+ cluster
 
+## SecurityContextConstraints Requirements
+The healthcheck service supports running under the OpenShift Container Platform default restricted security context constraints.
+
 ## Documentation
 
 For installation and configuration, see the [IBM Cloud Platform Common Services documentation](http://ibm.biz/cpcsdocs).
