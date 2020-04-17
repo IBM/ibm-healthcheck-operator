@@ -10,7 +10,8 @@ spec:
   memcached:
     name: icp-memcached
     image:
-      repository: quay.io/opencloudio/icp-memcached
+      name: icp-memcached
+      repository: quay.io/opencloudio
       tag: 3.5.0
     replicaCount: 1
     serviceAccountName: ibm-healthcheck-operator-cluster
@@ -38,7 +39,8 @@ spec:
     name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
     image:
-      repository: quay.io/opencloudio/system-healthcheck-service
+      name: system-healthcheck-service
+      repository: quay.io/opencloudio
       tag: 3.5.0
     replicaCount: 1
     serviceAccountName: ibm-healthcheck-operator-cluster
