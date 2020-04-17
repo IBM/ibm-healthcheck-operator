@@ -24,6 +24,7 @@ Linux® x86_64
 - Access to a Kubernetes v1.11.3+ cluster
 
 ## SecurityContextConstraints Requirements
+
 The healthcheck service supports running under the OpenShift Container Platform default restricted security context constraints.
 
 ## Documentation
