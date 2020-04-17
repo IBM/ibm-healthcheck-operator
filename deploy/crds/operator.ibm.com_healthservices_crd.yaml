@@ -54,21 +54,21 @@ spec:
                 image:
                   description: health service image repository, tag and imagepullpolicy
                   properties:
+                    imageRegistry:
+                      description: image repository, default is empty
+                      type: string
                     name:
                       description: image name, default is empty
                       type: string
                     pullPolicy:
                       description: image pull policy, default is IfNotPresent
                       type: string
-                    repository:
-                      description: image repository, default is empty
-                      type: string
                     tag:
                       description: image tag, default is empty
                       type: string
                   required:
+                  - imageRegistry
                   - name
-                  - repository
                   - tag
                   type: object
                 name:
@@ -271,21 +271,21 @@ spec:
                 image:
                   description: memcached image repository, tag and imagepullpolicy
                   properties:
+                    imageRegistry:
+                      description: image repository, default is empty
+                      type: string
                     name:
                       description: image name, default is empty
                       type: string
                     pullPolicy:
                       description: image pull policy, default is IfNotPresent
                       type: string
-                    repository:
-                      description: image repository, default is empty
-                      type: string
                     tag:
                       description: image tag, default is empty
                       type: string
                   required:
+                  - imageRegistry
                   - name
-                  - repository
                   - tag
                   type: object
                 name:

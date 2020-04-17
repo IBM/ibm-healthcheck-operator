@@ -27,7 +27,7 @@ import (
 // image defines the desired image repository, tag and imagepullpolicy
 type image struct {
 	// image repository, default is empty
-	Repository string `json:"repository"`
+	ImageRegistry string `json:"imageRegistry"`
 	// image name, default is empty
 	Name string `json:"name"`
 	// image tag, default is empty

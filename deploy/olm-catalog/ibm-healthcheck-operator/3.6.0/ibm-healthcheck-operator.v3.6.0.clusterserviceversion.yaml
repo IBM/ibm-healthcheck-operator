@@ -20,8 +20,8 @@ metadata:
               "configmapName": "system-healthcheck-service-config",
               "hostNetwork": false,
               "image": {
+                "imageRegistry": "quay.io/opencloudio",
                 "name": "system-healthcheck-service",
-                "repository": "quay.io/opencloudio",
                 "tag": "3.5.0"
               },
               "name": "system-healthcheck-service",
@@ -62,8 +62,8 @@ metadata:
                 "-v"
               ],
               "image": {
+                "imageRegistry": "quay.io/opencloudio",
                 "name": "icp-memcached",
-                "repository": "quay.io/opencloudio",
                 "tag": "3.5.0"
               },
               "name": "icp-memcached",
