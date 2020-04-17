@@ -54,6 +54,9 @@ spec:
                 image:
                   description: health service image repository, tag and imagepullpolicy
                   properties:
+                    name:
+                      description: image name, default is empty
+                      type: string
                     pullPolicy:
                       description: image pull policy, default is IfNotPresent
                       type: string
@@ -64,6 +67,7 @@ spec:
                       description: image tag, default is empty
                       type: string
                   required:
+                  - name
                   - repository
                   - tag
                   type: object
@@ -267,6 +271,9 @@ spec:
                 image:
                   description: memcached image repository, tag and imagepullpolicy
                   properties:
+                    name:
+                      description: image name, default is empty
+                      type: string
                     pullPolicy:
                       description: image pull policy, default is IfNotPresent
                       type: string
@@ -277,6 +284,7 @@ spec:
                       description: image tag, default is empty
                       type: string
                   required:
+                  - name
                   - repository
                   - tag
                   type: object
