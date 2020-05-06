@@ -57,6 +57,10 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: "ibm-healthcheck-operator"
+            - name: OPERAND_HEALTH_SERVICE
+              value: "sha256:e5c0d2831527705d3689515afec755291b23c2a365b5825d5fadb5d48227afdb"
+            - name: OPERAND_MEMCACHED
+              value: "sha256:49e1d92c5f53722a003005a409c831041b208d30fa324cbd0ed9f7b5a68a9364"
           resources:
             limits:
               cpu: 20m

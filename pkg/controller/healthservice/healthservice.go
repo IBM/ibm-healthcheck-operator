@@ -260,7 +260,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 					Containers: []corev1.Container{
 						{
 							Name:            hsName,
-							Image:           h.Spec.HealthService.Image.Repository + ":" + h.Spec.HealthService.Image.Tag,
+							Image:           GetOperandImage(h.Spec.HealthService.Image.Repository, HealthServiceImageName, h.Spec.HealthService.Image.Tag, os.Getenv("OPERAND_HEALTH_SERVICE")),
 							ImagePullPolicy: corev1.PullPolicy(h.Spec.HealthService.Image.PullPolicy),
 							SecurityContext: &h.Spec.HealthService.SecurityContext,
 							Env: []corev1.EnvVar{

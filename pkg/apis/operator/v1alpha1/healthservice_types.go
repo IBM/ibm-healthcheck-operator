@@ -28,8 +28,8 @@ import (
 type image struct {
 	// image repository, default is empty
 	Repository string `json:"repository"`
-	// image tag, default is empty
-	Tag string `json:"tag"`
+	// image tag, deprecated. Define image sha or tag in operator.yaml
+	Tag string `json:"tag,omitempty"`
 	// image pull policy, default is IfNotPresent
 	PullPolicy string `json:"pullPolicy,omitempty"`
 }

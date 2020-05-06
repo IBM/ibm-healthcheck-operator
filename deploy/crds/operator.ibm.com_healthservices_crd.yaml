@@ -61,11 +61,11 @@ spec:
                       description: image repository, default is empty
                       type: string
                     tag:
-                      description: image tag, default is empty
+                      description: image tag, deprecated. Define image sha or tag
+                        in operator.yaml
                       type: string
                   required:
                   - repository
-                  - tag
                   type: object
                 name:
                   description: health service deployment name
@@ -274,11 +274,11 @@ spec:
                       description: image repository, default is empty
                       type: string
                     tag:
-                      description: image tag, default is empty
+                      description: image tag, deprecated. Define image sha or tag
+                        in operator.yaml
                       type: string
                   required:
                   - repository
-                  - tag
                   type: object
                 name:
                   description: memcached deployment name
