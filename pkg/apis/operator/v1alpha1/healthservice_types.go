@@ -28,8 +28,6 @@ import (
 type image struct {
 	// image repository, default is empty
 	Repository string `json:"repository"`
-	// image name, default is empty
-	Name string `json:"name"`
 	// image tag, default is empty
 	Tag string `json:"tag"`
 	// image pull policy, default is IfNotPresent

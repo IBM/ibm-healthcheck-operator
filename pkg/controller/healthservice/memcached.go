@@ -182,7 +182,7 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 					ServiceAccountName: serviceAccountName,
 					Containers: []corev1.Container{{
 						Name:            memName,
-						Image:           h.Spec.Memcached.Image.Repository + "/" + h.Spec.Memcached.Image.Name + ":" + h.Spec.Memcached.Image.Tag,
+						Image:           h.Spec.Memcached.Image.Repository + ":" + h.Spec.Memcached.Image.Tag,
 						ImagePullPolicy: corev1.PullPolicy(h.Spec.Memcached.Image.PullPolicy),
 						Command:         defaultCommand,
 						Ports: []corev1.ContainerPort{{
