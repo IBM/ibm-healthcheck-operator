@@ -57,6 +57,10 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: "ibm-healthcheck-operator"
+            - name: OPERAND_HEALTHCHECK_IMAGE
+              value: "quay.io/opencloudio/system-healthcheck-service:3.6.0"
+            - name: OPERAND_MEMCACHED_IMAGE
+              value: "quay.io/opencloudio/icp-memcached:3.6.0"
           resources:
             limits:
               cpu: 20m
