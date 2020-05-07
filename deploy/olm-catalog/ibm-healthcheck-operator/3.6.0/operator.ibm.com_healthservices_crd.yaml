@@ -52,7 +52,7 @@ spec:
                   description: health srevice deployment hostnetwork, default is false
                   type: boolean
                 image:
-                  description: health service image repository, tag and imagepullpolicy
+                  description: deprecated, define image in operator.yaml
                   properties:
                     pullPolicy:
                       description: image pull policy, default is IfNotPresent
@@ -252,7 +252,6 @@ spec:
                   type: array
               required:
               - configmapName
-              - image
               - name
               type: object
             memcached:
@@ -265,7 +264,7 @@ spec:
                     type: string
                   type: array
                 image:
-                  description: memcached image repository, tag and imagepullpolicy
+                  description: deprecated, define image in operator.yaml
                   properties:
                     pullPolicy:
                       description: image pull policy, default is IfNotPresent
@@ -460,7 +459,6 @@ spec:
                     type: object
                   type: array
               required:
-              - image
               - name
               type: object
           type: object

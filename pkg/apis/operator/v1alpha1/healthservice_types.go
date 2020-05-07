@@ -28,8 +28,8 @@ import (
 type image struct {
 	// image repository, default is empty
 	Repository string `json:"repository"`
-	// image tag, deprecated. Define image sha or tag in operator.yaml
-	Tag string `json:"tag,omitempty"`
+	// image tag, default is empty
+	Tag string `json:"tag"`
 	// image pull policy, default is IfNotPresent
 	PullPolicy string `json:"pullPolicy,omitempty"`
 }
@@ -38,8 +38,8 @@ type image struct {
 type HealthServiceSpecMemcached struct {
 	// memcached deployment name
 	Name string `json:"name,"`
-	// memcached image repository, tag and imagepullpolicy
-	Image image `json:"image,"`
+	// deprecated, define image in operator.yaml
+	Image image `json:"image,omitempty"`
 	// memcached deployment replicas, default is 0
 	ReplicaCount int32 `json:"replicaCount,omitempty"`
 	// memcached deployment ServiceAccountName, default is default
@@ -58,8 +58,8 @@ type HealthServiceSpecMemcached struct {
 type HealthServiceSpecHealthService struct {
 	// health service deployment name
 	Name string `json:"name"`
-	// health service image repository, tag and imagepullpolicy
-	Image image `json:"image"`
+	// deprecated, define image in operator.yaml
+	Image image `json:"image,omitempty"`
 	// configmap which contains health srevice configuration files, deprecated
 	ConfigmapName string `json:"configmapName"`
 	// set labels/annotation name to get pod's cloudpakname

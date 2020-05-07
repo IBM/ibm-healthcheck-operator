@@ -19,9 +19,6 @@ metadata:
             "healthService": {
               "configmapName": "system-healthcheck-service-config",
               "hostNetwork": false,
-              "image": {
-                "repository": "quay.io/opencloudio"
-              },
               "name": "system-healthcheck-service",
               "nodeSelector": {
                 "node-role.kubernetes.io/worker": ""
@@ -59,9 +56,6 @@ metadata:
                 "modern",
                 "-v"
               ],
-              "image": {
-                "repository": "quay.io/opencloudio"
-              },
               "name": "icp-memcached",
               "nodeSelector": {
                 "node-role.kubernetes.io/worker": ""
@@ -232,10 +226,10 @@ spec:
                       fieldPath: metadata.name
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
-                - name: OPERAND_HEALTH_SERVICE
-                  value: "sha256:e5c0d2831527705d3689515afec755291b23c2a365b5825d5fadb5d48227afdb"
-                - name: OPERAND_MEMCACHED
-                  value: "sha256:49e1d92c5f53722a003005a409c831041b208d30fa324cbd0ed9f7b5a68a9364"
+                - name: OPERAND_HEALTHCHECK_IMAGE
+                  value: "quay.io/opencloudio/system-healthcheck-service:3.6.0"
+                - name: OPERAND_MEMCACHED_IMAGE
+                  value: "quay.io/opencloudio/icp-memcached:3.6.0"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
