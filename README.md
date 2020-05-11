@@ -1,10 +1,8 @@
-
-
 # ibm-healthcheck-operator
 
 > **Important:** Do not install this operator directly. Only install this operator using the IBM Common Services Operator. For more information about installing this operator and other Common Services operators, see [Installer documentation](http://ibm.biz/cpcs_opinstall). If you are using this operator as part of an IBM Cloud Pak, see the documentation for that IBM Cloud Pak to learn more about how to install and use the operator service. For more information about IBM Cloud Paks, see [IBM Cloud Paks that use Common Services](http://ibm.biz/cpcs_cloudpaks).
 
-You can use the ibm-healthcheck-operator to install the IBM system health check service. You can use IBM system health check service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services.
+You can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services.
 
 For more information about the available IBM Cloud Platform Common Services, see the [IBM Knowledge Center](http://ibm.biz/cpcsdocs).
 
@@ -12,14 +10,14 @@ For more information about the available IBM Cloud Platform Common Services, see
 
 Red Hat OpenShift Container Platform 4.3 or newer installed on one of the following platforms:
 
-   - Linux x86_64
-   - Linux on Power (ppc64le)
-   - Linux on IBM Z and LinuxONE
+- Linux x86_64
+- Linux on Power (ppc64le)
+- Linux on IBM Z and LinuxONE
 
 ## Operator versions
 
 - 3.6.0
-  - Support for OpenShift 4.3 and 4.4.
+    - Support for OpenShift 4.3 and 4.4.
 - 3.5.0
 
 ## Prerequisites
@@ -27,7 +25,6 @@ Red Hat OpenShift Container Platform 4.3 or newer installed on one of the follow
 Before you install this operator, you need to first install the operator dependencies and prerequisites:
 
 - For the list of operator dependencies, see the IBM Knowledge Center [Common Services dependencies documentation](http://ibm.biz/cpcs_opdependencies).
-
 - For the list of prerequisites for installing the operator, see the IBM Knowledge Center [Preparing to install services documentation](http://ibm.biz/cpcs_opinstprereq).
 
 ## Documentation
@@ -39,11 +36,11 @@ To install the operator with the IBM Common Services Operator follow the the ins
 
 ## SecurityContextConstraints Requirements
 
-The IBM system health check service supports running with the OpenShift Container Platform 4.3 default restricted Security Context Constraints (SCCs).
+The IBM System Healthcheck service supports running with the OpenShift Container Platform 4.3 default restricted Security Context Constraints (SCCs).
 
 For more information about the OpenShift Container Platform Security Context Constraints, see [Managing Security Context Constraints](https://docs.openshift.com/container-platform/4.3/authentication/managing-security-context-constraints.html).
 
-## (Optional) Developer guide
+## Developer guide
 
 If, as a developer, you are looking to build and test this operator to try out and learn more about the operator and its capabilities, you can use the following developer guide. This guide provides commands for a quick install and initial validation for running the operator.
 
@@ -52,6 +49,7 @@ If, as a developer, you are looking to build and test this operator to try out a
 ### Quick start guide
 
 Use the following quick start commands for building and testing the operator:
+
 #### Cloning the repository
 
 Check out the ibm-healthcheck-operator repository.
