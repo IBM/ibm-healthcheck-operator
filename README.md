@@ -1,5 +1,3 @@
-
-
 # ibm-healthcheck-operator
 
 > **Important:** Do not install this operator directly. Only install this operator using the IBM Common Services Operator. For more information about installing this operator and other Common Services operators, see [Installer documentation](http://ibm.biz/cpcs_opinstall). If you are using this operator as part of an IBM Cloud Pak, see the documentation for that IBM Cloud Pak to learn more about how to install and use the operator service. For more information about IBM Cloud Paks, see [IBM Cloud Paks that use Common Services](http://ibm.biz/cpcs_cloudpaks).
@@ -11,31 +9,29 @@ For more information about the available IBM Cloud Platform Common Services, see
 ## Supported platforms
 
 Red Hat OpenShift Container Platform 4.3 or newer installed on one of the following platforms:
-
-   - Linux x86_64
-   - Linux on Power (ppc64le)
-   - Linux on IBM Z and LinuxONE
+* Linux x86_64
+* Linux on Power (ppc64le)
+* Linux on IBM Z and LinuxONE
 
 ## Operator versions
 
-- 3.6.0
+* 3.6.0
   - Support for OpenShift 4.3 and 4.4.
-- 3.5.0
+* 3.5.0
 
 ## Prerequisites
 
 Before you install this operator, you need to first install the operator dependencies and prerequisites:
 
-- For the list of operator dependencies, see the IBM Knowledge Center [Common Services dependencies documentation](http://ibm.biz/cpcs_opdependencies).
-
-- For the list of prerequisites for installing the operator, see the IBM Knowledge Center [Preparing to install services documentation](http://ibm.biz/cpcs_opinstprereq).
+* For the list of operator dependencies, see the IBM Knowledge Center [Common Services dependencies documentation](http://ibm.biz/cpcs_opdependencies).
+* For the list of prerequisites for installing the operator, see the IBM Knowledge Center [Preparing to install services documentation](http://ibm.biz/cpcs_opinstprereq).
 
 ## Documentation
 
 To install the operator with the IBM Common Services Operator follow the the installation and configuration instructions within the IBM Knowledge Center.
 
-- If you are using the operator as part of an IBM Cloud Pak, see the documentation for that IBM Cloud Pak. For a list of IBM Cloud Paks, see [IBM Cloud Paks that use Common Services](http://ibm.biz/cpcs_cloudpaks).
-- If you are using the operator with an IBM Containerized Software, see the IBM Cloud Platform Common Services Knowledge Center [Installer documentation](http://ibm.biz/cpcs_opinstall).
+* If you are using the operator as part of an IBM Cloud Pak, see the documentation for that IBM Cloud Pak. For a list of IBM Cloud Paks, see [IBM Cloud Paks that use Common Services](http://ibm.biz/cpcs_cloudpaks).
+* If you are using the operator with an IBM Containerized Software, see the IBM Cloud Platform Common Services Knowledge Center [Installer documentation](http://ibm.biz/cpcs_opinstall).
 
 ## SecurityContextConstraints Requirements
 
@@ -52,6 +48,7 @@ If, as a developer, you are looking to build and test this operator to try out a
 ### Quick start guide
 
 Use the following quick start commands for building and testing the operator:
+
 #### Cloning the repository
 
 Check out the ibm-healthcheck-operator repository.
