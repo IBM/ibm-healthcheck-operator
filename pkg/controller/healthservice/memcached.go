@@ -314,7 +314,7 @@ func annotationsForMemcached() map[string]string {
 	return map[string]string{
 		"productName":    "IBM Cloud Platform Common Services",
 		"productID":      "068a62892a1e4db39641342e592daa25",
-		"productVersion": "3.3.0",
+		"productVersion": "3.4.0",
 		"productMetric":  "FREE",
 	}
 }
