@@ -2,6 +2,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
   annotations:
+    olm.skipRange: '>=3.5.0 <3.6.0'
     alm-examples: |-
       [
         {
@@ -226,10 +227,10 @@ spec:
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
                 - name: OPERAND_HEALTHCHECK_IMAGE
-                  value: "quay.io/opencloudio/system-healthcheck-service:3.6.0"
+                  value: "quay.io/opencloudio/system-healthcheck-service@sha256:c8651a331bed66ce33a16085d277483e77d57f0d705449e2764c9ea39c8e85f9"
                 - name: OPERAND_MEMCACHED_IMAGE
-                  value: "quay.io/opencloudio/icp-memcached:3.6.0"
-                image: quay.io/opencloudio/ibm-healthcheck-operator:latest
+                  value: "quay.io/opencloudio/icp-memcached@sha256:8de5389dc4712a1383c55dd5ed20585b6a56747b4e67fd72761546d28b63b30b"
+                image: quay.io/opencloudio/ibm-healthcheck-operator@sha256:3047fe8ecdd9ae1dfdec1597130679830e94b1e49db10e3e8504d696a17abf2f
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
                 resources:
