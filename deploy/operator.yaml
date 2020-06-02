@@ -63,8 +63,8 @@ spec:
               value: "quay.io/opencloudio/icp-memcached:3.6.0"
           resources:
             limits:
-              cpu: 40m
-              memory: 128Mi
+              cpu: 160m
+              memory: 512Mi
             requests:
               cpu: 10m
               memory: 32Mi

@@ -37,7 +37,7 @@ import (
 var cpu50 = resource.NewMilliQuantity(50, resource.DecimalSI)          // 50m
 var cpu500 = resource.NewMilliQuantity(500, resource.DecimalSI)        // 500m
 var memory64 = resource.NewQuantity(64*1024*1024, resource.BinarySI)   // 64Mi
-var memory128 = resource.NewQuantity(128*1024*1024, resource.BinarySI) // 128Mi
+var memory512 = resource.NewQuantity(512*1024*1024, resource.BinarySI) // 512Mi
 var memSvcName = "memcached"
 
 func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alpha1.HealthService) error {
@@ -212,7 +212,7 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 						Resources: corev1.ResourceRequirements{
 							Limits: map[corev1.ResourceName]resource.Quantity{
 								corev1.ResourceCPU:    *cpu500,
-								corev1.ResourceMemory: *memory128},
+								corev1.ResourceMemory: *memory512},
 							Requests: map[corev1.ResourceName]resource.Quantity{
 								corev1.ResourceCPU:    *cpu50,
 								corev1.ResourceMemory: *memory64},
