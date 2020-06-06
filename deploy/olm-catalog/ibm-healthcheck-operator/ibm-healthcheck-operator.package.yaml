@@ -3,7 +3,7 @@ channels:
   name: dev
 - currentCSV: ibm-healthcheck-operator.v3.6.1
   name: beta
-- currentCSV: ibm-healthcheck-operator.v3.5.0
+- currentCSV: ibm-healthcheck-operator.v3.6.1
   name: stable-v1
 defaultChannel: stable-v1
 packageName: ibm-healthcheck-operator-app
