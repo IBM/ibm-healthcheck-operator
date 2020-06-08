@@ -68,5 +68,9 @@ function delete_csv() {
 }
 
 #-------------------------------------- Main --------------------------------------#
+
+# protect csv from pushing unintented changes
+common/scripts/protect-csv.sh
+
 delete_csv
 push_csv

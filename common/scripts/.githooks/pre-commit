@@ -30,6 +30,8 @@
 remote="$1"
 url="$2"
 
+common/scripts/protect-csv.sh
+
 .git/hooks/make_lint-all.sh
 
 exit $?
