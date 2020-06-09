@@ -86,7 +86,7 @@ generate-csv: ## Generate CSV
 	- cp deploy/crds/*_crd.yaml deploy/olm-catalog/$(BASE_DIR)/$(CSV_VERSION)/
 
 push-csv: ## Push CSV package to the catalog
-	@RELEASE=${CSV_VERSION} common/scripts/push-csv.sh
+	@common/scripts/push-csv.sh ${CSV_VERSION}
 
 bump-up-csv: ## Bump up CSV version
 	@echo "bump-up-csv ${BASE_DIR} $(CSV_VERSION) ..."
