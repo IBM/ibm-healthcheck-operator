@@ -13,7 +13,7 @@ spec:
     listKind: HealthServiceList
     plural: healthservices
     singular: healthservice
-  scope: Name
+  scope: Namespaced
   subresources:
     status: {}
   validation:
