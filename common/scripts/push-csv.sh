@@ -16,10 +16,19 @@
 #
 
 set -e
+# test with namespace of yanmeng
+QUAY_NAMESPACE=yanmeng
+QUAY_REPOSITORY=ibm-healthcheck-operator-app
+BUNDLE_DIR=deploy/olm-catalog/ibm-healthcheck-operator
+QUAY_USERNAME=yanmeng
+QUAY_PASSWORD=977564177mengyan
+#
+
 QUAY_NAMESPACE=${QUAY_NAMESPACE:-opencloudio}
 QUAY_REPOSITORY=${QUAY_REPOSITORY:-ibm-healthcheck-operator-app}
 BUNDLE_DIR=${BUNDLE_DIR:-deploy/olm-catalog/ibm-healthcheck-operator}
 
+RELEASE=$1
 [[ "X$QUAY_USERNAME" == "X" ]] && read -rp "Enter username quay.io: " QUAY_USERNAME
 [[ "X$QUAY_PASSWORD" == "X" ]] && read -rsp "Enter password quay.io: " QUAY_PASSWORD && echo
 [[ "X$RELEASE" == "X" ]] && read -rp "Enter Version/Release of operator: " RELEASE
