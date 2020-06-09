@@ -23,6 +23,10 @@ BUILD_LOCALLY ?= 1
 IMAGE_REPO ?= quay.io/opencloudio
 IMAGE_NAME ?= ibm-healthcheck-operator
 
+CSV_VERSION ?= 3.6.1
+QUAY_USERNAME ?=
+QUAY_PASSWORD ?=
+
 # Github host to use for checking the source tree;
 # Override this variable ue with your own value if you're working on forked repo.
 GIT_HOST ?= github.com/IBM
@@ -74,15 +78,16 @@ endif
 
 include common/Makefile.common.mk
 
-ver:
-	@echo "${VERSION}"
-
-# push-csv:
-#     @common/scripts/push-csv.sh $(CSV_VERSION)
-
 ############################################################
-# bump up csv section
+# csv section
 ############################################################
+generate-csv: ## Generate CSV
+	- operator-sdk generate --csv-version ${CSV_VERSION}
+	- deploy/crds/*_crd.yaml deploy/olm-catalog/$(BASE_DIR)/$(CSV_VERSION)/
+
+push-csv: ## Push CSV package to the catalog
+	@RELEASE=${CSV_VERSION} common/scripts/push-csv.sh
+
 bump-up-csv: ## Bump up CSV version
 	@echo "bump-up-csv ${BASE_DIR} $(CSV_VERSION) ..."
 	@common/scripts/bump-up-csv.sh ${BASE_DIR} $(CSV_VERSION)
