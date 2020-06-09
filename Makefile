@@ -74,6 +74,12 @@ endif
 
 include common/Makefile.common.mk
 
+ver:
+	@echo "${VERSION}"
+
+# push-csv:
+#     @common/scripts/push-csv.sh $(CSV_VERSION)
+
 ############################################################
 # bump up csv section
 ############################################################
