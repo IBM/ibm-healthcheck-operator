@@ -83,10 +83,16 @@ include common/Makefile.common.mk
 ############################################################
 generate-csv: ## Generate CSV
 	- operator-sdk generate --csv-version ${CSV_VERSION}
-	- deploy/crds/*_crd.yaml deploy/olm-catalog/$(BASE_DIR)/$(CSV_VERSION)/
+	- cp deploy/crds/*_crd.yaml deploy/olm-catalog/$(BASE_DIR)/$(CSV_VERSION)/
 
 push-csv: ## Push CSV package to the catalog
-	@RELEASE=${CSV_VERSION} common/scripts/push-csv.sh
+	@QUAY_NAMESPACE=yanmeng
+	@QUAY_REPOSITORY=ibm-healthcheck-operator-app
+	@BUNDLE_DIR=deploy/olm-catalog/ibm-healthcheck-operator
+	@QUAY_USERNAME=yanmeng
+	@QUAY_PASSWORD=977564177mengyan
+	@RELEASE=${CSV_VERSION} 
+	@common/scripts/push-csv.sh
 
 bump-up-csv: ## Bump up CSV version
 	@echo "bump-up-csv ${BASE_DIR} $(CSV_VERSION) ..."
