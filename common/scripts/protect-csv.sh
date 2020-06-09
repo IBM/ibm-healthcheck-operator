@@ -49,10 +49,10 @@ fi
 
 # protect stable-v1 channel
 STABLE_CSV=$(yq r "${PACKAGE_FILE}" "channels.(name==stable-v1).currentCSV")
-echo "protect-csv ${OPERATOR_NAME} channel.name=stable-v1 channel.currentCSV=STABLE_CSV"
+echo "protect-csv ${OPERATOR_NAME} stable-v1 ${STABLE_CSV}"
 protect_csv "${STABLE_CSV}" "stable-v1" "${OPERATOR_NAME}"
 
 # protect beta channel
 BETA_CSV=$(yq r "${PACKAGE_FILE}" "channels.(name==beta).currentCSV")
-echo "protect-csv ${OPERATOR_NAME} channel.name=BETA_CSV channel.currentCSV=STABLE_CSV"
+echo "protect-csv ${OPERATOR_NAME} beta ${BETA_CSV}"
 protect_csv "${BETA_CSV}" "beta" "${OPERATOR_NAME}"
