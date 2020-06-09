@@ -24,8 +24,6 @@ IMAGE_REPO ?= quay.io/opencloudio
 IMAGE_NAME ?= ibm-healthcheck-operator
 
 CSV_VERSION ?= 3.6.1
-QUAY_USERNAME ?=
-QUAY_PASSWORD ?=
 
 # Github host to use for checking the source tree;
 # Override this variable ue with your own value if you're working on forked repo.

@@ -16,13 +16,6 @@
 #
 
 set -e
-# test with namespace of yanmeng
-QUAY_NAMESPACE=yanmeng
-QUAY_REPOSITORY=ibm-healthcheck-operator-app
-BUNDLE_DIR=deploy/olm-catalog/ibm-healthcheck-operator
-QUAY_USERNAME=yanmeng
-QUAY_PASSWORD=977564177mengyan
-#
 
 QUAY_NAMESPACE=${QUAY_NAMESPACE:-opencloudio}
 QUAY_REPOSITORY=${QUAY_REPOSITORY:-ibm-healthcheck-operator-app}
