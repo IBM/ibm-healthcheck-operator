@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal@sha256:fc7fc7bc6b293fd2ec1c1b035acc6b97ba34f0700c5366b699c646d947c39f81
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.2-267
 ARG VCS_REF
 ARG VCS_URL
 
@@ -36,13 +36,14 @@ ENV OPERATOR=/usr/local/bin/ibm-healthcheck-operator \
 
 # install operator binary
 COPY build/_output/bin/ibm-healthcheck-operator ${OPERATOR}
-
 COPY build/bin /usr/local/bin
 COPY manifests /manifests
 RUN  /usr/local/bin/user_setup
 
-# copy licenses
-RUN mkdir /licenses
+# update and copy licenses
+RUN microdnf update && \
+    mkdir /licenses && \
+    microdnf clean all
 COPY LICENSE /licenses
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
