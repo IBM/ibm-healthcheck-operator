@@ -24,6 +24,7 @@ IMAGE_REPO ?= quay.io/opencloudio
 IMAGE_NAME ?= ibm-healthcheck-operator
 
 CSV_VERSION ?= 3.6.1
+NEW_CSV_VERSION ?= ${CSV_VERSION}
 
 # Github host to use for checking the source tree;
 # Override this variable ue with your own value if you're working on forked repo.
@@ -87,9 +88,10 @@ push-csv: ## Push CSV package to the catalog
 	@echo "push-csv ${CSV_VERSION} ..."
 	@common/scripts/push-csv.sh ${CSV_VERSION}
 
+
 bump-up-csv: ## Bump up CSV version
-	@echo "bump-up-csv ${BASE_DIR} $(CSV_VERSION) ..."
-	@common/scripts/bump-up-csv.sh ${BASE_DIR} $(CSV_VERSION)
+	@echo "bump-up-csv ${BASE_DIR} $(NEW_CSV_VERSION) ..."
+	@common/scripts/bump-up-csv.sh ${BASE_DIR} $(NEW_CSV_VERSION)
 
 ############################################################
 # configure githooks

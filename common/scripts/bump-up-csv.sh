@@ -41,23 +41,42 @@ if [ "${LAST_CSV_VERSION}" == "${NEW_CSV_VERSION}" ]; then
     echo "Last CSV version is already at ${NEW_CSV_VERSION}"
     exit 1
 fi
+# echo "[INFO] Bumping up CSV version from ${LAST_CSV_VERSION} to ${NEW_CSV_VERSION}"
+# cp -rfv "${LAST_CSV_DIR}" "${NEW_CSV_DIR}"
+# OLD_CSV_FILE=$(find "${NEW_CSV_DIR}" -type f -name '*.clusterserviceversion.yaml' | head -1)
+# NEW_CSV_FILE=${OLD_CSV_FILE//${LAST_CSV_VERSION}.clusterserviceversion.yaml/${NEW_CSV_VERSION}.clusterserviceversion.yaml}
+# if [ -f "${OLD_CSV_FILE}" ]; then
+#     mv -v "${OLD_CSV_FILE}" "${NEW_CSV_FILE}"
+# fi
+echo "[INFO] Generating CSV version from ${LAST_CSV_VERSION} to ${NEW_CSV_VERSION}"
+export GOROOT=$(go env GOROOT)
+operator-sdk generate k8s
+operator-sdk generate crds
+operator-sdk generate csv --make-manifests=false --csv-version ${NEW_CSV_VERSION} --update-crds --from-version ${LAST_CSV_VERSION}
+LAST_CRD_FILE=$(find "${LAST_CSV_DIR}" -type f -name '*_crd.yaml' | head -1)
+NEW_CRD_FILE=$(find "${NEW_CSV_DIR}" -type f -name '*_crd.yaml' | head -1)
+LAST_CSV_FILE=$(find "${LAST_CSV_DIR}" -type f -name '*.clusterserviceversion.yaml' | head -1)
+NEW_CSV_FILE=$(find "${NEW_CSV_DIR}" -type f -name '*.clusterserviceversion.yaml' | head -1)
 
-echo "[INFO] Bumping up CSV version from ${LAST_CSV_VERSION} to ${NEW_CSV_VERSION}"
-cp -rfv "${LAST_CSV_DIR}" "${NEW_CSV_DIR}"
-OLD_CSV_FILE=$(find "${NEW_CSV_DIR}" -type f -name '*.clusterserviceversion.yaml' | head -1)
-NEW_CSV_FILE=${OLD_CSV_FILE//${LAST_CSV_VERSION}.clusterserviceversion.yaml/${NEW_CSV_VERSION}.clusterserviceversion.yaml}
-if [ -f "${OLD_CSV_FILE}" ]; then
-    mv -v "${OLD_CSV_FILE}" "${NEW_CSV_FILE}"
-fi
+echo "[INFO] Updating ${NEW_CRD_FILE}"
+echo "last ${LAST_CRD_FILE}"
+echo "new ${NEW_CRD_FILE}"
+add_labels=$(yq r ${LAST_CRD_FILE} metadata.labels)
+echo "labels ${add_labels}"
+yq w -i ${NEW_CRD_FILE} metadata.labels $add_labels
 
 echo "[INFO] Updating ${NEW_CSV_FILE}"
-REPLACES_VERSION=$(yq r "${NEW_CSV_FILE}" "metadata.name")
-sed -e "s|name: ${OPERATOR_NAME}\(.*\)${LAST_CSV_VERSION}|name: ${OPERATOR_NAME}\1${NEW_CSV_VERSION}|" -i "${NEW_CSV_FILE}"
-sed -e "s|olm.skipRange: \(.*\)${LAST_CSV_VERSION}\(.*\)|olm.skipRange: \1${NEW_CSV_VERSION}\2|" -i "${NEW_CSV_FILE}"
-sed -e "s|image: \(.*\)${OPERATOR_NAME}\(.*\)|image: \1${OPERATOR_NAME}:latest|" -i "${NEW_CSV_FILE}"
-sed -e "s|containerImage: \(.*\)${OPERATOR_NAME}\(.*\)|containerImage: \1${OPERATOR_NAME}:latest|" -i "${NEW_CSV_FILE}"
-sed -e "s|replaces: ${OPERATOR_NAME}\(.*\)${PREVIOUS_CSV_VERSION}|replaces: ${REPLACES_VERSION}|" -i "${NEW_CSV_FILE}"
-sed -e "s|version: ${LAST_CSV_VERSION}|version: ${NEW_CSV_VERSION}|" -i "${NEW_CSV_FILE}"
+spec_CRD=$(yq r ${LAST_CSV_FILE} spec.customresourcedefinitions)
+yq w -i ${NEW_CSV_FILE} spec.customresourcedefinitions ${spec_CRD}
+containers=$(yq r ${LAST_CSV_FILE} spec.install)
+yq w -i ${NEW_CSV_FILE} spec.install "${containers}"
+# REPLACES_VERSION=$(yq r "${NEW_CSV_FILE}" "metadata.name")
+# sed -e "s|name: ${OPERATOR_NAME}\(.*\)${LAST_CSV_VERSION}|name: ${OPERATOR_NAME}\1${NEW_CSV_VERSION}|" -i "${NEW_CSV_FILE}"
+# sed -e "s|olm.skipRange: \(.*\)${LAST_CSV_VERSION}\(.*\)|olm.skipRange: \1${NEW_CSV_VERSION}\2|" -i "${NEW_CSV_FILE}"
+# sed -e "s|image: \(.*\)${OPERATOR_NAME}\(.*\)|image: \1${OPERATOR_NAME}:latest|" -i "${NEW_CSV_FILE}"
+# sed -e "s|containerImage: \(.*\)${OPERATOR_NAME}\(.*\)|containerImage: \1${OPERATOR_NAME}:latest|" -i "${NEW_CSV_FILE}"
+# sed -e "s|replaces: ${OPERATOR_NAME}\(.*\)${PREVIOUS_CSV_VERSION}|replaces: ${REPLACES_VERSION}|" -i "${NEW_CSV_FILE}"
+# sed -e "s|version: ${LAST_CSV_VERSION}|version: ${NEW_CSV_VERSION}|" -i "${NEW_CSV_FILE}"
 
 PACKAGE_YAML=${BUNDLE_DIR}/${OPERATOR_NAME}.package.yaml
 echo "[INFO] Updating ${PACKAGE_YAML}"
