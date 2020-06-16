@@ -63,13 +63,13 @@ echo "last ${LAST_CRD_FILE}"
 echo "new ${NEW_CRD_FILE}"
 add_labels=$(yq r ${LAST_CRD_FILE} metadata.labels)
 echo "labels ${add_labels}"
-yq w -i ${NEW_CRD_FILE} metadata.labels $add_labels
+yq w -i "${NEW_CRD_FILE}" "metadata.labels" "${add_labels}"
 
 echo "[INFO] Updating ${NEW_CSV_FILE}"
 spec_CRD=$(yq r ${LAST_CSV_FILE} spec.customresourcedefinitions)
-yq w -i ${NEW_CSV_FILE} spec.customresourcedefinitions ${spec_CRD}
+yq w -i "${NEW_CSV_FILE}" "spec.customresourcedefinitions" "${spec_CRD}"
 containers=$(yq r ${LAST_CSV_FILE} spec.install)
-yq w -i ${NEW_CSV_FILE} spec.install "${containers}"
+yq w -i "${NEW_CSV_FILE}" "spec.install" "${containers}"
 # REPLACES_VERSION=$(yq r "${NEW_CSV_FILE}" "metadata.name")
 # sed -e "s|name: ${OPERATOR_NAME}\(.*\)${LAST_CSV_VERSION}|name: ${OPERATOR_NAME}\1${NEW_CSV_VERSION}|" -i "${NEW_CSV_FILE}"
 # sed -e "s|olm.skipRange: \(.*\)${LAST_CSV_VERSION}\(.*\)|olm.skipRange: \1${NEW_CSV_VERSION}\2|" -i "${NEW_CSV_FILE}"
