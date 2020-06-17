@@ -34,8 +34,8 @@ LAST_CSV_DIR=$(find "${BUNDLE_DIR}" -type d -maxdepth 1 | sort | tail -1)
 LAST_CSV_VERSION=$(basename "${LAST_CSV_DIR}")
 NEW_CSV_DIR=${LAST_CSV_DIR//${LAST_CSV_VERSION}/${NEW_CSV_VERSION}}
 
-PREVIOUS_CSV_DIR=$(find "${BUNDLE_DIR}" -type d -maxdepth 1 | sort | tail -2 | head -1)
-PREVIOUS_CSV_VERSION=$(basename "${PREVIOUS_CSV_DIR}")
+# PREVIOUS_CSV_DIR=$(find "${BUNDLE_DIR}" -type d -maxdepth 1 | sort | tail -2 | head -1)
+# PREVIOUS_CSV_VERSION=$(basename "${PREVIOUS_CSV_DIR}")
 
 if [ "${LAST_CSV_VERSION}" == "${NEW_CSV_VERSION}" ]; then
     echo "Last CSV version is already at ${NEW_CSV_VERSION}"
@@ -49,26 +49,22 @@ fi
 #     mv -v "${OLD_CSV_FILE}" "${NEW_CSV_FILE}"
 # fi
 echo "[INFO] Generating CSV version from ${LAST_CSV_VERSION} to ${NEW_CSV_VERSION}"
-export GOROOT=$(go env GOROOT)
 operator-sdk generate k8s
 operator-sdk generate crds
-operator-sdk generate csv --make-manifests=false --csv-version ${NEW_CSV_VERSION} --update-crds --from-version ${LAST_CSV_VERSION}
+operator-sdk generate csv --make-manifests=false --csv-version "${NEW_CSV_VERSION}" --update-crds --from-version "${LAST_CSV_VERSION}"
 LAST_CRD_FILE=$(find "${LAST_CSV_DIR}" -type f -name '*_crd.yaml' | head -1)
 NEW_CRD_FILE=$(find "${NEW_CSV_DIR}" -type f -name '*_crd.yaml' | head -1)
 LAST_CSV_FILE=$(find "${LAST_CSV_DIR}" -type f -name '*.clusterserviceversion.yaml' | head -1)
 NEW_CSV_FILE=$(find "${NEW_CSV_DIR}" -type f -name '*.clusterserviceversion.yaml' | head -1)
 
 echo "[INFO] Updating ${NEW_CRD_FILE}"
-echo "last ${LAST_CRD_FILE}"
-echo "new ${NEW_CRD_FILE}"
-add_labels=$(yq r ${LAST_CRD_FILE} metadata.labels)
-echo "labels ${add_labels}"
+add_labels=$(yq r "${LAST_CRD_FILE}" metadata.labels)
 yq w -i "${NEW_CRD_FILE}" "metadata.labels" "${add_labels}"
 
 echo "[INFO] Updating ${NEW_CSV_FILE}"
-spec_CRD=$(yq r ${LAST_CSV_FILE} spec.customresourcedefinitions)
+spec_CRD=$(yq r "${LAST_CSV_FILE}" spec.customresourcedefinitions)
 yq w -i "${NEW_CSV_FILE}" "spec.customresourcedefinitions" "${spec_CRD}"
-containers=$(yq r ${LAST_CSV_FILE} spec.install)
+containers=$(yq r "${LAST_CSV_FILE}" spec.install)
 yq w -i "${NEW_CSV_FILE}" "spec.install" "${containers}"
 # REPLACES_VERSION=$(yq r "${NEW_CSV_FILE}" "metadata.name")
 # sed -e "s|name: ${OPERATOR_NAME}\(.*\)${LAST_CSV_VERSION}|name: ${OPERATOR_NAME}\1${NEW_CSV_VERSION}|" -i "${NEW_CSV_FILE}"
