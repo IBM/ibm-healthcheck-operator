@@ -75,6 +75,19 @@ endif
 include common/Makefile.common.mk
 
 ############################################################
+# configure githooks
+############################################################
+configure-githooks: ## Configure githooks
+	- git config core.hooksPath common/scripts/.githooks
+
+############################################################
+# csv section
+############################################################
+push-csv: ## Push CSV package to the catalog
+	@echo "push-csv ${CSV_VERSION} ..."
+	@common/scripts/push-csv.sh ${CSV_VERSION}
+
+############################################################
 # work section
 ############################################################
 $(GOBIN):
@@ -86,7 +99,6 @@ work: $(GOBIN)
 ############################################################
 # format section
 ############################################################
-
 # All available format: format-go format-python
 # Default value will run all formats, override these make target with your requirements:
 #    eg: fmt: format-go format-protos
@@ -95,9 +107,7 @@ fmt: format-go format-python
 ############################################################
 # check section
 ############################################################
-
 check: lint
-
 # All available linters: lint-dockerfiles lint-scripts lint-yaml lint-copyright-banner lint-go lint-python lint-helm lint-markdown
 # Default value will run all linters, override these make target with your requirements:
 #    eg: lint: lint-go lint-yaml
@@ -107,7 +117,6 @@ lint: lint-all
 ############################################################
 # test section
 ############################################################
-
 test: ## Run unit test
 	@echo "Running the tests for $(IMAGE_NAME) on $(LOCAL_ARCH)..."
 	@go test $(TESTARGS) ./pkg/controller/...
@@ -115,14 +124,12 @@ test: ## Run unit test
 ############################################################
 # coverage section
 ############################################################
-
 coverage:
 	@common/scripts/codecov.sh ${BUILD_LOCALLY}
 
 ############################################################
 # build section
 ############################################################
-
 build: 
 	@echo "Building the $(IMAGE_NAME) binary for $(LOCAL_ARCH)..."
 	@GOARCH=$(LOCAL_ARCH) common/scripts/gobuild.sh build/_output/bin/$(IMAGE_NAME) ./cmd/manager
@@ -131,7 +138,6 @@ build:
 ############################################################
 # image section
 ############################################################
-
 ifeq ($(BUILD_LOCALLY),0)
     export CONFIG_DOCKER_TARGET = config-docker
 endif
@@ -149,7 +155,6 @@ push-image: $(CONFIG_DOCKER_TARGET) build-image
 ############################################################
 # multiarch-image section
 ############################################################
-
 multiarch-image: $(CONFIG_DOCKER_TARGET)
 	@common/scripts/multiarch_image.sh $(IMAGE_REPO) $(IMAGE_NAME) $(VERSION)
 	
