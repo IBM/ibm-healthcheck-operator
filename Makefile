@@ -23,6 +23,7 @@ BUILD_LOCALLY ?= 1
 IMAGE_REPO ?= quay.io/opencloudio
 IMAGE_NAME ?= ibm-healthcheck-operator
 
+
 # Github host to use for checking the source tree;
 # Override this variable ue with your own value if you're working on forked repo.
 GIT_HOST ?= github.com/IBM
@@ -81,11 +82,15 @@ configure-githooks: ## Configure githooks
 	- git config core.hooksPath common/scripts/.githooks
 
 ############################################################
-# csv section
+# csv section env -> push-csv : CSV_VERSION   bump-up : NEW_CSV_VERSION
 ############################################################
 push-csv: ## Push CSV package to the catalog
 	@echo "push-csv ${CSV_VERSION} ..."
 	@common/scripts/push-csv.sh ${CSV_VERSION}
+
+bump-up-csv: ## Bump up CSV version
+	@echo "bump-up-csv ${BASE_DIR} ${NEW_CSV_VERSION} ..."
+	@common/scripts/bump-up-csv.sh "${BASE_DIR}" "${NEW_CSV_VERSION}"
 
 ############################################################
 # work section
