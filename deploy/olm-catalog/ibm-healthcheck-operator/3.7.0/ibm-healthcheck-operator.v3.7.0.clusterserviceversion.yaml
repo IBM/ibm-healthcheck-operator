@@ -25,6 +25,16 @@ metadata:
                 "node-role.kubernetes.io/worker": ""
               },
               "replicaCount": 1,
+              "resources": {
+                "limits": {
+                  "cpu": "400",
+                  "memory": "70Mi"
+                },
+                "requests": {
+                  "cpu": "200m",
+                  "memory": "60Mi"
+                }
+              },
               "securityContext": {
                 "allowPrivilegeEscalation": false,
                 "capabilities": {
@@ -62,6 +72,16 @@ metadata:
                 "node-role.kubernetes.io/worker": ""
               },
               "replicaCount": 1,
+              "resources": {
+                "limits": {
+                  "cpu": "500",
+                  "memory": "60Mi"
+                },
+                "requests": {
+                  "cpu": "200m",
+                  "memory": "60Mi"
+                }
+              },
               "securityContext": {
                 "allowPrivilegeEscalation": false,
                 "capabilities": {

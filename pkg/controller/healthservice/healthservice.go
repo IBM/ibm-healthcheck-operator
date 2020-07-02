@@ -28,7 +28,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
@@ -234,6 +233,8 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	reqLogger.Info("Building HealthService Deployment", "Deployment.Namespace", h.Namespace, "Deployment.Name", hsName)
 
+	hsResources := r.getResources(&h.Spec.HealthService.Resources)
+
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      hsName,
@@ -297,16 +298,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 									Value: h.Spec.HealthService.DependsSetting,
 								},
 							},
-							Resources: corev1.ResourceRequirements{
-								Limits: map[corev1.ResourceName]resource.Quantity{
-									corev1.ResourceCPU:    *cpu500,
-									corev1.ResourceMemory: *memory512,
-								},
-								Requests: map[corev1.ResourceName]resource.Quantity{
-									corev1.ResourceCPU:    *cpu50,
-									corev1.ResourceMemory: *memory64,
-								},
-							},
+							Resources: *hsResources,
 							VolumeMounts: []corev1.VolumeMount{
 								{
 									Name:      "cluster-healthcheck-data",

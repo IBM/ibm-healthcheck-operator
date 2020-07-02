@@ -52,6 +52,8 @@ type HealthServiceSpecMemcached struct {
 	SecurityContext corev1.SecurityContext `json:"securityContext,omitempty"`
 	// memcached startup command, default value is "memcached -m 64 -o modern -v"
 	Command []string `json:"command,omitempty"`
+	// resources defines the desired state of Resources
+	Resources Resources `json:"resources,omitempty"`
 }
 
 // HealthServiceSpecHealthService defines the desired state of HealthService.HealthService
@@ -80,6 +82,18 @@ type HealthServiceSpecHealthService struct {
 	SecurityContext corev1.SecurityContext `json:"securityContext,omitempty"`
 	// health srevice deployment hostnetwork, default is false
 	HostNetwork bool `json:"hostNetwork,omitempty"`
+	// resources defines the desired state of Resources
+	Resources Resources `json:"resources,omitempty"`
+}
+
+type Resource struct {
+	Memory string `json:"memory,omitempty"`
+	CPU    string `json:"cpu,omitempty"`
+}
+
+type Resources struct {
+	Requests Resource `json:"requests,omitempty"`
+	Limits   Resource `json:"limits,omitempty"`
 }
 
 // HealthServiceSpec defines the desired state of HealthService

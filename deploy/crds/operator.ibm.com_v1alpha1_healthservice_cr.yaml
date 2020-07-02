@@ -31,6 +31,13 @@ spec:
     - -o
     - modern
     - -v
+    resources:
+      requests:
+        memory: "60Mi"
+        cpu: "100m"
+      limits:
+        memory: "60Mi"
+        cpu: "500m"
   healthService:
     name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
@@ -55,3 +62,10 @@ spec:
     #cloudpakNameSetting: Labels/Annotations:name
     serviceNameSetting: Annotations:productName
     #dependsSetting: Labels/Annotations:name
+    resources:
+      requests:
+        memory: "60Mi"
+        cpu: "100m"
+      limits:
+        memory: "70Mi"
+        cpu: "400m"
