@@ -26,7 +26,6 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	intstr "k8s.io/apimachinery/pkg/util/intstr"
@@ -34,10 +33,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
-var cpu50 = resource.NewMilliQuantity(50, resource.DecimalSI)          // 50m
-var cpu500 = resource.NewMilliQuantity(500, resource.DecimalSI)        // 500m
-var memory64 = resource.NewQuantity(64*1024*1024, resource.BinarySI)   // 64Mi
-var memory512 = resource.NewQuantity(512*1024*1024, resource.BinarySI) // 512Mi
 var memSvcName = "memcached"
 
 func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alpha1.HealthService) error {
@@ -160,6 +155,8 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	reqLogger.Info("Building Memcached Deployment", "Deployment.Namespace", h.Namespace, "Deployment.Name", memName)
 
+	hsResources := r.getResources(&h.Spec.Memcached.Resources)
+
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      memName,
@@ -209,14 +206,7 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 							InitialDelaySeconds: 5,
 							TimeoutSeconds:      1,
 						},
-						Resources: corev1.ResourceRequirements{
-							Limits: map[corev1.ResourceName]resource.Quantity{
-								corev1.ResourceCPU:    *cpu500,
-								corev1.ResourceMemory: *memory512},
-							Requests: map[corev1.ResourceName]resource.Quantity{
-								corev1.ResourceCPU:    *cpu50,
-								corev1.ResourceMemory: *memory64},
-						},
+						Resources: *hsResources,
 					}},
 					NodeSelector: h.Spec.Memcached.NodeSelector,
 					Tolerations:  h.Spec.Memcached.Tolerations,
