@@ -30,9 +30,7 @@ type HealthServiceSpecMemcached struct {
 	Name string `json:"name,"`
 	// deprecated, define image in operator.yaml
 	Image image `json:"image,omitempty"`
-	// memcached deployment replicas, default is 0, will be deprecated
-	ReplicaCount int32 `json:"replicaCount,omitempty"`
-	// memcached pod replicas, default is 1
+	// memcached pod replicas, default is 0
 	Replicas int32 `json:"replicas,omitempty"`
 	// memcached deployment ServiceAccountName, default is default
 	ServiceAccountName string `json:"serviceAccountName,omitempty"`
@@ -62,9 +60,7 @@ type HealthServiceSpecHealthService struct {
 	ServiceNameSetting string `json:"serviceNameSetting,omitempty"`
 	// set labels/annotation name to get pod's dependencies
 	DependsSetting string `json:"dependsSetting,omitempty"`
-	// health service deployment replicas, default is 0, will be deprecated
-	ReplicaCount int32 `json:"replicaCount,omitempty"`
-	// health service pod replicas, default is 1
+	// health service pod replicas, default is 0
 	Replicas int32 `json:"replicas,omitempty"`
 	// health service deployment ServiceAccountName, default is default
 	ServiceAccountName string `json:"serviceAccountName,omitempty"`

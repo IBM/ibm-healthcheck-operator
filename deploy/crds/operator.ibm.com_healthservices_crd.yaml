@@ -77,12 +77,8 @@ spec:
                   description: health srevice deployment node selector, default
                     is empty
                   type: object
-                replicaCount:
-                  description: health service deployment replicas, default is 0, will be Deprecated
-                  format: int32
-                  type: integer
                 replicas:
-                  description: health service pod replicas, default is 1
+                  description: health service pod replicas, default is 0
                   format: int32
                   type: integer
                 resources:
@@ -319,10 +315,6 @@ spec:
                     type: string
                   description: memcached deployment node selector, default is empty
                   type: object
-                replicaCount:
-                  description: memcached deployment replicas, default is 0, will be deprecated
-                  format: int32
-                  type: integer
                 replicas:
                   description: memcached pod replicas, default is 0
                   format: int32
