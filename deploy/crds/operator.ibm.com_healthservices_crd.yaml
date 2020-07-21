@@ -324,7 +324,7 @@ spec:
                   format: int32
                   type: integer
                 replicas:
-                  description: memcached pod replicas, default is 1
+                  description: memcached pod replicas, default is 0
                   format: int32
                   type: integer
                 resources:

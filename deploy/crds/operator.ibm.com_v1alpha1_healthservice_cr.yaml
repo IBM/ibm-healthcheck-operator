@@ -34,11 +34,11 @@ spec:
     - -v
     resources:
       requests:
-        memory: "60Mi"
-        cpu: "100m"
+        memory: "70Mi"
+        cpu: "70m"
       limits:
-        memory: "60Mi"
-        cpu: "500m"
+        memory: "80Mi"
+        cpu: "800m"
   healthService:
     name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
@@ -67,7 +67,7 @@ spec:
     resources:
       requests:
         memory: "60Mi"
-        cpu: "100m"
+        cpu: "400m"
       limits:
         memory: "70Mi"
-        cpu: "400m"
+        cpu: "900m"
