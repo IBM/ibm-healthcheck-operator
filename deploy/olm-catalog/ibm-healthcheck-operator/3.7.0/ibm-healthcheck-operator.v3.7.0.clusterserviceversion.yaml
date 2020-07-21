@@ -25,6 +25,7 @@ metadata:
                 "node-role.kubernetes.io/worker": ""
               },
               "replicaCount": 1,
+              "replicas": 1,
               "resources": {
                 "limits": {
                   "cpu": "400",
@@ -72,6 +73,7 @@ metadata:
                 "node-role.kubernetes.io/worker": ""
               },
               "replicaCount": 1,
+              "replicas": 1,
               "resources": {
                 "limits": {
                   "cpu": "500",

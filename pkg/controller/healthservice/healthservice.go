@@ -243,7 +243,8 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 		},
 		Spec: appsv1.DeploymentSpec{
 			MinReadySeconds: 0,
-			Replicas:        &h.Spec.HealthService.ReplicaCount,
+			// Replicas:        &h.Spec.HealthService.ReplicaCount,
+			Replicas: &h.Spec.HealthService.Replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
 			},

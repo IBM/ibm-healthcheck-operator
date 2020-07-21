@@ -29,7 +29,7 @@ func (r *ReconcileHealthService) getResources(res *operatorv1alpha1.Resources) *
 		requestsMemory = resource.MustParse("64Mi")
 
 		limitsCPU    = resource.MustParse("500m")
-		limitsMemory = resource.MustParse("512Mi") // 512Mi
+		limitsMemory = resource.MustParse("512Mi")
 	)
 
 	resoucesCount := 0

@@ -164,7 +164,8 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 			Labels:    labels,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: &h.Spec.Memcached.ReplicaCount,
+			// Replicas: &h.Spec.Memcached.ReplicaCount,
+			Replicas: &h.Spec.Memcached.Replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
 			},
