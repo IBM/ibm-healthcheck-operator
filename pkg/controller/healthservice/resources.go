@@ -17,9 +17,6 @@
 package healthservice
 
 import (
-	"regexp"
-	"strconv"
-
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
 
 	corev1 "k8s.io/api/core/v1"
@@ -28,10 +25,11 @@ import (
 
 func (r *ReconcileHealthService) getResources(res *operatorv1alpha1.Resources) *corev1.ResourceRequirements {
 	var (
-		requestsCPU    = resource.NewMilliQuantity(50, resource.DecimalSI)      // 50m,
-		requestsMemory = resource.NewQuantity(64*1024*1024, resource.BinarySI)  // 64Mi
-		limitsCPU      = resource.NewMilliQuantity(500, resource.DecimalSI)     // 500m
-		limitsMemory   = resource.NewQuantity(512*1024*1024, resource.BinarySI) // 512Mi
+		requestsCPU    = resource.MustParse("50m")
+		requestsMemory = resource.MustParse("64Mi")
+
+		limitsCPU    = resource.MustParse("500m")
+		limitsMemory = resource.MustParse("512Mi") // 512Mi
 	)
 
 	resoucesCount := 0
@@ -40,56 +38,48 @@ func (r *ReconcileHealthService) getResources(res *operatorv1alpha1.Resources) *
 	requestMap := map[corev1.ResourceName]resource.Quantity{}
 	if res.Requests.CPU != "" {
 		resoucesCount++
-		reqCPU, err := GetDigits(res.Requests.CPU)
+		reqCPU, err := resource.ParseQuantity(res.Requests.CPU)
 		if err == nil {
-			requestsCPU = resource.NewMilliQuantity(reqCPU, resource.DecimalSI)
+			requestsCPU = reqCPU
 		}
-		requestMap[corev1.ResourceCPU] = *requestsCPU
+		requestMap[corev1.ResourceCPU] = requestsCPU
 	}
 	if res.Requests.Memory != "" {
 		resoucesCount++
-		reqMemory, err := GetDigits(res.Requests.Memory)
+		reqMemory, err := resource.ParseQuantity(res.Requests.Memory)
 		if err == nil {
-			requestsMemory = resource.NewQuantity(reqMemory*1024*1024, resource.BinarySI)
+			requestsMemory = reqMemory
 		}
-		requestMap[corev1.ResourceMemory] = *requestsMemory
+		requestMap[corev1.ResourceMemory] = requestsMemory
 	}
 
 	limitMap := map[corev1.ResourceName]resource.Quantity{}
 	if res.Limits.CPU != "" {
 		resoucesCount++
-		limCPU, err := GetDigits(res.Limits.CPU)
+		limCPU, err := resource.ParseQuantity(res.Limits.CPU)
 		if err == nil {
-			limitsCPU = resource.NewMilliQuantity(limCPU, resource.DecimalSI)
+			limitsCPU = limCPU
 		}
-		limitMap[corev1.ResourceCPU] = *limitsCPU
+		limitMap[corev1.ResourceCPU] = limitsCPU
 	}
 	if res.Limits.Memory != "" {
 		resoucesCount++
-		limMemory, err := GetDigits(res.Limits.Memory)
+		limMemory, err := resource.ParseQuantity(res.Limits.Memory)
 		if err == nil {
-			limitsMemory = resource.NewQuantity(limMemory*1024*1024, resource.BinarySI)
+			limitsMemory = limMemory
 		}
-		limitMap[corev1.ResourceMemory] = *limitsMemory
+		limitMap[corev1.ResourceMemory] = limitsMemory
 	}
 
 	if resoucesCount == 0 {
-		requestMap[corev1.ResourceCPU] = *requestsCPU
-		requestMap[corev1.ResourceMemory] = *requestsMemory
-		limitMap[corev1.ResourceCPU] = *limitsCPU
-		limitMap[corev1.ResourceMemory] = *limitsMemory
+		requestMap[corev1.ResourceCPU] = requestsCPU
+		requestMap[corev1.ResourceMemory] = requestsMemory
+		limitMap[corev1.ResourceCPU] = limitsCPU
+		limitMap[corev1.ResourceMemory] = limitsMemory
 	}
 
 	ret.Requests = requestMap
 	ret.Limits = limitMap
 
 	return ret
-}
-
-var digitsRegexp = regexp.MustCompile("([0-9]*)")
-
-func GetDigits(s string) (int64, error) {
-	strDigits := digitsRegexp.FindStringSubmatch(s)[1]
-	digits, err := strconv.ParseInt(strDigits, 10, 64)
-	return digits, err
 }
