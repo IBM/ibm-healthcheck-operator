@@ -105,6 +105,25 @@ metadata:
               ]
             }
           }
+        },
+        {
+          "apiVersion": "operator.ibm.com/v1alpha1",
+          "kind": "MustGatherService",
+          "metadata": {
+            "name": "mustgatherservice"
+          },
+          "spec": {
+            "mustGather": {
+              "persistentVolumeClaim": {
+                "resources": {
+                  "requests": {
+                    "storage": "5Gi"
+                  }
+                },
+                "storageClassName": "rook-ceph-cephfs-internal"
+              }
+            }
+          }
         }
       ]
     capabilities: Basic Install
@@ -125,7 +144,7 @@ spec:
       kind: HealthService
       name: healthservices.operator.ibm.com
       version: v1alpha1
-      displayName: IBM Health Services Operator
+      displayName: IBM Health Check Services
       resources:
       - kind: deployments
         name: A Kubernetes Deployment
@@ -170,6 +189,11 @@ spec:
       name: clusterservicestatuses.clusterhealth.ibm.com
       version: v1
       displayName: IBM Health Services ClusterServiceStatus
+    - description: MustGatherService is the Schema for the mustgatherservices API
+      kind: MustGatherService
+      name: mustgatherservices.operator.ibm.com
+      version: v1alpha1
+      displayName: IBM Must Gather Services
   description: "**Important:** Do not install this operator directly. Only install this operator using the IBM Common Services Operator. For more information about installing this operator and other Common Services operators, see [Installer documentation](http://ibm.biz/cpcs_opinstall).\n\n If you are using this operator as part of an IBM Cloud Pak, see the documentation for that IBM Cloud Pak to learn more about how to install and use the operator service. For more information about IBM Cloud Paks, see [IBM Cloud Paks that use Common Services](http://ibm.biz/cpcs_cloudpaks).\n\nYou can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services. \n\nFor more information about the available IBM Cloud Platform Common Services, see the [IBM Knowledge Center](http://ibm.biz/cpcsdocs). \n## Supported platforms \n\n Red Hat OpenShift Container Platform 4.3 or newer installed on one of the following platforms: \n\n- Linux x86_64 \n- Linux on Power (ppc64le) \n- Linux on IBM Z and LinuxONE \n## Prerequisites\n\n Before you install this operator, you need to first install the operator dependencies and prerequisites: \n- For the list of operator dependencies, see the IBM Knowledge Center [Common Services dependencies documentation](http://ibm.biz/cpcs_opdependencies). \n- For the list of prerequisites for installing the operator, see the IBM Knowledge Center [Preparing to install services documentation](http://ibm.biz/cpcs_opinstprereq). \n## Documentation \n\n To install the operator with the IBM Common Services Operator follow the the installation and configuration instructions within the IBM Knowledge Center. \n- If you are using the operator as part of an IBM Cloud Pak, see the documentation for that IBM Cloud Pak, for a list of IBM Cloud Paks, see [IBM Cloud Paks that use Common Services](http://ibm.biz/cpcs_cloudpaks). \n- If you are using the operator with an IBM Containerized Software, see the IBM Cloud Platform Common Services Knowledge Center [Installer documentation](http://ibm.biz/cpcs_opinstall)."
   displayName: IBM Health Check Operator
   icon:
