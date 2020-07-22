@@ -24,16 +24,6 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// image defines the desired image repository, tag and imagepullpolicy
-type image struct {
-	// image repository, default is empty
-	Repository string `json:"repository"`
-	// image tag, default is empty
-	Tag string `json:"tag"`
-	// image pull policy, default is IfNotPresent
-	PullPolicy string `json:"pullPolicy,omitempty"`
-}
-
 // HealthServiceSpecMemcached defines the desired state of HealthService.Memcached
 type HealthServiceSpecMemcached struct {
 	// memcached deployment name

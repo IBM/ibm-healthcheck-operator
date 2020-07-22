@@ -61,6 +61,8 @@ spec:
               value: "quay.io/opencloudio/system-healthcheck-service:3.6.0"
             - name: OPERAND_MEMCACHED_IMAGE
               value: "quay.io/opencloudio/icp-memcached:3.6.0"
+            - name: OPERAND_MUSTGATHER_JOB_IMAGE
+              value: "quay.io/opencloudio/must-gather:4.4.1"
           resources:
             limits:
               cpu: 160m
