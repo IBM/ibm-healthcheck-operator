@@ -1,0 +1,9 @@
+apiVersion: operator.ibm.com/v1alpha1
+kind: MustGatherJob
+metadata:
+  name: example-mustgatherjob
+spec:
+  serviceAccountName: ibm-mustgather-admin
+  image:
+    repository: quay.io/opencloudio/must-gather
+    tag: 4.4.1

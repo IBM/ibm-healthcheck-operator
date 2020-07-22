@@ -108,6 +108,16 @@ metadata:
         },
         {
           "apiVersion": "operator.ibm.com/v1alpha1",
+          "kind": "MustGatherJob",
+          "metadata": {
+            "name": "example-mustgatherjob"
+          },
+          "spec": {
+            "serviceAccountName": "ibm-mustgather-admin"
+          }
+        },
+        {
+          "apiVersion": "operator.ibm.com/v1alpha1",
           "kind": "MustGatherService",
           "metadata": {
             "name": "mustgatherservice"
@@ -194,6 +204,11 @@ spec:
       name: mustgatherservices.operator.ibm.com
       version: v1alpha1
       displayName: IBM Must Gather Services
+    - description: MustGatherJob is the Schema for the mustgatherjobs API
+      kind: MustGatherJob
+      name: mustgatherjobs.operator.ibm.com
+      version: v1alpha1
+      displayName: IBM Must Gather Jobs
   description: "**Important:** Do not install this operator directly. Only install this operator using the IBM Common Services Operator. For more information about installing this operator and other Common Services operators, see [Installer documentation](http://ibm.biz/cpcs_opinstall).\n\n If you are using this operator as part of an IBM Cloud Pak, see the documentation for that IBM Cloud Pak to learn more about how to install and use the operator service. For more information about IBM Cloud Paks, see [IBM Cloud Paks that use Common Services](http://ibm.biz/cpcs_cloudpaks).\n\nYou can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services. \n\nFor more information about the available IBM Cloud Platform Common Services, see the [IBM Knowledge Center](http://ibm.biz/cpcsdocs). \n## Supported platforms \n\n Red Hat OpenShift Container Platform 4.3 or newer installed on one of the following platforms: \n\n- Linux x86_64 \n- Linux on Power (ppc64le) \n- Linux on IBM Z and LinuxONE \n## Prerequisites\n\n Before you install this operator, you need to first install the operator dependencies and prerequisites: \n- For the list of operator dependencies, see the IBM Knowledge Center [Common Services dependencies documentation](http://ibm.biz/cpcs_opdependencies). \n- For the list of prerequisites for installing the operator, see the IBM Knowledge Center [Preparing to install services documentation](http://ibm.biz/cpcs_opinstprereq). \n## Documentation \n\n To install the operator with the IBM Common Services Operator follow the the installation and configuration instructions within the IBM Knowledge Center. \n- If you are using the operator as part of an IBM Cloud Pak, see the documentation for that IBM Cloud Pak, for a list of IBM Cloud Paks, see [IBM Cloud Paks that use Common Services](http://ibm.biz/cpcs_cloudpaks). \n- If you are using the operator with an IBM Containerized Software, see the IBM Cloud Platform Common Services Knowledge Center [Installer documentation](http://ibm.biz/cpcs_opinstall)."
   displayName: IBM Health Check Operator
   icon:
@@ -224,6 +239,14 @@ spec:
           - list
           - watch
         serviceAccountName: ibm-healthcheck-operator-cluster
+      - rules:
+        - apiGroups:
+          - '*'
+          resources:
+          - '*'
+          verbs:
+          - '*'
+        serviceAccountName: ibm-mustgather-admin
       deployments:
       - name: ibm-healthcheck-operator
         spec:
@@ -274,6 +297,8 @@ spec:
                   value: "quay.io/opencloudio/system-healthcheck-service@sha256:c8651a331bed66ce33a16085d277483e77d57f0d705449e2764c9ea39c8e85f9"
                 - name: OPERAND_MEMCACHED_IMAGE
                   value: "quay.io/opencloudio/icp-memcached@sha256:8de5389dc4712a1383c55dd5ed20585b6a56747b4e67fd72761546d28b63b30b"
+                - name: OPERAND_MUSTGATHER_JOB_IMAGE
+                  value: "quay.io/opencloudio/must-gather@sha256:187fa557de94c9a9443f16e4643dd395fc69585ecbd968f5f63b2d72b1012510"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
@@ -333,6 +358,18 @@ spec:
           - daemonsets
           - replicasets
           - statefulsets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - batch
+          resources:
+          - jobs
           verbs:
           - create
           - delete
