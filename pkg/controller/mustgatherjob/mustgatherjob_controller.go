@@ -194,10 +194,11 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 									Name:      "mustgather-pvc",
 									MountPath: "/must-gather",
 								},
-								//								{
-								//									Name:      "mustgather-extend-template",
-								//									MountPath: "/tmp",
-								//								},
+								{
+									Name:      "mustgather-config",
+									MountPath: "/usr/bin/gather_config",
+									SubPath:   "gather_config",
+								},
 							},
 						},
 					},
@@ -209,16 +210,16 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 									ClaimName: "mustgather-pvc",
 								},
 							},
-							//
-							//						{
-							//							Name: "mustgather-extend-template",
-							//							VolumeSource: corev1.VolumeSource{
-							//								ConfigMap: &corev1.ConfigMapVolumeSource{
-							//									LocalObjectReference: corev1.LocalObjectReference{
-							//										Name: "mustgather-extend-template",
-							//									},
-							//								},
-							//							},
+						},
+						{
+							Name: "mustgather-config",
+							VolumeSource: corev1.VolumeSource{
+								ConfigMap: &corev1.ConfigMapVolumeSource{
+									LocalObjectReference: corev1.LocalObjectReference{
+										Name: cr.Spec.MustGatherConfigName,
+									},
+								},
+							},
 						},
 					},
 				},

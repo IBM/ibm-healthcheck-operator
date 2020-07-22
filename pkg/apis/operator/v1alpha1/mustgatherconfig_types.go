@@ -23,21 +23,16 @@ import (
 // EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
-// MustGatherJobSpec defines the desired state of MustGatherJob
-type MustGatherJobSpec struct {
+// MustGatherConfigSpec defines the desired state of MustGatherConfig
+type MustGatherConfigSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
-	// must gather image
-	Image image `json:"image,omitempty"`
-	// must gather job ServiceAccountName, default is default
-	ServiceAccountName string `json:"serviceAccountName,omitempty"`
-	// must gather config name, default is default
-	MustGatherConfigName string `json:"mustgatherConfigName,omitempty"`
+	GatherConfig string `json:"gatherConfig,omitempty"`
 }
 
-// MustGatherJobStatus defines the observed state of MustGatherJob
-type MustGatherJobStatus struct {
+// MustGatherConfigStatus defines the observed state of MustGatherConfig
+type MustGatherConfigStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
@@ -45,26 +40,26 @@ type MustGatherJobStatus struct {
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// MustGatherJob is the Schema for the mustgatherjobs API
+// MustGatherConfig is the Schema for the mustgatherconfigs API
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:path=mustgatherjobs,scope=Namespaced
-type MustGatherJob struct {
+// +kubebuilder:resource:path=mustgatherconfigs,scope=Namespaced
+type MustGatherConfig struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   MustGatherJobSpec   `json:"spec,omitempty"`
-	Status MustGatherJobStatus `json:"status,omitempty"`
+	Spec   MustGatherConfigSpec   `json:"spec,omitempty"`
+	Status MustGatherConfigStatus `json:"status,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// MustGatherJobList contains a list of MustGatherJob
-type MustGatherJobList struct {
+// MustGatherConfigList contains a list of MustGatherConfig
+type MustGatherConfigList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []MustGatherJob `json:"items"`
+	Items           []MustGatherConfig `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&MustGatherJob{}, &MustGatherJobList{})
+	SchemeBuilder.Register(&MustGatherConfig{}, &MustGatherConfigList{})
 }

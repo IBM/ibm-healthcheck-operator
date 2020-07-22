@@ -51,9 +51,11 @@ spec:
               - repository
               - tag
               type: object
+            mustgatherConfigName:
+              description: must gather config name, default is default
+              type: string
             serviceAccountName:
-              description: health service deployment ServiceAccountName, default is
-                default
+              description: must gather job ServiceAccountName, default is default
               type: string
           type: object
         status:
