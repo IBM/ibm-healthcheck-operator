@@ -1,0 +1,12 @@
+apiVersion: operator.ibm.com/v1alpha1
+kind: MustGatherService
+metadata:
+  name: mustgatherservice
+spec:
+  # Add fields here
+  mustGather:
+    persistentVolumeClaim:
+      storageClassName: rook-ceph-cephfs-internal
+      resources:
+        requests:
+          storage: 5Gi
