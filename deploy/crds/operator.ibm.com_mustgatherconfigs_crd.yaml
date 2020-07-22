@@ -1,20 +1,20 @@
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: mustgatherjobs.operator.ibm.com
+  name: mustgatherconfigs.operator.ibm.com
 spec:
   group: operator.ibm.com
   names:
-    kind: MustGatherJob
-    listKind: MustGatherJobList
-    plural: mustgatherjobs
-    singular: mustgatherjob
+    kind: MustGatherConfig
+    listKind: MustGatherConfigList
+    plural: mustgatherconfigs
+    singular: mustgatherconfig
   scope: Namespaced
   subresources:
     status: {}
   validation:
     openAPIV3Schema:
-      description: MustGatherJob is the Schema for the mustgatherjobs API
+      description: MustGatherConfig is the Schema for the mustgatherconfigs API
       properties:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
@@ -29,37 +29,17 @@ spec:
         metadata:
           type: object
         spec:
-          description: MustGatherJobSpec defines the desired state of MustGatherJob
+          description: MustGatherConfigSpec defines the desired state of MustGatherConfig
           properties:
-            image:
+            gatherConfig:
               description: 'INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
                 Important: Run "operator-sdk generate k8s" to regenerate code after
                 modifying this file Add custom validation using kubebuilder tags:
-                https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
-                must gather image'
-              properties:
-                pullPolicy:
-                  description: image pull policy, default is IfNotPresent
-                  type: string
-                repository:
-                  description: image repository, default is empty
-                  type: string
-                tag:
-                  description: image tag, default is empty
-                  type: string
-              required:
-              - repository
-              - tag
-              type: object
-            mustgatherConfigName:
-              description: must gather config name, default is default
-              type: string
-            serviceAccountName:
-              description: must gather job ServiceAccountName, default is default
+                https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html'
               type: string
           type: object
         status:
-          description: MustGatherJobStatus defines the observed state of MustGatherJob
+          description: MustGatherConfigStatus defines the observed state of MustGatherConfig
           type: object
       type: object
   version: v1alpha1

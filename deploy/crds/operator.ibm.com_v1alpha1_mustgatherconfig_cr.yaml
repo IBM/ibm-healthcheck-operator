@@ -1,0 +1,11 @@
+apiVersion: operator.ibm.com/v1alpha1
+kind: MustGatherConfig
+metadata:
+  name: default
+spec:
+  # Add fields here
+  gatherConfig: |-
+    modules="overview,system,failure,ocp,cloudpak"
+    namespaces="common-service,ibm-common-services"
+    labels=""
+    env=""
