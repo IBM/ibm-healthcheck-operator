@@ -155,7 +155,11 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	reqLogger.Info("Building Memcached Deployment", "Deployment.Namespace", h.Namespace, "Deployment.Name", memName)
 
-	hsResources := r.getResources(&h.Spec.Memcached.Resources)
+	hmResources := r.getResources(&h.Spec.Memcached.Resources)
+	hmReplicas := int32(1)
+	if h.Spec.HealthService.Replicas > 0 {
+		hmReplicas = h.Spec.Memcached.Replicas
+	}
 
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -165,7 +169,7 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 		},
 		Spec: appsv1.DeploymentSpec{
 			// Replicas: &h.Spec.Memcached.ReplicaCount,
-			Replicas: &h.Spec.Memcached.Replicas,
+			Replicas: &hmReplicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
 			},
@@ -207,7 +211,7 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 							InitialDelaySeconds: 5,
 							TimeoutSeconds:      1,
 						},
-						Resources: *hsResources,
+						Resources: *hmResources,
 					}},
 					NodeSelector: h.Spec.Memcached.NodeSelector,
 					Tolerations:  h.Spec.Memcached.Tolerations,

@@ -9,7 +9,7 @@ metadata:
 spec:
   memcached:
     name: icp-memcached
-    replicas: 1
+    replicas: 2
     serviceAccountName: ibm-healthcheck-operator-cluster
     nodeSelector:
       node-role.kubernetes.io/worker: ""
@@ -41,7 +41,7 @@ spec:
   healthService:
     name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
-    replicas: 1
+    replicas: 3
     serviceAccountName: ibm-healthcheck-operator-cluster
     nodeSelector:
       node-role.kubernetes.io/worker: ""
