@@ -24,15 +24,15 @@ metadata:
               "nodeSelector": {
                 "node-role.kubernetes.io/worker": ""
               },
-              "replicaCount": 1,
+              "replicas": 1,
               "resources": {
                 "limits": {
-                  "cpu": "400",
-                  "memory": "70Mi"
+                  "cpu": "500m",
+                  "memory": "512Mi"
                 },
                 "requests": {
-                  "cpu": "200m",
-                  "memory": "60Mi"
+                  "cpu": "50m",
+                  "memory": "64Mi"
                 }
               },
               "securityContext": {
@@ -71,15 +71,15 @@ metadata:
               "nodeSelector": {
                 "node-role.kubernetes.io/worker": ""
               },
-              "replicaCount": 1,
+              "replicas": 1,
               "resources": {
                 "limits": {
                   "cpu": "500",
-                  "memory": "60Mi"
+                  "memory": "512Mi"
                 },
                 "requests": {
-                  "cpu": "200m",
-                  "memory": "60Mi"
+                  "cpu": "50m",
+                  "memory": "64Mi"
                 }
               },
               "securityContext": {

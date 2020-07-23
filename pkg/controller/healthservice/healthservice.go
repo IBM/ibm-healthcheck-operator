@@ -234,6 +234,10 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 	reqLogger.Info("Building HealthService Deployment", "Deployment.Namespace", h.Namespace, "Deployment.Name", hsName)
 
 	hsResources := r.getResources(&h.Spec.HealthService.Resources)
+	hsReplicas := int32(1)
+	if h.Spec.HealthService.Replicas > 0 {
+		hsReplicas = h.Spec.HealthService.Replicas
+	}
 
 	dep := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
@@ -243,7 +247,8 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 		},
 		Spec: appsv1.DeploymentSpec{
 			MinReadySeconds: 0,
-			Replicas:        &h.Spec.HealthService.ReplicaCount,
+			// Replicas:        &h.Spec.HealthService.ReplicaCount,
+			Replicas: &hsReplicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
 			},
