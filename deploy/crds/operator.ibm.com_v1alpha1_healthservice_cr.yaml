@@ -9,7 +9,7 @@ metadata:
 spec:
   memcached:
     name: icp-memcached
-    replicas: 2
+    replicas: 1
     serviceAccountName: ibm-healthcheck-operator-cluster
     nodeSelector:
       node-role.kubernetes.io/worker: ""
@@ -33,15 +33,15 @@ spec:
     - -v
     resources:
       requests:
-        memory: "70Mi"
-        cpu: "70m"
+        memory: "64Mi"
+        cpu: "50m"
       limits:
-        memory: "80Mi"
-        cpu: "800m"
+        memory: "512Mi"
+        cpu: "500m"
   healthService:
     name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
-    replicas: 3
+    replicas: 1
     serviceAccountName: ibm-healthcheck-operator-cluster
     nodeSelector:
       node-role.kubernetes.io/worker: ""
@@ -64,8 +64,8 @@ spec:
     #dependsSetting: Labels/Annotations:name
     resources:
       requests:
-        memory: "60Mi"
-        cpu: "400m"
+        memory: "64Mi"
+        cpu: "50m"
       limits:
-        memory: "70Mi"
-        cpu: "900m"
+        memory: "512Mi"
+        cpu: "500m"
