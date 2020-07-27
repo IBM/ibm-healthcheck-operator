@@ -74,7 +74,7 @@ metadata:
               "replicas": 1,
               "resources": {
                 "limits": {
-                  "cpu": "500",
+                  "cpu": "500m",
                   "memory": "512Mi"
                 },
                 "requests": {
@@ -110,10 +110,20 @@ metadata:
           "apiVersion": "operator.ibm.com/v1alpha1",
           "kind": "MustGatherConfig",
           "metadata": {
+            "name": "common-service"
+          },
+          "spec": {
+            "gatherConfig": "modules=\"overview,failure,cloudpak\"\nnamespaces=\"common-service,ibm-common-services\"\nlabels=\"\""
+          }
+        },
+        {
+          "apiVersion": "operator.ibm.com/v1alpha1",
+          "kind": "MustGatherConfig",
+          "metadata": {
             "name": "default"
           },
           "spec": {
-            "gatherConfig": "modules=\"overview,system,failure,ocp,cloudpak\"\nnamespaces=\"common-service,ibm-common-services\"\nlabels=\"\"\nenv=\"\""
+            "gatherConfig": "modules=\"overview,system,failure,ocp,cloudpak\"\nnamespaces=\"common-service,ibm-common-services\"\nlabels=\"\""
           }
         },
         {
