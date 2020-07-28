@@ -148,9 +148,6 @@ func (r *ReconcileMustGatherConfig) Reconcile(request reconcile.Request) (reconc
 
 // newMustGatherConfig returns a configmap
 func newMustGatherConfig(cr *operatorv1alpha1.MustGatherConfig) *corev1.ConfigMap {
-	labels := map[string]string{
-		"app": cr.Name,
-	}
 	configMapData := make(map[string]string)
 
 	// load config file
@@ -158,10 +155,30 @@ func newMustGatherConfig(cr *operatorv1alpha1.MustGatherConfig) *corev1.ConfigMa
 
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name,
-			Namespace: cr.Namespace,
-			Labels:    labels,
+			Name:        cr.Name,
+			Namespace:   cr.Namespace,
+			Labels:      labelsForMustGatherConfig("mustgather-config", cr.Name),
+			Annotations: annotationsForMustGatherConfig(),
 		},
 		Data: configMapData,
+	}
+}
+
+func labelsForMustGatherConfig(name string, releaseName string) map[string]string {
+	return map[string]string{
+		"app":                          name,
+		"release":                      releaseName,
+		"app.kubernetes.io/name":       name,
+		"app.kubernetes.io/instance":   releaseName,
+		"app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+	}
+}
+
+func annotationsForMustGatherConfig() map[string]string {
+	return map[string]string{
+		"productName":    "IBM Cloud Platform Common Services",
+		"productID":      "068a62892a1e4db39641342e592daa25",
+		"productVersion": "3.4.0",
+		"productMetric":  "FREE",
 	}
 }

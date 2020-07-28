@@ -154,10 +154,6 @@ func (r *ReconcileMustGatherService) newMustGatherPVC(cr *operatorv1alpha1.MustG
 	var storageClassName string
 	var storageRequest resource.Quantity
 
-	labels := map[string]string{
-		"app": cr.Name,
-	}
-
 	if cr.Spec.MustGather.PersistentVolumeClaim.StorageClassName != "" {
 		storageClassName = cr.Spec.MustGather.PersistentVolumeClaim.StorageClassName
 	} else {
@@ -172,9 +168,10 @@ func (r *ReconcileMustGatherService) newMustGatherPVC(cr *operatorv1alpha1.MustG
 
 	return &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "mustgather-pvc",
-			Namespace: cr.Namespace,
-			Labels:    labels,
+			Name:        "mustgather-pvc",
+			Namespace:   cr.Namespace,
+			Labels:      labelsForMustGatherService("mustgather-pvc", cr.Name),
+			Annotations: annotationsForMustGatherService(),
 		},
 		Spec: corev1.PersistentVolumeClaimSpec{
 			AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteMany},
@@ -221,4 +218,23 @@ func (r *ReconcileMustGatherService) getDefaultStorageClass() string {
 	}
 
 	return ""
+}
+
+func labelsForMustGatherService(name string, releaseName string) map[string]string {
+	return map[string]string{
+		"app":                          name,
+		"release":                      releaseName,
+		"app.kubernetes.io/name":       name,
+		"app.kubernetes.io/instance":   releaseName,
+		"app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+	}
+}
+
+func annotationsForMustGatherService() map[string]string {
+	return map[string]string{
+		"productName":    "IBM Cloud Platform Common Services",
+		"productID":      "068a62892a1e4db39641342e592daa25",
+		"productVersion": "3.4.0",
+		"productMetric":  "FREE",
+	}
 }

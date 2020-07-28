@@ -152,9 +152,7 @@ func (r *ReconcileMustGatherJob) Reconcile(request reconcile.Request) (reconcile
 func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 	var backoffLimit = int32(4)
 
-	labels := map[string]string{
-		"app": cr.Name,
-	}
+	appName := "mustgather-job"
 
 	serviceAccountName := "default"
 	if len(cr.Spec.ServiceAccountName) > 0 {
@@ -170,14 +168,14 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      cr.Name,
 			Namespace: cr.Namespace,
-			Labels:    labels,
+			Labels:    labelsForMustGatherJob(appName, cr.Name),
 		},
 		Spec: batchv1.JobSpec{
 			BackoffLimit: &backoffLimit,
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:        cr.Name,
-					Labels:      labelsForMustGatherJob(),
+					Labels:      labelsForMustGatherJob(appName, cr.Name),
 					Annotations: annotationsForMustGatherJob(),
 				},
 				Spec: corev1.PodSpec{
@@ -185,10 +183,16 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 					ServiceAccountName: serviceAccountName,
 					Containers: []corev1.Container{
 						{
-							Name:            "must-gather",
+							Name:            appName,
 							Image:           image,
 							ImagePullPolicy: corev1.PullPolicy(cr.Spec.Image.PullPolicy),
 							Command:         []string{"gather"},
+							Env: []corev1.EnvVar{
+								{
+									Name:  "FROM_OPERATOR",
+									Value: "1",
+								},
+							},
 							VolumeMounts: []corev1.VolumeMount{
 								{
 									Name:      "mustgather-pvc",
@@ -228,13 +232,13 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 	}
 }
 
-func labelsForMustGatherJob() map[string]string {
+func labelsForMustGatherJob(name string, releaseName string) map[string]string {
 	return map[string]string{
-		//		"app":                          name,
-		//		"release":                      releaseName,
-		//		"app.kubernetes.io/name":       name,
-		//		"app.kubernetes.io/instance":   releaseName,
-		"app.kubernetes.io/managed-by": "",
+		"app":                          name,
+		"release":                      releaseName,
+		"app.kubernetes.io/name":       name,
+		"app.kubernetes.io/instance":   releaseName,
+		"app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
 	}
 }
 
