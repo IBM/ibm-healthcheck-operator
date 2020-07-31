@@ -29,7 +29,7 @@ type HealthServiceSpecMemcached struct {
 	// memcached deployment name
 	Name string `json:"name,"`
 	// deprecated, define image in operator.yaml
-	Image image `json:"image,omitempty"`
+	Image Image `json:"image,omitempty"`
 	// memcached pod replicas, default is 1
 	Replicas int32 `json:"replicas,omitempty"`
 	// memcached deployment ServiceAccountName, default is default
@@ -51,7 +51,7 @@ type HealthServiceSpecHealthService struct {
 	// health service deployment name
 	Name string `json:"name"`
 	// deprecated, define image in operator.yaml
-	Image image `json:"image,omitempty"`
+	Image Image `json:"image,omitempty"`
 	// configmap which contains health srevice configuration files, deprecated
 	ConfigmapName string `json:"configmapName"`
 	// set labels/annotation name to get pod's cloudpakname
