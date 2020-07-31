@@ -17,7 +17,7 @@
 package v1alpha1
 
 // image defines the desired image repository, tag and imagepullpolicy
-type image struct {
+type Image struct {
 	// image repository, default is empty
 	Repository string `json:"repository"`
 	// image tag, default is empty

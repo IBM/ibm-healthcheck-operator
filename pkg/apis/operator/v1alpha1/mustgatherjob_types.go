@@ -29,7 +29,7 @@ type MustGatherJobSpec struct {
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
 	// must gather image
-	Image image `json:"image,omitempty"`
+	Image Image `json:"image,omitempty"`
 	// must gather job ServiceAccountName, default is default
 	ServiceAccountName string `json:"serviceAccountName,omitempty"`
 	// must gather config name, default is default
