@@ -152,7 +152,7 @@ func (r *ReconcileMustGatherJob) Reconcile(request reconcile.Request) (reconcile
 func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 	var backoffLimit = int32(4)
 
-	appName := "mustgather-job"
+	appName := cr.Name
 
 	serviceAccountName := "default"
 	if len(cr.Spec.ServiceAccountName) > 0 {
@@ -166,16 +166,16 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 
 	return &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name,
+			Name:      appName,
 			Namespace: cr.Namespace,
-			Labels:    labelsForMustGatherJob(appName, cr.Name),
+			Labels:    labelsForMustGatherJob("must-gather-job", cr.Name),
 		},
 		Spec: batchv1.JobSpec{
 			BackoffLimit: &backoffLimit,
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:        cr.Name,
-					Labels:      labelsForMustGatherJob(appName, cr.Name),
+					Labels:      labelsForMustGatherJob("must-gather-job", cr.Name),
 					Annotations: annotationsForMustGatherJob(),
 				},
 				Spec: corev1.PodSpec{
@@ -192,10 +192,14 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 									Name:  "FROM_OPERATOR",
 									Value: "1",
 								},
+								{
+									Name:  "INSTANCE_NAME",
+									Value: appName,
+								},
 							},
 							VolumeMounts: []corev1.VolumeMount{
 								{
-									Name:      "mustgather-pvc",
+									Name:      "must-gather-pvc",
 									MountPath: "/must-gather",
 								},
 								{
@@ -208,10 +212,10 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 					},
 					Volumes: []corev1.Volume{
 						{
-							Name: "mustgather-pvc",
+							Name: "must-gather-pvc",
 							VolumeSource: corev1.VolumeSource{
 								PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-									ClaimName: "mustgather-pvc",
+									ClaimName: "must-gather-pvc",
 								},
 							},
 						},

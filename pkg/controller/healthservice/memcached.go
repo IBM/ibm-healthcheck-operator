@@ -22,6 +22,7 @@ import (
 	"reflect"
 
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
+	common "github.com/IBM/ibm-healthcheck-operator/pkg/controller/common"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -68,7 +69,7 @@ func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alph
 		reqLogger.Error(err, "Failed to list pods", "h.Namespace", h.Namespace, "h.Name", memName)
 		return err
 	}
-	podNames := getPodNames(podList.Items)
+	podNames := common.GetPodNames(podList.Items)
 
 	// Update status.MemcachedNodes if needed
 	if !reflect.DeepEqual(podNames, h.Status.MemcachedNodes) {
@@ -155,7 +156,7 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	reqLogger.Info("Building Memcached Deployment", "Deployment.Namespace", h.Namespace, "Deployment.Name", memName)
 
-	hmResources := r.getResources(&h.Spec.Memcached.Resources)
+	hmResources := common.GetResources(&h.Spec.Memcached.Resources)
 	hmReplicas := int32(1)
 	if h.Spec.HealthService.Replicas > 0 {
 		hmReplicas = h.Spec.Memcached.Replicas
@@ -284,15 +285,6 @@ func (r *ReconcileHealthService) desiredMemcachedService(h *operatorv1alpha1.Hea
 	}
 
 	return svc
-}
-
-// getPodNames returns the pod names of the array of pods passed in
-func getPodNames(pods []corev1.Pod) []string {
-	var podNames []string
-	for _, pod := range pods {
-		podNames = append(podNames, pod.Name)
-	}
-	return podNames
 }
 
 func labelsForMemcached(name, releaseName string) map[string]string {

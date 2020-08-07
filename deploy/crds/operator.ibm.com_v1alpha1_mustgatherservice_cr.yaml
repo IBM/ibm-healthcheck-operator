@@ -1,12 +1,38 @@
 apiVersion: operator.ibm.com/v1alpha1
 kind: MustGatherService
 metadata:
-  name: mustgatherservice
+  name: must-gather-service
 spec:
   # Add fields here
+  persistentVolumeClaim:
+    name: must-gather-pvc
+    storageClassName: rook-ceph-cephfs-internal
+    resources:
+      requests:
+        storage: 5Gi
   mustGather:
-    persistentVolumeClaim:
-      storageClassName: rook-ceph-cephfs-internal
-      resources:
-        requests:
-          storage: 5Gi
+    name: must-gather-service
+    replicas: 1
+    serviceAccountName: default
+    nodeSelector:
+      node-role.kubernetes.io/worker: ""
+    tolerations:
+    - effect: NoSchedule
+      key: dedicated
+      operator: Exists
+    - key: CriticalAddonsOnly
+      operator: Exists
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"

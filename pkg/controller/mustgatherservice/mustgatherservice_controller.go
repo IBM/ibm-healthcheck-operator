@@ -21,16 +21,10 @@ import (
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
 
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
-	storagev1 "k8s.io/api/storage/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
-	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
@@ -120,121 +114,25 @@ func (r *ReconcileMustGatherService) Reconcile(request reconcile.Request) (recon
 		return reconcile.Result{}, err
 	}
 
-	// Define must gather persistence storage
-	pvc := r.newMustGatherPVC(instance)
-
-	// Set MustGatherService instance as the owner and controller
-	if err := controllerutil.SetControllerReference(instance, pvc, r.scheme); err != nil {
+	if err = r.createOrUpdateMustGatherServicePVC(instance); err != nil {
+		reqLogger.Error(err, "Failed to create or update Deployment for memcached")
 		return reconcile.Result{}, err
 	}
 
-	// Check if this pvc already exists
-	found := &corev1.PersistentVolumeClaim{}
-	err = r.client.Get(context.TODO(), types.NamespacedName{Name: pvc.Name, Namespace: pvc.Namespace}, found)
-	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new pvc", "pvc.Namespace", pvc.Namespace, "pvc.Name", pvc.Name)
-		err = r.client.Create(context.TODO(), pvc)
-		if err != nil {
-			return reconcile.Result{}, err
-		}
-
-		// pvc created successfully - don't requeue
-		return reconcile.Result{}, nil
-	} else if err != nil {
+	if err = r.createOrUpdateMustGatherServiceDeploy(instance); err != nil {
+		reqLogger.Error(err, "Failed to create or update Deployment for memcached")
 		return reconcile.Result{}, err
 	}
 
-	// pvc already exists - don't requeue
-	reqLogger.Info("Skip reconcile: pvc already exists", "pvc.Namespace", found.Namespace, "pvc.Name", found.Name)
+	if err = r.createOrUpdateMustGatherServiceService(instance); err != nil {
+		reqLogger.Error(err, "Failed to create or update Deployment for memcached")
+		return reconcile.Result{}, err
+	}
+
+	if err = r.createOrUpdateMustGatherServiceIngress(instance); err != nil {
+		reqLogger.Error(err, "Failed to create or update Deployment for memcached")
+		return reconcile.Result{}, err
+	}
+
 	return reconcile.Result{}, nil
-}
-
-// newMustGatherPVC create a pvc for must gather service
-func (r *ReconcileMustGatherService) newMustGatherPVC(cr *operatorv1alpha1.MustGatherService) *corev1.PersistentVolumeClaim {
-	var storageClassName string
-	var storageRequest resource.Quantity
-
-	if cr.Spec.MustGather.PersistentVolumeClaim.StorageClassName != "" {
-		storageClassName = cr.Spec.MustGather.PersistentVolumeClaim.StorageClassName
-	} else {
-		storageClassName = r.getDefaultStorageClass()
-	}
-
-	if val, ok := cr.Spec.MustGather.PersistentVolumeClaim.Resources.Requests[v1.ResourceStorage]; ok {
-		storageRequest = val
-	} else {
-		storageRequest = resource.MustParse("2Gi")
-	}
-
-	return &corev1.PersistentVolumeClaim{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:        "mustgather-pvc",
-			Namespace:   cr.Namespace,
-			Labels:      labelsForMustGatherService("mustgather-pvc", cr.Name),
-			Annotations: annotationsForMustGatherService(),
-		},
-		Spec: corev1.PersistentVolumeClaimSpec{
-			AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteMany},
-			Resources: corev1.ResourceRequirements{
-				Requests: corev1.ResourceList{
-					corev1.ResourceStorage: storageRequest,
-				},
-			},
-			StorageClassName: &storageClassName,
-		},
-	}
-}
-
-func (r *ReconcileMustGatherService) getDefaultStorageClass() string {
-	scList := &storagev1.StorageClassList{}
-	err := r.reader.List(context.TODO(), scList)
-	if err != nil {
-		return ""
-	}
-	if len(scList.Items) == 0 {
-		return ""
-	}
-
-	var defaultSC []string
-	var nonDefaultSC []string
-
-	for _, sc := range scList.Items {
-		if sc.Provisioner == "kubernetes.io/no-provisioner" {
-			continue
-		}
-		if sc.ObjectMeta.GetAnnotations()["storageclass.kubernetes.io/is-default-class"] == "true" {
-			defaultSC = append(defaultSC, sc.GetName())
-			continue
-		}
-		nonDefaultSC = append(nonDefaultSC, sc.GetName())
-	}
-
-	if len(defaultSC) != 0 {
-		return defaultSC[0]
-	}
-
-	if len(nonDefaultSC) != 0 {
-		return nonDefaultSC[0]
-	}
-
-	return ""
-}
-
-func labelsForMustGatherService(name string, releaseName string) map[string]string {
-	return map[string]string{
-		"app":                          name,
-		"release":                      releaseName,
-		"app.kubernetes.io/name":       name,
-		"app.kubernetes.io/instance":   releaseName,
-		"app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
-	}
-}
-
-func annotationsForMustGatherService() map[string]string {
-	return map[string]string{
-		"productName":    "IBM Cloud Platform Common Services",
-		"productID":      "068a62892a1e4db39641342e592daa25",
-		"productVersion": "3.4.0",
-		"productMetric":  "FREE",
-	}
 }

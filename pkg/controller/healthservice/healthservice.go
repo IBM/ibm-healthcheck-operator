@@ -23,6 +23,7 @@ import (
 	"reflect"
 
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
+	common "github.com/IBM/ibm-healthcheck-operator/pkg/controller/common"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -72,7 +73,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceDeploy(h *operatorv1
 		reqLogger.Error(err, "Failed to list pods", "h.Namespace", h.Namespace, "h.Name", hsName)
 		return err
 	}
-	podNames := getPodNames(podList.Items)
+	podNames := common.GetPodNames(podList.Items)
 
 	// Update status.HealthCheckNodes if needed
 	if !reflect.DeepEqual(podNames, h.Status.HealthCheckNodes) {
@@ -233,7 +234,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	reqLogger.Info("Building HealthService Deployment", "Deployment.Namespace", h.Namespace, "Deployment.Name", hsName)
 
-	hsResources := r.getResources(&h.Spec.HealthService.Resources)
+	hsResources := common.GetResources(&h.Spec.HealthService.Resources)
 	hsReplicas := int32(1)
 	if h.Spec.HealthService.Replicas > 0 {
 		hsReplicas = h.Spec.HealthService.Replicas

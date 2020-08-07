@@ -14,16 +14,26 @@
 // limitations under the License.
 //
 
-package healthservice
+package common
 
 import (
-	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
-
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
+
+	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
 )
 
-func (r *ReconcileHealthService) getResources(res *operatorv1alpha1.Resources) *corev1.ResourceRequirements {
+// GetPodNames returns the pod names of the array of pods passed in
+func GetPodNames(pods []corev1.Pod) []string {
+	var podNames []string
+	for _, pod := range pods {
+		podNames = append(podNames, pod.Name)
+	}
+	return podNames
+}
+
+// GetResources returns ResourceRequirements
+func GetResources(res *operatorv1alpha1.Resources) *corev1.ResourceRequirements {
 	var (
 		requestsCPU    = resource.MustParse("50m")
 		requestsMemory = resource.MustParse("64Mi")

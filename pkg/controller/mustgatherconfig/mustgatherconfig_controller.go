@@ -157,7 +157,7 @@ func newMustGatherConfig(cr *operatorv1alpha1.MustGatherConfig) *corev1.ConfigMa
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        cr.Name,
 			Namespace:   cr.Namespace,
-			Labels:      labelsForMustGatherConfig("mustgather-config", cr.Name),
+			Labels:      labelsForMustGatherConfig("must-gather-service", cr.Name),
 			Annotations: annotationsForMustGatherConfig(),
 		},
 		Data: configMapData,
