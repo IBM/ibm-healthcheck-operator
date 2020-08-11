@@ -4,7 +4,7 @@ metadata:
   name: example-mustgatherjob
 spec:
   serviceAccountName: ibm-mustgather-admin
-  mustgatherConfigName: default
-  image:
-    repository: quay.io/opencloudio/must-gather
-    tag: 4.4.1
+  mustgatherConfigName: common-service
+#  image:
+#    repository: quay.io/haoqing/must-gather
+#    tag: latest

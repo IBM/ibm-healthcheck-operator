@@ -133,30 +133,64 @@ metadata:
             "name": "example-mustgatherjob"
           },
           "spec": {
-            "image": {
-              "repository": "quay.io/opencloudio/must-gather",
-              "tag": "4.4.1"
-            },
-            "mustgatherConfigName": "default",
+            "mustgatherConfigName": "common-service",
             "serviceAccountName": "ibm-mustgather-admin"
           }
         },
-        {
+                {
           "apiVersion": "operator.ibm.com/v1alpha1",
           "kind": "MustGatherService",
           "metadata": {
-            "name": "mustgatherservice"
+            "name": "must-gather-service"
           },
           "spec": {
             "mustGather": {
-              "persistentVolumeClaim": {
-                "resources": {
-                  "requests": {
-                    "storage": "5Gi"
-                  }
+              "name": "must-gather-service",
+              "nodeSelector": {
+                "node-role.kubernetes.io/worker": ""
+              },
+              "replicas": 1,
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "512Mi"
                 },
-                "storageClassName": "rook-ceph-cephfs-internal"
-              }
+                "requests": {
+                  "cpu": "50m",
+                  "memory": "64Mi"
+                }
+              },
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "readOnlyRootFilesystem": true,
+                "runAsNonRoot": true
+              },
+              "serviceAccountName": "default",
+              "tolerations": [
+                {
+                  "effect": "NoSchedule",
+                  "key": "dedicated",
+                  "operator": "Exists"
+                },
+                {
+                  "key": "CriticalAddonsOnly",
+                  "operator": "Exists"
+                }
+              ]
+            },
+            "persistentVolumeClaim": {
+              "name": "must-gather-pvc",
+              "resources": {
+                "requests": {
+                  "storage": "5Gi"
+                }
+              },
+              "storageClassName": "rook-ceph-cephfs-internal"
             }
           }
         }
@@ -328,7 +362,9 @@ spec:
                 - name: OPERAND_MEMCACHED_IMAGE
                   value: "quay.io/opencloudio/icp-memcached@sha256:8de5389dc4712a1383c55dd5ed20585b6a56747b4e67fd72761546d28b63b30b"
                 - name: OPERAND_MUSTGATHER_JOB_IMAGE
-                  value: "quay.io/opencloudio/must-gather@sha256:187fa557de94c9a9443f16e4643dd395fc69585ecbd968f5f63b2d72b1012510"
+                  value: "quay.io/opencloudio/must-gather:4.5.0"
+                - name: OPERAND_MUSTGATHER_SERVICE_IMAGE
+                  value: "quay.io/opencloudio/must-gather-service:0.0.1"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
