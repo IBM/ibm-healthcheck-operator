@@ -481,7 +481,7 @@ func (r *ReconcileMustGatherService) desiredMustGatherServicePVC(instance *opera
 			Annotations: annotationsForMustGatherService(),
 		},
 		Spec: corev1.PersistentVolumeClaimSpec{
-			AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteMany},
+			AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
 					corev1.ResourceStorage: storageRequest,
