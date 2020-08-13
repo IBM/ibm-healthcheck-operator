@@ -190,7 +190,7 @@ metadata:
                   "storage": "5Gi"
                 }
               },
-              "storageClassName": "rook-ceph-cephfs-internal"
+              "storageClassName": ""
             }
           }
         }

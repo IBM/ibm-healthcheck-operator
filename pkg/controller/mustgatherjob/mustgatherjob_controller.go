@@ -181,6 +181,22 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 				Spec: corev1.PodSpec{
 					RestartPolicy:      "Never",
 					ServiceAccountName: serviceAccountName,
+					Affinity: &corev1.Affinity{
+						PodAffinity: &corev1.PodAffinity{
+							RequiredDuringSchedulingIgnoredDuringExecution: []corev1.PodAffinityTerm{
+								{
+									LabelSelector: &metav1.LabelSelector{
+										MatchLabels: map[string]string{
+											"app.kubernetes.io/name":       "must-gather-service",
+											"app.kubernetes.io/instance":   "must-gather-service",
+											"app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+										},
+									},
+									TopologyKey: "kubernetes.io/hostname",
+								},
+							},
+						},
+					},
 					Containers: []corev1.Container{
 						{
 							Name:            appName,

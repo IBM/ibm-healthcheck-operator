@@ -6,7 +6,7 @@ spec:
   # Add fields here
   persistentVolumeClaim:
     name: must-gather-pvc
-    storageClassName: rook-ceph-cephfs-internal
+    storageClassName: ""
     resources:
       requests:
         storage: 5Gi
