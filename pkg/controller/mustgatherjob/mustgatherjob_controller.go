@@ -19,6 +19,7 @@ package mustgatherjob
 import (
 	"context"
 	"os"
+	"strings"
 
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
 
@@ -164,7 +165,12 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 		image = cr.Spec.Image.Repository + ":" + cr.Spec.Image.Tag
 	}
 
-	return &batchv1.Job{
+	command := []string{"gather"}
+	if len(cr.Spec.MustGatherCommand) > 0 {
+		command = strings.Split(cr.Spec.MustGatherCommand, " ")
+	}
+
+	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      appName,
 			Namespace: cr.Namespace,
@@ -202,7 +208,7 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 							Name:            appName,
 							Image:           image,
 							ImagePullPolicy: corev1.PullPolicy(cr.Spec.Image.PullPolicy),
-							Command:         []string{"gather"},
+							Command:         command,
 							Env: []corev1.EnvVar{
 								{
 									Name:  "FROM_OPERATOR",
@@ -218,11 +224,6 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 									Name:      "must-gather-pvc",
 									MountPath: "/must-gather",
 								},
-								{
-									Name:      "mustgather-config",
-									MountPath: "/usr/bin/gather_config",
-									SubPath:   "gather_config",
-								},
 							},
 						},
 					},
@@ -235,21 +236,31 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 								},
 							},
 						},
-						{
-							Name: "mustgather-config",
-							VolumeSource: corev1.VolumeSource{
-								ConfigMap: &corev1.ConfigMapVolumeSource{
-									LocalObjectReference: corev1.LocalObjectReference{
-										Name: cr.Spec.MustGatherConfigName,
-									},
-								},
-							},
-						},
 					},
 				},
 			},
 		},
 	}
+
+	if len(cr.Spec.MustGatherCommand) == 0 {
+		job.Spec.Template.Spec.Containers[0].VolumeMounts = append(job.Spec.Template.Spec.Containers[0].VolumeMounts, corev1.VolumeMount{
+			Name:      "must-gather-config",
+			MountPath: "/usr/bin/gather_config",
+			SubPath:   "gather_config",
+		})
+		job.Spec.Template.Spec.Volumes = append(job.Spec.Template.Spec.Volumes, corev1.Volume{
+			Name: "must-gather-config",
+			VolumeSource: corev1.VolumeSource{
+				ConfigMap: &corev1.ConfigMapVolumeSource{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: cr.Spec.MustGatherConfigName,
+					},
+				},
+			},
+		})
+	}
+
+	return job
 }
 
 func labelsForMustGatherJob(name string, releaseName string) map[string]string {

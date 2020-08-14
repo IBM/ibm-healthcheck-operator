@@ -51,6 +51,9 @@ spec:
               - repository
               - tag
               type: object
+            mustgatherCommand:
+              description: must gather command, default is gather
+              type: string
             mustgatherConfigName:
               description: must gather config name, default is default
               type: string

@@ -34,6 +34,8 @@ type MustGatherJobSpec struct {
 	ServiceAccountName string `json:"serviceAccountName,omitempty"`
 	// must gather config name, default is default
 	MustGatherConfigName string `json:"mustgatherConfigName,omitempty"`
+	// must gather command, default is gather
+	MustGatherCommand string `json:"mustgatherCommand,omitempty"`
 }
 
 // MustGatherJobStatus defines the observed state of MustGatherJob
