@@ -48,12 +48,12 @@ do
 done
 
 # create multi-arch manifest
-echo "Creating the multi-arch image manifest for '${IMAGE_REPO}'/'${IMAGE_NAME}':'${VERSION}'..."
-${CONTAINER_CLI} manifest create "${IMAGE_REPO}"/"${IMAGE_NAME}":"${VERSION}" \
+echo "Creating the multi-arch image manifest for '${IMAGE_REPO}'/'${IMAGE_NAME}':'${RELEASE_VERSION}'..."
+${CONTAINER_CLI} manifest create "${IMAGE_REPO}"/"${IMAGE_NAME}":"${RELEASE_VERSION}" \
     "${IMAGE_REPO}"/"${IMAGE_NAME}"-amd64:"${VERSION}" \
     "${IMAGE_REPO}"/"${IMAGE_NAME}"-ppc64le:"${VERSION}" \
     "${IMAGE_REPO}"/"${IMAGE_NAME}"-s390x:"${VERSION}"
 
 # push multi-arch manifest
-echo "Pushing the multi-arch image manifest for '${IMAGE_REPO}'/'${IMAGE_NAME}':'${VERSION}'..."
-${CONTAINER_CLI} manifest push "${IMAGE_REPO}"/"${IMAGE_NAME}":"${VERSION}"
+echo "Pushing the multi-arch image manifest for '${IMAGE_REPO}'/'${IMAGE_NAME}':'${RELEASE_VERSION}'..."
+${CONTAINER_CLI} manifest push "${IMAGE_REPO}"/"${IMAGE_NAME}":"${RELEASE_VERSION}"
