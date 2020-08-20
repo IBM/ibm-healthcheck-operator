@@ -113,10 +113,7 @@ func (r *ReconcileHealthService) updateMemcachedDeployment(h *operatorv1alpha1.H
 	reqLogger := log.WithValues("Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 
 	updated := current.DeepCopy()
-	updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
 	updated.Spec.Replicas = desired.Spec.Replicas
-	updated.Spec.Selector.MatchLabels = desired.Spec.Selector.MatchLabels
-	updated.Spec.Template.ObjectMeta.Labels = desired.Spec.Template.ObjectMeta.Labels
 	updated.Spec.Template.ObjectMeta.Annotations = desired.Spec.Template.ObjectMeta.Annotations
 	updated.Spec.Template.Spec.Containers = desired.Spec.Template.Spec.Containers
 	updated.Spec.Template.Spec.ServiceAccountName = desired.Spec.Template.Spec.ServiceAccountName
