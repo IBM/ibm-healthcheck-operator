@@ -49,6 +49,8 @@ spec:
           properties:
             currentState:
               type: string
+            restartCount:
+              type: integer
             statusDependencies:
               type: array
               items: {
