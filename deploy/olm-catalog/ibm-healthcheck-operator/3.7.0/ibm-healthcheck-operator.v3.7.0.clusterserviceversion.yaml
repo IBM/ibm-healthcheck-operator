@@ -199,7 +199,7 @@ metadata:
     categories: Monitoring
     certified: "false"
     containerImage: quay.io/opencloudio/ibm-healthcheck-operator:latest
-    createdAt: "2020-06-02"
+    createdAt: "2020-08-19"
     description: You can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services.
     repository: https://github.com/IBM/ibm-healthcheck-operator
     support: IBM
@@ -358,13 +358,13 @@ spec:
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
                 - name: OPERAND_HEALTHCHECK_IMAGE
-                  value: "quay.io/opencloudio/system-healthcheck-service@sha256:c8651a331bed66ce33a16085d277483e77d57f0d705449e2764c9ea39c8e85f9"
+                  value: "quay.io/opencloudio/system-healthcheck-service@sha256:4336ee1a1caa4595902b83e7a2be8575749ad08719cf7600f6bec3e93fa33910"
                 - name: OPERAND_MEMCACHED_IMAGE
-                  value: "quay.io/opencloudio/icp-memcached@sha256:8de5389dc4712a1383c55dd5ed20585b6a56747b4e67fd72761546d28b63b30b"
+                  value: "quay.io/opencloudio/icp-memcached@sha256:709d041a87a267aaeff8428e6f9b5ec1bce784bda6638e255d262ce4d9613b73"
                 - name: OPERAND_MUSTGATHER_JOB_IMAGE
-                  value: "quay.io/opencloudio/must-gather@sha256:73e12461d1e7749448c3c7a2d37549bae2dc2049f7b7670b1ead0ab6265f4ed4"
+                  value: "quay.io/opencloudio/must-gather@sha256:782d5629bc3681707cb07110b6e8c7047dfa54360a767dcd9386d6e42629ff52"
                 - name: OPERAND_MUSTGATHER_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/must-gather-service@sha256:d8327104e703a8e8bc7dc2ac7067c7f3ebd9a2646819ff08b4bbc47f931e326d"
+                  value: "quay.io/opencloudio/must-gather-service@sha256:5f063b936ce5a2d97a4a711c81d3b3a6ad3ec20082d3c0d301965f67a6ff922d"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
