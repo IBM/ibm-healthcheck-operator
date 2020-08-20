@@ -191,7 +191,7 @@ func (r *ReconcileHealthService) updateHealthServiceDeployment(h *operatorv1alph
 	reqLogger := log.WithValues("Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 
 	updated := current.DeepCopy()
-	updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
+	//updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
 	updated.Spec.MinReadySeconds = desired.Spec.MinReadySeconds
 	updated.Spec.Replicas = desired.Spec.Replicas
 	updated.Spec.Selector.MatchLabels = desired.Spec.Selector.MatchLabels
