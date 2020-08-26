@@ -44,9 +44,9 @@ func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceDeploy(insta
 	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
 
 	// Define a new deployment
-	desired := r.desiredMustGatherServiceDeployment(instance)
+	desired := r.desiredMustGatherServiceStatefulset(instance)
 	// Check if the deployment already exists, if not create a new one
-	current := &appsv1.Deployment{}
+	current := &appsv1.StatefulSet{}
 	err := r.client.Get(context.TODO(), types.NamespacedName{Name: instance.Spec.MustGather.Name, Namespace: instance.Namespace}, current)
 
 	if err != nil && errors.IsNotFound(err) {
@@ -88,12 +88,11 @@ func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceDeploy(insta
 }
 
 func (r *ReconcileMustGatherService) updateMustGatherServiceDeployment(instance *operatorv1alpha1.MustGatherService,
-	current, desired *appsv1.Deployment) error {
+	current, desired *appsv1.StatefulSet) error {
 	reqLogger := log.WithValues("Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 
 	updated := current.DeepCopy()
 	updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
-	updated.Spec.MinReadySeconds = desired.Spec.MinReadySeconds
 	updated.Spec.Replicas = desired.Spec.Replicas
 	updated.Spec.Selector.MatchLabels = desired.Spec.Selector.MatchLabels
 	updated.Spec.Template.ObjectMeta.Labels = desired.Spec.Template.ObjectMeta.Labels
@@ -122,7 +121,7 @@ func (r *ReconcileMustGatherService) updateMustGatherServiceDeployment(instance 
 	return nil
 }
 
-func (r *ReconcileMustGatherService) desiredMustGatherServiceDeployment(instance *operatorv1alpha1.MustGatherService) *appsv1.Deployment {
+func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instance *operatorv1alpha1.MustGatherService) *appsv1.StatefulSet {
 	appName := instance.Spec.MustGather.Name
 	labels := labelsForMustGatherService(appName, instance.Name)
 	annotations := annotationsForMustGatherService()
@@ -144,15 +143,14 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceDeployment(instance
 		appReplicas = instance.Spec.MustGather.Replicas
 	}
 
-	dep := &appsv1.Deployment{
+	dep := &appsv1.StatefulSet{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      appName,
 			Namespace: instance.Namespace,
 			Labels:    labels,
 		},
-		Spec: appsv1.DeploymentSpec{
-			MinReadySeconds: 0,
-			Replicas:        &appReplicas,
+		Spec: appsv1.StatefulSetSpec{
+			Replicas: &appReplicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
 			},
@@ -539,7 +537,7 @@ func labelsForMustGatherService(name string, releaseName string) map[string]stri
 		"release":                      releaseName,
 		"app.kubernetes.io/name":       name,
 		"app.kubernetes.io/instance":   releaseName,
-		"app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+		"app.kubernetes.io/managed-by": "",
 	}
 }
 

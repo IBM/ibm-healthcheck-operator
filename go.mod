@@ -3,8 +3,20 @@ module github.com/IBM/ibm-healthcheck-operator
 go 1.13
 
 require (
+	github.com/Masterminds/vcs v1.13.1 // indirect
+	github.com/armon/go-radix v1.0.0 // indirect
+	github.com/golang/dep v0.5.4 // indirect
+	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/jmank88/nuts v0.4.0 // indirect
+	github.com/nightlyone/lockfile v1.0.0 // indirect
 	github.com/operator-framework/operator-sdk v0.13.0
+	github.com/pelletier/go-toml v1.8.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/sdboyer/constext v0.0.0-20170321163424-836a14457353 // indirect
 	github.com/spf13/pflag v1.0.5
+	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
+	golang.org/x/sys v0.0.0-20200819171115-d785dc25833f // indirect
+	google.golang.org/protobuf v1.25.0 // indirect
 	k8s.io/api v0.0.0
 	k8s.io/apimachinery v0.0.0
 	k8s.io/client-go v12.0.0+incompatible

@@ -195,7 +195,7 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 										MatchLabels: map[string]string{
 											"app.kubernetes.io/name":       "must-gather-service",
 											"app.kubernetes.io/instance":   "must-gather-service",
-											"app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+											"app.kubernetes.io/managed-by": "",
 										},
 									},
 									TopologyKey: "kubernetes.io/hostname",
@@ -269,7 +269,7 @@ func labelsForMustGatherJob(name string, releaseName string) map[string]string {
 		"release":                      releaseName,
 		"app.kubernetes.io/name":       name,
 		"app.kubernetes.io/instance":   releaseName,
-		"app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+		"app.kubernetes.io/managed-by": "",
 	}
 }
 

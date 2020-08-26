@@ -524,7 +524,7 @@ func labelsForHealthService(name string, releaseName string) map[string]string {
 		"release":                      releaseName,
 		"app.kubernetes.io/name":       name,
 		"app.kubernetes.io/instance":   releaseName,
-		"app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+		"app.kubernetes.io/managed-by": "",
 	}
 }
 
