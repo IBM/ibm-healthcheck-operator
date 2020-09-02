@@ -1,3 +1,4 @@
 build/_output/
+vendor/
+.vscode/
 .go/
-
