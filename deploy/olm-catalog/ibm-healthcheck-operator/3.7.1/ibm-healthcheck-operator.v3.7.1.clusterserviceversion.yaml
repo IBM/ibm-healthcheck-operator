@@ -362,13 +362,13 @@ spec:
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
                 - name: OPERAND_HEALTHCHECK_IMAGE
-                  value: "quay.io/opencloudio/system-healthcheck-service@sha256:4336ee1a1caa4595902b83e7a2be8575749ad08719cf7600f6bec3e93fa33910"
+                  value: "quay.io/opencloudio/system-healthcheck-service@sha256:d16aef566c22c1121ee8405c82bf2e0a48d1e79bce2c8624b386147cdcb34a55"
                 - name: OPERAND_MEMCACHED_IMAGE
                   value: "quay.io/opencloudio/icp-memcached@sha256:709d041a87a267aaeff8428e6f9b5ec1bce784bda6638e255d262ce4d9613b73"
                 - name: OPERAND_MUSTGATHER_JOB_IMAGE
-                  value: "quay.io/opencloudio/must-gather@sha256:21191dec3dc3e25aa2ebe9282a8f0966cf6b669866704f1393154f53e97acec7"
+                  value: "quay.io/opencloudio/must-gather@sha256:38fd60988c9615efbdfd7d25e885263bf8057cda24f1f28cfa3dc9959e5412f5"
                 - name: OPERAND_MUSTGATHER_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/must-gather-service@sha256:5f063b936ce5a2d97a4a711c81d3b3a6ad3ec20082d3c0d301965f67a6ff922d"
+                  value: "quay.io/opencloudio/must-gather-service@sha256:b6e2f27eae09cbaee610152683ce9899282e91541836ab5548e717dec0d05443"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
