@@ -1,32 +1,30 @@
 module github.com/IBM/ibm-healthcheck-operator
 
-go 1.13
+go 1.14
 
 require (
-	github.com/Masterminds/vcs v1.13.1 // indirect
-	github.com/armon/go-radix v1.0.0 // indirect
-	github.com/golang/dep v0.5.4 // indirect
+	cloud.google.com/go v0.54.0 // indirect
+	github.com/gogo/protobuf v1.2.2-0.20190730201129-28a6bbf47e48 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
-	github.com/jmank88/nuts v0.4.0 // indirect
-	github.com/nightlyone/lockfile v1.0.0 // indirect
+	github.com/gophercloud/gophercloud v0.7.0 // indirect
 	github.com/operator-framework/operator-sdk v0.13.0
-	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/sdboyer/constext v0.0.0-20170321163424-836a14457353 // indirect
 	github.com/spf13/pflag v1.0.5
-	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
-	golang.org/x/sys v0.0.0-20200819171115-d785dc25833f // indirect
-	google.golang.org/protobuf v1.25.0 // indirect
-	k8s.io/api v0.0.0
-	k8s.io/apimachinery v0.0.0
+	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
+	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
+	google.golang.org/protobuf v1.24.0 // indirect
+	gopkg.in/yaml.v2 v2.2.8 // indirect
+	k8s.io/api v0.17.2
+	k8s.io/apimachinery v0.17.2
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20190918143330-0270cf2f1c1d
-	sigs.k8s.io/controller-runtime v0.4.0
+	sigs.k8s.io/controller-runtime v0.5.2
 	sigs.k8s.io/yaml v1.1.0
 )
 
 // Pinned to kubernetes-1.16.2
 replace (
+	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 => golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 	k8s.io/api => k8s.io/api v0.0.0-20191016110408-35e52d86657a
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.0.0-20191016113550-5357c4baaf65
 	k8s.io/apimachinery => k8s.io/apimachinery v0.0.0-20191004115801-a2eda9f80ab8
