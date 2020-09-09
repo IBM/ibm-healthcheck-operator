@@ -4,7 +4,7 @@ metadata:
   creationTimestamp: null
   name: ibm-healthcheck-operator
   labels:
-    app.kubernetes.io/instance: system-healthcheck-service
+    app.kubernetes.io/instance: ibm-healthcheck-operator
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
     app.kubernetes.io/name: ibm-healthcheck-operator
 rules:
@@ -126,7 +126,7 @@ metadata:
   creationTimestamp: null
   name: ibm-healthcheck-operator-cluster
   labels:
-    app.kubernetes.io/instance: system-healthcheck-service
+    app.kubernetes.io/instance: ibm-healthcheck-operator
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
     app.kubernetes.io/name: ibm-healthcheck-operator-cluster
 rules:
@@ -158,7 +158,7 @@ metadata:
   creationTimestamp: null
   name: ibm-mustgather-admin
   labels:
-    app.kubernetes.io/instance: system-healthcheck-service
+    app.kubernetes.io/instance: ibm-healthcheck-operator
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
     app.kubernetes.io/name: ibm-mustgather-admin
 rules:

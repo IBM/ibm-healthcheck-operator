@@ -10,7 +10,7 @@ metadata:
           "kind": "HealthService",
           "metadata": {
             "labels": {
-              "app.kubernetes.io/instance": "system-healthcheck-service",
+              "app.kubernetes.io/instance": "ibm-healthcheck-operator",
               "app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
               "app.kubernetes.io/name": "ibm-healthcheck-operator"
             },
@@ -110,6 +110,11 @@ metadata:
           "apiVersion": "operator.ibm.com/v1alpha1",
           "kind": "MustGatherConfig",
           "metadata": {
+            "labels": {
+              "app.kubernetes.io/instance": "ibm-healthcheck-operator",
+              "app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+              "app.kubernetes.io/name": "ibm-healthcheck-operator"
+            },
             "name": "common-service"
           },
           "spec": {
@@ -120,6 +125,11 @@ metadata:
           "apiVersion": "operator.ibm.com/v1alpha1",
           "kind": "MustGatherConfig",
           "metadata": {
+            "labels": {
+              "app.kubernetes.io/instance": "ibm-healthcheck-operator",
+              "app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+              "app.kubernetes.io/name": "ibm-healthcheck-operator"
+            },
             "name": "default"
           },
           "spec": {
@@ -130,6 +140,11 @@ metadata:
           "apiVersion": "operator.ibm.com/v1alpha1",
           "kind": "MustGatherJob",
           "metadata": {
+            "labels": {
+              "app.kubernetes.io/instance": "ibm-healthcheck-operator",
+              "app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+              "app.kubernetes.io/name": "ibm-healthcheck-operator"
+            },
             "name": "example-mustgatherjob"
           },
           "spec": {
@@ -137,10 +152,15 @@ metadata:
             "serviceAccountName": "ibm-mustgather-admin"
           }
         },
-                {
+        {
           "apiVersion": "operator.ibm.com/v1alpha1",
           "kind": "MustGatherService",
           "metadata": {
+            "labels": {
+              "app.kubernetes.io/instance": "ibm-healthcheck-operator",
+              "app.kubernetes.io/managed-by": "ibm-healthcheck-operator",
+              "app.kubernetes.io/name": "ibm-healthcheck-operator"
+            },
             "name": "must-gather-service"
           },
           "spec": {
@@ -331,7 +351,7 @@ spec:
                 productMetric: FREE
                 productName: IBM Cloud Platform Common Services
               labels:
-                app.kubernetes.io/instance: system-healthcheck-service
+                app.kubernetes.io/instance: ibm-healthcheck-operator
                 app.kubernetes.io/managed-by: ibm-healthcheck-operator
                 app.kubernetes.io/name: ibm-healthcheck-operator
                 name: ibm-healthcheck-operator
