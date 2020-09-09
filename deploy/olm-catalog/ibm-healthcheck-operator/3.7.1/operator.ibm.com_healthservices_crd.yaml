@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: healthservices.operator.ibm.com
   labels:
-    app.kubernetes.io/instance: system-healthcheck-service
+    app.kubernetes.io/instance: ibm-healthcheck-operator
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
     app.kubernetes.io/name: ibm-healthcheck-operator
 spec:

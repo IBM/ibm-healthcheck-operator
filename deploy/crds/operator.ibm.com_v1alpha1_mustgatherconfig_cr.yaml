@@ -2,6 +2,10 @@ apiVersion: operator.ibm.com/v1alpha1
 kind: MustGatherConfig
 metadata:
   name: default
+  labels:
+    app.kubernetes.io/instance: ibm-healthcheck-operator
+    app.kubernetes.io/managed-by: ibm-healthcheck-operator
+    app.kubernetes.io/name: ibm-healthcheck-operator
 spec:
   gatherConfig: |-
     modules="overview,system,failure,ocp,cloudpak"
@@ -13,6 +17,10 @@ apiVersion: operator.ibm.com/v1alpha1
 kind: MustGatherConfig
 metadata:
   name: common-service
+  labels:
+    app.kubernetes.io/instance: ibm-healthcheck-operator
+    app.kubernetes.io/managed-by: ibm-healthcheck-operator
+    app.kubernetes.io/name: ibm-healthcheck-operator
 spec:
   gatherConfig: |-
     modules="overview,failure,cloudpak"
