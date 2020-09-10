@@ -41,7 +41,7 @@ spec:
       containers:
         - name: ibm-healthcheck-operator
           # Replace this with the built image name
-          image: quay.io/opencloudio/ibm-healthcheck-operator:latest
+          image: quay.io/opencloudio/ibm-healthcheck-operator:3.7.0
           command:
           - ibm-healthcheck-operator
           imagePullPolicy: Always
