@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/name: ibm-healthcheck-operator
 spec:
   serviceAccountName: ibm-mustgather-admin
-  mustgatherConfigName: common-service
+  mustgatherConfigName: must-gather-common-service-config
 #  image:
 #    repository: quay.io/haoqing/must-gather
 #    tag: latest

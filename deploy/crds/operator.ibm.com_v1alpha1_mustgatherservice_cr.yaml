@@ -17,7 +17,7 @@ spec:
   mustGather:
     name: must-gather-service
     replicas: 1
-    serviceAccountName: default
+    serviceAccountName: ibm-healthcheck-operator
     nodeSelector:
       node-role.kubernetes.io/worker: ""
     tolerations:
