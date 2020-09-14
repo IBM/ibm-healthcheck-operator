@@ -386,9 +386,9 @@ spec:
                 - name: OPERAND_MEMCACHED_IMAGE
                   value: "quay.io/opencloudio/icp-memcached@sha256:709d041a87a267aaeff8428e6f9b5ec1bce784bda6638e255d262ce4d9613b73"
                 - name: OPERAND_MUSTGATHER_JOB_IMAGE
-                  value: "quay.io/opencloudio/must-gather@sha256:cd022d9a983b694badded1b27445b8a2de1a2a5d8ae45034bbeea4447cbe35f9"
+                  value: "quay.io/opencloudio/must-gather@sha256:dfe992d65b0fea185c02662cdc0dda4011fe6a518a71c263ed09bcb77b9545fd"
                 - name: OPERAND_MUSTGATHER_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/must-gather-service@sha256:a4d9db3a5a67c7d6bb60a5ae2b26dd73f9eb76b4a4a0d9da33bc42417801917a"
+                  value: "quay.io/opencloudio/must-gather-service@sha256:6d1442ed8c0cb384023635fda89cbab88980ab6e17af9d25992778dd54bf8f28"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
