@@ -41,7 +41,7 @@ spec:
       containers:
         - name: ibm-healthcheck-operator
           # Replace this with the built image name
-          image: quay.io/opencloudio/ibm-healthcheck-operator:3.7.0
+          image: quay.io/opencloudio/ibm-healthcheck-operator:3.7.2
           command:
           - ibm-healthcheck-operator
           imagePullPolicy: Always
@@ -57,13 +57,13 @@ spec:
             - name: OPERATOR_NAME
               value: "ibm-healthcheck-operator"
             - name: OPERAND_HEALTHCHECK_IMAGE
-              value: "quay.io/opencloudio/system-healthcheck-service:3.7.0"
+              value: "quay.io/opencloudio/system-healthcheck-service:3.7.1"
             - name: OPERAND_MEMCACHED_IMAGE
               value: "quay.io/opencloudio/icp-memcached:3.7.0"
             - name: OPERAND_MUSTGATHER_JOB_IMAGE
-              value: "quay.io/opencloudio/must-gather:4.5.0"
+              value: "quay.io/opencloudio/must-gather:4.5.1"
             - name: OPERAND_MUSTGATHER_SERVICE_IMAGE
-              value: "quay.io/opencloudio/must-gather-service:0.0.1"
+              value: "quay.io/opencloudio/must-gather-service:1.0.1"
           resources:
             limits:
               cpu: 160m
