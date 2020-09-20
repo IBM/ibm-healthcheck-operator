@@ -4,14 +4,12 @@ go 1.14
 
 require (
 	cloud.google.com/go v0.54.0 // indirect
-	github.com/gogo/protobuf v1.2.2-0.20190730201129-28a6bbf47e48 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/gophercloud/gophercloud v0.7.0 // indirect
 	github.com/operator-framework/operator-sdk v0.13.0
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/spf13/pflag v1.0.5
 	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
-	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
 	google.golang.org/protobuf v1.24.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	k8s.io/api v0.17.2

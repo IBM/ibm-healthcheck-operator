@@ -40,25 +40,42 @@ import (
 
 var gracePeriod = int64(60)
 
-func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceDeploy(instance *operatorv1alpha1.MustGatherService) error {
+var trueVar = true
+var falseVar = false
+
+var mustGatherResourceName = "must-gather-service"
+
+var commonSecurityContext = corev1.SecurityContext{
+	AllowPrivilegeEscalation: &falseVar,
+	Privileged:               &falseVar,
+	ReadOnlyRootFilesystem:   &trueVar,
+	RunAsNonRoot:             &trueVar,
+	Capabilities: &corev1.Capabilities{
+		Drop: []corev1.Capability{
+			"ALL",
+		},
+	},
+}
+
+func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceStatefulSet(instance *operatorv1alpha1.MustGatherService) error {
 	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
 
-	// Define a new deployment
+	// Define a new StatefulSet
 	desired := r.desiredMustGatherServiceStatefulset(instance)
-	// Check if the deployment already exists, if not create a new one
+	// Check if the StatefulSet already exists, if not create a new one
 	current := &appsv1.StatefulSet{}
-	err := r.client.Get(context.TODO(), types.NamespacedName{Name: instance.Spec.MustGather.Name, Namespace: instance.Namespace}, current)
+	err := r.client.Get(context.TODO(), types.NamespacedName{Name: mustGatherResourceName, Namespace: instance.Namespace}, current)
 
 	if err != nil && errors.IsNotFound(err) {
-		reqLogger.Info("Creating a new Deployment", "Deployment.Namespace", desired.Namespace, "Deployment.Name", desired.Name)
+		reqLogger.Info("Creating a new StatefulSet", "StatefulSet.Namespace", desired.Namespace, "StatefulSet.Name", desired.Name)
 		if err := r.client.Create(context.TODO(), desired); err != nil {
-			reqLogger.Error(err, "Failed to create new Deployment", "Deployment.Namespace", desired.Namespace, "Deployment.Name", desired.Name)
+			reqLogger.Error(err, "Failed to create new StatefulSet", "StatefulSet.Namespace", desired.Namespace, "StatefulSet.Name", desired.Name)
 			return err
 		}
 	} else if err != nil {
-		reqLogger.Error(err, "Failed to get Deployment", "Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
+		reqLogger.Error(err, "Failed to get StatefulSet", "StatefulSet.Namespace", current.Namespace, "StatefulSet.Name", current.Name)
 		return err
-	} else if err := r.updateMustGatherServiceDeployment(instance, current, desired); err != nil {
+	} else if err := r.updateMustGatherServiceStatefulSet(instance, current, desired); err != nil {
 		return err
 	}
 
@@ -66,7 +83,7 @@ func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceDeploy(insta
 	podList := &corev1.PodList{}
 	listOpts := []client.ListOption{
 		client.InNamespace(instance.Namespace),
-		client.MatchingLabels(labelsForMustGatherService(instance.Spec.MustGather.Name, instance.Name)),
+		client.MatchingLabels(labelsForMustGatherService(mustGatherResourceName, instance.Name)),
 	}
 	if err = r.client.List(context.TODO(), podList, listOpts...); err != nil {
 		reqLogger.Error(err, "Failed to list pods", "instance.Namespace", instance.Namespace, "instance.Name", instance.Name)
@@ -87,34 +104,22 @@ func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceDeploy(insta
 	return nil
 }
 
-func (r *ReconcileMustGatherService) updateMustGatherServiceDeployment(instance *operatorv1alpha1.MustGatherService,
+func (r *ReconcileMustGatherService) updateMustGatherServiceStatefulSet(instance *operatorv1alpha1.MustGatherService,
 	current, desired *appsv1.StatefulSet) error {
-	reqLogger := log.WithValues("Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
+	reqLogger := log.WithValues("StatefulSet.Namespace", current.Namespace, "StatefulSet.Name", current.Name)
 
 	updated := current.DeepCopy()
-	updated.ObjectMeta.Labels = desired.ObjectMeta.Labels
 	updated.Spec.Replicas = desired.Spec.Replicas
-	updated.Spec.Selector.MatchLabels = desired.Spec.Selector.MatchLabels
-	updated.Spec.Template.ObjectMeta.Labels = desired.Spec.Template.ObjectMeta.Labels
-	updated.Spec.Template.ObjectMeta.Annotations = desired.Spec.Template.ObjectMeta.Annotations
-	updated.Spec.Template.Spec.TerminationGracePeriodSeconds = desired.Spec.Template.Spec.TerminationGracePeriodSeconds
-	updated.Spec.Template.Spec.HostNetwork = desired.Spec.Template.Spec.HostNetwork
-	updated.Spec.Template.Spec.HostPID = desired.Spec.Template.Spec.HostPID
-	updated.Spec.Template.Spec.HostIPC = desired.Spec.Template.Spec.HostIPC
-	updated.Spec.Template.Spec.ServiceAccountName = desired.Spec.Template.Spec.ServiceAccountName
-	updated.Spec.Template.Spec.Containers = desired.Spec.Template.Spec.Containers
-	updated.Spec.Template.Spec.NodeSelector = desired.Spec.Template.Spec.NodeSelector
-	updated.Spec.Template.Spec.Tolerations = desired.Spec.Template.Spec.Tolerations
 	updated.Spec.Template.Spec.Volumes = desired.Spec.Template.Spec.Volumes
 
-	reqLogger.Info("Updating Deployment")
+	reqLogger.Info("Updating StatefulSet")
 	// Set MustGatherService instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, updated, r.scheme); err != nil {
-		reqLogger.Error(err, "SetControllerReference failed", "Deployment.Namespace", updated.Namespace, "Deployment.Name", updated.Name)
+		reqLogger.Error(err, "SetControllerReference failed", "StatefulSet.Namespace", updated.Namespace, "StatefulSet.Name", updated.Name)
 	}
 
 	if err := r.client.Update(context.TODO(), updated); err != nil {
-		reqLogger.Error(err, "Failed to update Deployment", "Deployment.Namespace", updated.Namespace, "Deployment.Name", updated.Name)
+		reqLogger.Error(err, "Failed to update StatefulSet", "StatefulSet.Namespace", updated.Namespace, "StatefulSet.Name", updated.Name)
 		return err
 	}
 
@@ -122,20 +127,15 @@ func (r *ReconcileMustGatherService) updateMustGatherServiceDeployment(instance 
 }
 
 func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instance *operatorv1alpha1.MustGatherService) *appsv1.StatefulSet {
-	appName := instance.Spec.MustGather.Name
+	appName := "must-gather-service"
 	labels := labelsForMustGatherService(appName, instance.Name)
 	annotations := annotationsForMustGatherService()
-	serviceAccountName := "default"
-	if len(instance.Spec.MustGather.ServiceAccountName) > 0 {
-		serviceAccountName = instance.Spec.MustGather.ServiceAccountName
-	}
+
+	serviceAccountName := "ibm-healthcheck-operator"
 	defaultCommand := []string{"/bin/must-gather-service", "-v", "1"}
-	if instance.Spec.MustGather.Command != nil && len(instance.Spec.MustGather.Command) > 0 {
-		defaultCommand = instance.Spec.MustGather.Command
-	}
 
 	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
-	reqLogger.Info("Building MustGatherService Deployment", "Deployment.Namespace", instance.Namespace, "Deployment.Name", appName)
+	reqLogger.Info("Building MustGatherService StatefulSet", "StatefulSet.Namespace", instance.Namespace, "StatefulSet.Name", appName)
 
 	appResources := common.GetResources(&instance.Spec.MustGather.Resources)
 	appReplicas := int32(1)
@@ -161,7 +161,7 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instanc
 				},
 				Spec: corev1.PodSpec{
 					TerminationGracePeriodSeconds: &gracePeriod,
-					HostNetwork:                   instance.Spec.MustGather.HostNetwork,
+					HostNetwork:                   false,
 					HostPID:                       false,
 					HostIPC:                       false,
 					ServiceAccountName:            serviceAccountName,
@@ -169,9 +169,9 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instanc
 						{
 							Name:            appName,
 							Image:           os.Getenv("OPERAND_MUSTGATHER_SERVICE_IMAGE"),
-							ImagePullPolicy: corev1.PullPolicy(instance.Spec.MustGather.Image.PullPolicy),
+							ImagePullPolicy: corev1.PullIfNotPresent,
 							Command:         defaultCommand,
-							SecurityContext: &instance.Spec.MustGather.SecurityContext,
+							SecurityContext: &commonSecurityContext,
 							Env: []corev1.EnvVar{
 								{
 									Name: "POD_NAMESPACE",
@@ -223,8 +223,20 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instanc
 							},
 						},
 					},
-					NodeSelector: instance.Spec.MustGather.NodeSelector,
-					Tolerations:  instance.Spec.MustGather.Tolerations,
+					NodeSelector: map[string]string{
+						"node-role.kubernetes.io/worker": "",
+					},
+					Tolerations: []corev1.Toleration{
+						{
+							Key:      "dedicated",
+							Operator: corev1.TolerationOpExists,
+							Effect:   corev1.TaintEffectNoSchedule,
+						},
+						{
+							Key:      "CriticalAddonsOnly",
+							Operator: corev1.TolerationOpExists,
+						},
+					},
 					Volumes: []corev1.Volume{
 						{
 							Name: "must-gather",
@@ -242,14 +254,14 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instanc
 
 	// Set MustGatherService instance as the owner and controller
 	if err := controllerutil.SetControllerReference(instance, dep, r.scheme); err != nil {
-		reqLogger.Error(err, "SetControllerReference failed", "Deployment.Namespace", instance.Namespace, "Deployment.Name", appName)
+		reqLogger.Error(err, "SetControllerReference failed", "StatefulSet.Namespace", instance.Namespace, "StatefulSet.Name", appName)
 	}
 
 	return dep
 }
 
 func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceService(instance *operatorv1alpha1.MustGatherService) error {
-	appName := instance.Spec.MustGather.Name
+	appName := mustGatherResourceName
 	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
 
 	// Define a new service
@@ -297,7 +309,7 @@ func (r *ReconcileMustGatherService) updateMustGatherServiceService(instance *op
 }
 
 func (r *ReconcileMustGatherService) desiredMustGatherServiceService(instance *operatorv1alpha1.MustGatherService) *corev1.Service {
-	appName := instance.Spec.MustGather.Name
+	appName := mustGatherResourceName
 	labels := labelsForMustGatherService(appName, instance.Name)
 
 	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
@@ -331,7 +343,7 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceService(instance *o
 }
 
 func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceIngress(instance *operatorv1alpha1.MustGatherService) error {
-	appName := instance.Spec.MustGather.Name
+	appName := mustGatherResourceName
 	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
 
 	// Define a new ingress
@@ -380,7 +392,7 @@ func (r *ReconcileMustGatherService) updateMustGatherServiceIngress(instance *op
 }
 
 func (r *ReconcileMustGatherService) desiredMustGatherServiceIngress(instance *operatorv1alpha1.MustGatherService) *extensionsv1.Ingress {
-	appName := instance.Spec.MustGather.Name
+	appName := mustGatherResourceName
 	labels := labelsForMustGatherService(appName, instance.Name)
 	annotations := annotationsForMustGatherServiceIngress()
 

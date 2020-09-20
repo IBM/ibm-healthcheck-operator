@@ -126,22 +126,22 @@ func (r *ReconcileMustGatherService) Reconcile(request reconcile.Request) (recon
 	}
 
 	if err = r.createOrUpdateMustGatherServicePVC(instance); err != nil {
-		reqLogger.Error(err, "Failed to create or update Deployment for memcached")
+		reqLogger.Error(err, "Failed to create or update PVC for mustgather service")
 		return reconcile.Result{}, err
 	}
 
-	if err = r.createOrUpdateMustGatherServiceDeploy(instance); err != nil {
-		reqLogger.Error(err, "Failed to create or update Deployment for memcached")
+	if err = r.createOrUpdateMustGatherServiceStatefulSet(instance); err != nil {
+		reqLogger.Error(err, "Failed to create or update StatefulSet for mustgather service")
 		return reconcile.Result{}, err
 	}
 
 	if err = r.createOrUpdateMustGatherServiceService(instance); err != nil {
-		reqLogger.Error(err, "Failed to create or update Deployment for memcached")
+		reqLogger.Error(err, "Failed to create or update Service for mustgather service")
 		return reconcile.Result{}, err
 	}
 
 	if err = r.createOrUpdateMustGatherServiceIngress(instance); err != nil {
-		reqLogger.Error(err, "Failed to create or update Deployment for memcached")
+		reqLogger.Error(err, "Failed to create or update Ingress for mustgather service")
 		return reconcile.Result{}, err
 	}
 
