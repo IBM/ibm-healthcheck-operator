@@ -134,16 +134,36 @@ func (r *ReconcileMustGatherConfig) Reconcile(request reconcile.Request) (reconc
 		if err != nil {
 			return reconcile.Result{}, err
 		}
-
 		// Pod created successfully - don't requeue
 		return reconcile.Result{}, nil
 	} else if err != nil {
 		return reconcile.Result{}, err
+	} else if err := r.updateMustGatherConfigMap(instance, found, configmap); err != nil {
+		return reconcile.Result{}, err
 	}
 
-	// Pod already exists - don't requeue
-	reqLogger.Info("Skip reconcile: configmap already exists", "configmap.Namespace", found.Namespace, "configmap.Name", found.Name)
 	return reconcile.Result{}, nil
+}
+
+func (r *ReconcileMustGatherConfig) updateMustGatherConfigMap(instance *operatorv1alpha1.MustGatherConfig,
+	current, desired *corev1.ConfigMap) error {
+	reqLogger := log.WithValues("ConfigMap.Namespace", current.Namespace, "ConfigMap.Name", current.Name)
+
+	updated := current.DeepCopy()
+	updated.Data = desired.Data
+
+	reqLogger.Info("Updating ConfigMap")
+	// Set MustGatherConfig instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, updated, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "ConfigMap.Namespace", updated.Namespace, "ConfigMap.Name", updated.Name)
+	}
+
+	if err := r.client.Update(context.TODO(), updated); err != nil {
+		reqLogger.Error(err, "Failed to update ConfigMap", "ConfigMap.Namespace", updated.Namespace, "ConfigMap.Name", updated.Name)
+		return err
+	}
+
+	return nil
 }
 
 // newMustGatherConfig returns a configmap
