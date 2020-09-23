@@ -25,17 +25,46 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/klog"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
+	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
 var log = logf.Log.WithName("controller_healthservice")
+
+var (
+	// watchedResources contains the resources we will watch and reconcile when changed
+	watchedResources = []schema.GroupVersionKind{
+		{Group: "", Version: "v1", Kind: "ConfigMap"},
+	}
+
+	ownedResourcePredicates = predicate.Funcs{
+		CreateFunc: func(e event.CreateEvent) bool {
+			return false
+		},
+		GenericFunc: func(_ event.GenericEvent) bool {
+			// no action
+			return false
+		},
+		DeleteFunc: func(e event.DeleteEvent) bool {
+			// only handle delete event in case user accidentally removed the managed resource.
+			return true
+		},
+		UpdateFunc: func(e event.UpdateEvent) bool {
+			return false
+		},
+	}
+)
 
 /**
 * USER ACTION REQUIRED: This is a scaffold file intended for the user to modify with their own Controller
@@ -63,6 +92,12 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 
 	// Watch for changes to primary resource HealthService
 	err = c.Watch(&source.Kind{Type: &operatorv1alpha1.HealthService{}}, &handler.EnqueueRequestForObject{})
+	if err != nil {
+		return err
+	}
+
+	//watch for changes to operand resources
+	err = watchOperandResources(c)
 	if err != nil {
 		return err
 	}
@@ -177,4 +212,25 @@ func (r *ReconcileHealthService) Reconcile(request reconcile.Request) (reconcile
 	}
 
 	return reconcile.Result{}, nil
+}
+
+// Watch configmap resources managed by the operator
+func watchOperandResources(c controller.Controller) error {
+	for _, t := range watchedResources {
+		u := &unstructured.Unstructured{}
+		u.SetGroupVersionKind(schema.GroupVersionKind{
+			Kind:    t.Kind,
+			Group:   t.Group,
+			Version: t.Version,
+		})
+		err := c.Watch(&source.Kind{Type: u}, &handler.EnqueueRequestForOwner{
+			IsController: true,
+			OwnerType:    &operatorv1alpha1.HealthService{},
+		}, ownedResourcePredicates)
+
+		if err != nil {
+			klog.Errorf("Could not create watch for %s/%s/%s: %s.", t.Kind, t.Group, t.Version, err)
+		}
+	}
+	return nil
 }

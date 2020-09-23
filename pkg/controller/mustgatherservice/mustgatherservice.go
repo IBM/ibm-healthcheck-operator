@@ -110,6 +110,7 @@ func (r *ReconcileMustGatherService) updateMustGatherServiceStatefulSet(instance
 
 	updated := current.DeepCopy()
 	updated.Spec.Replicas = desired.Spec.Replicas
+	updated.Spec.Template.Spec.Containers = desired.Spec.Template.Spec.Containers
 	updated.Spec.Template.Spec.Volumes = desired.Spec.Template.Spec.Volumes
 
 	reqLogger.Info("Updating StatefulSet")

@@ -35,9 +35,24 @@ import (
 )
 
 var memSvcName = "memcached"
+var memResourceName = "icp-memcached"
+
+var trueVar = true
+var falseVar = false
+var commonSecurityContext = corev1.SecurityContext{
+	AllowPrivilegeEscalation: &falseVar,
+	Privileged:               &falseVar,
+	ReadOnlyRootFilesystem:   &trueVar,
+	RunAsNonRoot:             &trueVar,
+	Capabilities: &corev1.Capabilities{
+		Drop: []corev1.Capability{
+			"ALL",
+		},
+	},
+}
 
 func (r *ReconcileHealthService) createOrUpdateMemcachedDeploy(h *operatorv1alpha1.HealthService) error {
-	memName := h.Spec.Memcached.Name
+	memName := memResourceName
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 
 	// Define a new deployment
@@ -116,12 +131,6 @@ func (r *ReconcileHealthService) updateMemcachedDeployment(h *operatorv1alpha1.H
 	updated.Spec.Replicas = desired.Spec.Replicas
 	updated.Spec.Template.ObjectMeta.Annotations = desired.Spec.Template.ObjectMeta.Annotations
 	updated.Spec.Template.Spec.Containers = desired.Spec.Template.Spec.Containers
-	updated.Spec.Template.Spec.ServiceAccountName = desired.Spec.Template.Spec.ServiceAccountName
-	updated.Spec.Template.Spec.HostNetwork = desired.Spec.Template.Spec.HostNetwork
-	updated.Spec.Template.Spec.HostPID = desired.Spec.Template.Spec.HostPID
-	updated.Spec.Template.Spec.HostIPC = desired.Spec.Template.Spec.HostIPC
-	updated.Spec.Template.Spec.NodeSelector = desired.Spec.Template.Spec.NodeSelector
-	updated.Spec.Template.Spec.Tolerations = desired.Spec.Template.Spec.Tolerations
 
 	reqLogger.Info("Updating Deployment")
 	// Set HealthService instance as the owner and controller
@@ -138,16 +147,13 @@ func (r *ReconcileHealthService) updateMemcachedDeployment(h *operatorv1alpha1.H
 }
 
 func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.HealthService) *appsv1.Deployment {
-	memName := h.Spec.Memcached.Name
+	memName := memResourceName
 	labels := labelsForMemcached(memName, h.Name)
 	annotations := annotationsForMemcached()
 	defaultCommand := []string{"memcached", "-m 64", "-o", "modern", "-v"}
-	serviceAccountName := "default"
+	serviceAccountName := "ibm-healthcheck-operator-cluster"
 	if h.Spec.Memcached.Command != nil && len(h.Spec.Memcached.Command) > 0 {
 		defaultCommand = h.Spec.Memcached.Command
-	}
-	if len(h.Spec.Memcached.ServiceAccountName) > 0 {
-		serviceAccountName = h.Spec.Memcached.ServiceAccountName
 	}
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
@@ -184,13 +190,13 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 					Containers: []corev1.Container{{
 						Name:            memName,
 						Image:           os.Getenv("OPERAND_MEMCACHED_IMAGE"),
-						ImagePullPolicy: corev1.PullPolicy(h.Spec.Memcached.Image.PullPolicy),
+						ImagePullPolicy: corev1.PullIfNotPresent,
 						Command:         defaultCommand,
 						Ports: []corev1.ContainerPort{{
 							ContainerPort: 11211,
 							Name:          memName,
 						}},
-						SecurityContext: &h.Spec.Memcached.SecurityContext,
+						SecurityContext: &commonSecurityContext,
 						LivenessProbe: &corev1.Probe{
 							Handler: corev1.Handler{
 								TCPSocket: &corev1.TCPSocketAction{
@@ -211,8 +217,20 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 						},
 						Resources: *hmResources,
 					}},
-					NodeSelector: h.Spec.Memcached.NodeSelector,
-					Tolerations:  h.Spec.Memcached.Tolerations,
+					NodeSelector: map[string]string{
+						"node-role.kubernetes.io/worker": "",
+					},
+					Tolerations: []corev1.Toleration{
+						{
+							Key:      "dedicated",
+							Operator: corev1.TolerationOpExists,
+							Effect:   corev1.TaintEffectNoSchedule,
+						},
+						{
+							Key:      "CriticalAddonsOnly",
+							Operator: corev1.TolerationOpExists,
+						},
+					},
 				},
 			},
 		},
@@ -250,7 +268,7 @@ func (r *ReconcileHealthService) updateMemcachedService(h *operatorv1alpha1.Heal
 }
 
 func (r *ReconcileHealthService) desiredMemcachedService(h *operatorv1alpha1.HealthService) *corev1.Service {
-	memName := h.Spec.Memcached.Name
+	memName := memResourceName
 	labels := labelsForMemcached(memName, h.Name)
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
