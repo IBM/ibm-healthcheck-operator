@@ -40,8 +40,10 @@ import (
 var gracePeriod = int64(60)
 var mode484 = int32(484)
 
+var healthResourceName = "system-healthcheck-service"
+
 func (r *ReconcileHealthService) createOrUpdateHealthServiceDeploy(h *operatorv1alpha1.HealthService) error {
-	hsName := h.Spec.HealthService.Name
+	hsName := healthResourceName
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 
 	// Define a new deployment
@@ -89,7 +91,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceDeploy(h *operatorv1
 }
 
 func (r *ReconcileHealthService) createOrUpdateHealthServiceService(h *operatorv1alpha1.HealthService) error {
-	hsName := h.Spec.HealthService.Name
+	hsName := healthResourceName
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 
 	// Define a new service
@@ -114,7 +116,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceService(h *operatorv
 }
 
 func (r *ReconcileHealthService) createOrUpdateHealthServiceIngress(h *operatorv1alpha1.HealthService) error {
-	hsName := h.Spec.HealthService.Name
+	hsName := healthResourceName
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 
 	// Define a new ingress
@@ -139,7 +141,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceIngress(h *operatorv
 }
 
 func (r *ReconcileHealthService) createOrUpdateHealthServiceConfigmap(h *operatorv1alpha1.HealthService) error {
-	hsName := h.Spec.HealthService.Name
+	hsName := healthResourceName
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	labels := labelsForHealthService(hsName, h.Name)
 
@@ -191,17 +193,9 @@ func (r *ReconcileHealthService) updateHealthServiceDeployment(h *operatorv1alph
 	reqLogger := log.WithValues("Deployment.Namespace", current.Namespace, "Deployment.Name", current.Name)
 
 	updated := current.DeepCopy()
-	updated.Spec.MinReadySeconds = desired.Spec.MinReadySeconds
 	updated.Spec.Replicas = desired.Spec.Replicas
 	updated.Spec.Template.ObjectMeta.Annotations = desired.Spec.Template.ObjectMeta.Annotations
-	updated.Spec.Template.Spec.TerminationGracePeriodSeconds = desired.Spec.Template.Spec.TerminationGracePeriodSeconds
-	updated.Spec.Template.Spec.HostNetwork = desired.Spec.Template.Spec.HostNetwork
-	updated.Spec.Template.Spec.HostPID = desired.Spec.Template.Spec.HostPID
-	updated.Spec.Template.Spec.HostIPC = desired.Spec.Template.Spec.HostIPC
-	updated.Spec.Template.Spec.ServiceAccountName = desired.Spec.Template.Spec.ServiceAccountName
 	updated.Spec.Template.Spec.Containers = desired.Spec.Template.Spec.Containers
-	updated.Spec.Template.Spec.NodeSelector = desired.Spec.Template.Spec.NodeSelector
-	updated.Spec.Template.Spec.Tolerations = desired.Spec.Template.Spec.Tolerations
 	updated.Spec.Template.Spec.Volumes = desired.Spec.Template.Spec.Volumes
 
 	reqLogger.Info("Updating Deployment")
@@ -219,7 +213,7 @@ func (r *ReconcileHealthService) updateHealthServiceDeployment(h *operatorv1alph
 }
 
 func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alpha1.HealthService) *appsv1.Deployment {
-	hsName := h.Spec.HealthService.Name
+	hsName := healthResourceName
 	cfgName := h.Spec.HealthService.ConfigmapName
 	labels := labelsForHealthService(hsName, h.Name)
 	annotations := annotationsForHealthService()
@@ -257,7 +251,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 				},
 				Spec: corev1.PodSpec{
 					TerminationGracePeriodSeconds: &gracePeriod,
-					HostNetwork:                   h.Spec.HealthService.HostNetwork,
+					HostNetwork:                   false,
 					HostPID:                       false,
 					HostIPC:                       false,
 					ServiceAccountName:            serviceAccountName,
@@ -265,8 +259,8 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 						{
 							Name:            hsName,
 							Image:           os.Getenv("OPERAND_HEALTHCHECK_IMAGE"),
-							ImagePullPolicy: corev1.PullPolicy(h.Spec.HealthService.Image.PullPolicy),
-							SecurityContext: &h.Spec.HealthService.SecurityContext,
+							ImagePullPolicy: corev1.PullIfNotPresent,
+							SecurityContext: &commonSecurityContext,
 							Env: []corev1.EnvVar{
 								{
 									Name: "HEALTHNAMESPACE",
@@ -342,8 +336,20 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 							},
 						},
 					},
-					NodeSelector: h.Spec.HealthService.NodeSelector,
-					Tolerations:  h.Spec.HealthService.Tolerations,
+					NodeSelector: map[string]string{
+						"node-role.kubernetes.io/worker": "",
+					},
+					Tolerations: []corev1.Toleration{
+						{
+							Key:      "dedicated",
+							Operator: corev1.TolerationOpExists,
+							Effect:   corev1.TaintEffectNoSchedule,
+						},
+						{
+							Key:      "CriticalAddonsOnly",
+							Operator: corev1.TolerationOpExists,
+						},
+					},
 					Volumes: []corev1.Volume{
 						{
 							Name: "tmp-volume",
@@ -406,7 +412,7 @@ func (r *ReconcileHealthService) updateHealthServiceService(h *operatorv1alpha1.
 }
 
 func (r *ReconcileHealthService) desiredHealthServiceService(h *operatorv1alpha1.HealthService) *corev1.Service {
-	hsName := h.Spec.HealthService.Name
+	hsName := healthResourceName
 	labels := labelsForHealthService(hsName, h.Name)
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
@@ -463,7 +469,7 @@ func (r *ReconcileHealthService) updateHealthServiceIngress(h *operatorv1alpha1.
 }
 
 func (r *ReconcileHealthService) desiredHealthServiceIngress(h *operatorv1alpha1.HealthService) *extensionsv1.Ingress {
-	hsName := h.Spec.HealthService.Name
+	hsName := healthResourceName
 	labels := labelsForHealthService(hsName, h.Name)
 	annotations := annotationsForHealthServiceIngress()
 
