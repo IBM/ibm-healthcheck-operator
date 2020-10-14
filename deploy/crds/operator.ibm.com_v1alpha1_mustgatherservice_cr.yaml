@@ -15,24 +15,7 @@ spec:
       requests:
         storage: 5Gi
   mustGather:
-    name: must-gather-service
     replicas: 1
-    serviceAccountName: ibm-healthcheck-operator
-    nodeSelector:
-      node-role.kubernetes.io/worker: ""
-    tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Exists
-    - key: CriticalAddonsOnly
-      operator: Exists
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-        - ALL
-      readOnlyRootFilesystem: true
-      runAsNonRoot: true
     resources:
       requests:
         memory: "64Mi"
