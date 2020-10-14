@@ -161,7 +161,7 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 
 	hmResources := common.GetResources(&h.Spec.Memcached.Resources)
 	hmReplicas := int32(1)
-	if h.Spec.HealthService.Replicas > 0 {
+	if h.Spec.Memcached.Replicas > 0 {
 		hmReplicas = h.Spec.Memcached.Replicas
 	}
 

@@ -8,23 +8,7 @@ metadata:
     app.kubernetes.io/name: ibm-healthcheck-operator
 spec:
   memcached:
-    name: icp-memcached
     replicas: 1
-    serviceAccountName: ibm-healthcheck-operator-cluster
-    nodeSelector:
-      node-role.kubernetes.io/worker: ""
-    tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Exists
-    - key: CriticalAddonsOnly
-      operator: Exists
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-        - ALL
-      readOnlyRootFilesystem: true
     command:
     - memcached
     - -m 64
@@ -39,26 +23,8 @@ spec:
         memory: "512Mi"
         cpu: "500m"
   healthService:
-    name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
     replicas: 1
-    serviceAccountName: ibm-healthcheck-operator-cluster
-    nodeSelector:
-      node-role.kubernetes.io/worker: ""
-    tolerations:
-    - effect: NoSchedule
-      key: dedicated
-      operator: Exists
-    - key: CriticalAddonsOnly
-      operator: Exists
-    securityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-        - ALL
-      readOnlyRootFilesystem: true
-      runAsNonRoot: true
-    hostNetwork: false
     #cloudpakNameSetting: Labels/Annotations:name
     serviceNameSetting: Annotations:productName
     #dependsSetting: Labels/Annotations:name
