@@ -256,7 +256,15 @@ spec:
           resources:
           - '*'
           verbs:
-          - '*'
+          - get
+          - list
+          - watch
+        - apiGroups:
+          - ''
+          resources:
+          - 'pods/exec'
+          verbs:
+          - create
         serviceAccountName: ibm-mustgather-admin
       deployments:
       - name: ibm-healthcheck-operator
