@@ -19,6 +19,7 @@ metadata:
           "spec": {
             "healthService": {
               "configmapName": "system-healthcheck-service-config",
+              "name": "system-healthcheck-service",
               "replicas": 1,
               "resources": {
                 "limits": {
@@ -40,6 +41,7 @@ metadata:
                 "modern",
                 "-v"
               ],
+              "name": "icp-memcached",
               "replicas": 1,
               "resources": {
                 "limits": {
@@ -114,6 +116,7 @@ metadata:
           "spec": {
             "mustGather": {
               "replicas": 1,
+              "name": "must-gather-service",
               "resources": {
                 "limits": {
                   "cpu": "500m",
@@ -232,23 +235,17 @@ spec:
         - apiGroups:
           - clusterhealth.ibm.com
           resources:
-          - '*'
+          - clusterservicestatuses
           verbs:
           - '*'
         - apiGroups:
-          - mcm.ibm.com
+          - ''
           resources:
-          - '*'
-          verbs:
-          - '*'
-        - apiGroups:
-          - '*'
-          resources:
-          - '*'
+          - pods
+          - nodes
           verbs:
           - get
           - list
-          - watch
         serviceAccountName: ibm-healthcheck-operator-cluster
       - rules:
         - apiGroups:
@@ -258,11 +255,10 @@ spec:
           verbs:
           - get
           - list
-          - watch
         - apiGroups:
           - ''
           resources:
-          - 'pods/exec'
+          - pods/exec
           verbs:
           - create
         serviceAccountName: ibm-mustgather-admin
@@ -316,7 +312,7 @@ spec:
                 - name: OPERAND_MEMCACHED_IMAGE
                   value: "quay.io/opencloudio/icp-memcached@sha256:709d041a87a267aaeff8428e6f9b5ec1bce784bda6638e255d262ce4d9613b73"
                 - name: OPERAND_MUSTGATHER_JOB_IMAGE
-                  value: "quay.io/opencloudio/must-gather@sha256:dfe992d65b0fea185c02662cdc0dda4011fe6a518a71c263ed09bcb77b9545fd"
+                  value: "quay.io/opencloudio/must-gather@sha256:30c9f2878c49498a3edf1aac4df1be6acab970e24fdcd6a74b2651514eddb11a"
                 - name: OPERAND_MUSTGATHER_SERVICE_IMAGE
                   value: "quay.io/opencloudio/must-gather-service@sha256:f4dc13396de6641f041a2f6df0c31cb30db23bb70e6d7311addbab370354cea2"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest

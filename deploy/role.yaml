@@ -133,23 +133,17 @@ rules:
 - apiGroups:
   - clusterhealth.ibm.com
   resources:
-  - '*'
+  - clusterservicestatuses
   verbs:
   - '*'
 - apiGroups:
-  - mcm.ibm.com
+  - ''
   resources:
-  - '*'
-  verbs:
-  - '*'
-- apiGroups:
-  - "*"
-  resources:
-  - "*"
+  - pods
+  - nodes
   verbs:
   - get
   - list
-  - watch
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -169,10 +163,9 @@ rules:
   verbs:
   - get
   - list
-  - watch
 - apiGroups:
   - ''
   resources:
-  - 'pods/exec'
+  - pods/exec
   verbs:
   - create
