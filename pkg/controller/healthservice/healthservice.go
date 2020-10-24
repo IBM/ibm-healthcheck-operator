@@ -217,10 +217,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 	cfgName := h.Spec.HealthService.ConfigmapName
 	labels := labelsForHealthService(hsName, h.Name)
 	annotations := annotationsForHealthService()
-	serviceAccountName := "default"
-	if len(h.Spec.Memcached.ServiceAccountName) > 0 {
-		serviceAccountName = h.Spec.Memcached.ServiceAccountName
-	}
+	serviceAccountName := "ibm-healthcheck-operator-cluster"
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	reqLogger.Info("Building HealthService Deployment", "Deployment.Namespace", h.Namespace, "Deployment.Name", hsName)

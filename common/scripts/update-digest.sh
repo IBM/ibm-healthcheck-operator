@@ -16,15 +16,15 @@
 #
 
 #VERSION=$(cat version/version.go  | grep "Version =" | awk -F "\"" '{print $2}')
-VERSION=3.7.2
+VERSION=3.8.0
 CSV_FILE="deploy/olm-catalog/ibm-healthcheck-operator/${VERSION}/ibm-healthcheck-operator.v${VERSION}.clusterserviceversion.yaml"
 
 docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/system-healthcheck-service:3.7.1
 HEALTHCHECK_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/system-healthcheck-service.*3.7.1" | awk '{print $3}')
 docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/icp-memcached:3.7.0
 MEMCACHED_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/icp-memcached.*3.7.0" | awk '{print $3}')
-docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather:4.5.1
-MUSTGATHER_JOB_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather.*4.5.1" | awk '{print $3}')
+docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather:4.5.2
+MUSTGATHER_JOB_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather.*4.5.2" | awk '{print $3}')
 docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather-service:1.0.1
 MUSTGATHER_SERVICE_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather-service.*1.0.1" | awk '{print $3}')
 
