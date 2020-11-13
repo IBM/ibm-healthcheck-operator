@@ -16,17 +16,17 @@
 #
 
 #VERSION=$(cat version/version.go  | grep "Version =" | awk -F "\"" '{print $2}')
-VERSION=3.8.0
+VERSION=3.8.1
 CSV_FILE="deploy/olm-catalog/ibm-healthcheck-operator/${VERSION}/ibm-healthcheck-operator.v${VERSION}.clusterserviceversion.yaml"
 
-docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/system-healthcheck-service:3.7.1
-HEALTHCHECK_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/system-healthcheck-service.*3.7.1" | awk '{print $3}')
-docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/icp-memcached:3.7.0
-MEMCACHED_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/icp-memcached.*3.7.0" | awk '{print $3}')
+docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/system-healthcheck-service:3.8.0
+HEALTHCHECK_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/system-healthcheck-service.*3.8.0" | awk '{print $3}')
+docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/icp-memcached:3.8.0
+MEMCACHED_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/icp-memcached.*3.8.0" | awk '{print $3}')
 docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather:4.5.2
 MUSTGATHER_JOB_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather.*4.5.2" | awk '{print $3}')
-docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather-service:1.0.1
-MUSTGATHER_SERVICE_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather-service.*1.0.1" | awk '{print $3}')
+docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather-service:1.1.0
+MUSTGATHER_SERVICE_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather-service.*1.1.0" | awk '{print $3}')
 
 sed -i "/OPERAND_HEALTHCHECK_IMAGE/{n;s/sha256.*/$HEALTHCHECK_DIGEST\"/;}" "${CSV_FILE}"
 sed -i "/OPERAND_MEMCACHED_IMAGE/{n;s/sha256.*/$MEMCACHED_DIGEST\"/;}" "${CSV_FILE}"
