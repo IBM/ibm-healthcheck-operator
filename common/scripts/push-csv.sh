@@ -16,7 +16,7 @@
 #
 
 set -e
-QUAY_NAMESPACE=${QUAY_NAMESPACE:-opencloudio}
+QUAY_NAMESPACE=${QUAY_NAMESPACE:-haoqing}
 QUAY_REPOSITORY=${QUAY_REPOSITORY:-ibm-healthcheck-operator-app}
 BUNDLE_DIR=${BUNDLE_DIR:-deploy/olm-catalog/ibm-healthcheck-operator}
 
