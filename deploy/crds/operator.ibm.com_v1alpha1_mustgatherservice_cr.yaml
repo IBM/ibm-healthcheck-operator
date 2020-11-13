@@ -15,6 +15,7 @@ spec:
       requests:
         storage: 5Gi
   mustGather:
+    name: must-gather-service
     replicas: 1
     resources:
       requests:
