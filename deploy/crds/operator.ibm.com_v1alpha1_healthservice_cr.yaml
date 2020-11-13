@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/name: ibm-healthcheck-operator
 spec:
   memcached:
+    name: icp-memcached
     replicas: 1
     command:
     - memcached
@@ -23,6 +24,7 @@ spec:
         memory: "512Mi"
         cpu: "500m"
   healthService:
+    name: system-healthcheck-service
     configmapName: system-healthcheck-service-config
     replicas: 1
     #cloudpakNameSetting: Labels/Annotations:name
