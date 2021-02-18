@@ -314,7 +314,7 @@ spec:
                 - name: OPERAND_MUSTGATHER_JOB_IMAGE
                   value: "quay.io/opencloudio/must-gather@sha256:77b6d557e690fadc9fc309328e20888d4a8505b3d1efabea805eab7bbea75d14"
                 - name: OPERAND_MUSTGATHER_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/must-gather-service@sha256:483120d741954cd38ec2f3d5bb07df2b3a0fc222e6797111fcc1b6c1b11baba5"
+                  value: "quay.io/opencloudio/must-gather-service@sha256:3b06e509d24cdbc0a534f16d7f67838ac2afe95e4fbeea4035642ef6d7dd4f56"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
