@@ -16,7 +16,7 @@
 #
 
 #VERSION=$(cat version/version.go  | grep "Version =" | awk -F "\"" '{print $2}')
-VERSION=3.8.1
+VERSION=3.9.0
 CSV_FILE="deploy/olm-catalog/ibm-healthcheck-operator/${VERSION}/ibm-healthcheck-operator.v${VERSION}.clusterserviceversion.yaml"
 
 docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/system-healthcheck-service:3.8.0
@@ -28,7 +28,7 @@ MUSTGATHER_JOB_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-in
 docker pull hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather-service:1.1.0
 MUSTGATHER_SERVICE_DIGEST=$(docker images --digests  | grep -E "hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom/must-gather-service.*1.1.0" | awk '{print $3}')
 
-sed -i "/OPERAND_HEALTHCHECK_IMAGE/{n;s/sha256.*/$HEALTHCHECK_DIGEST\"/;}" "${CSV_FILE}"
-sed -i "/OPERAND_MEMCACHED_IMAGE/{n;s/sha256.*/$MEMCACHED_DIGEST\"/;}" "${CSV_FILE}"
-sed -i "/OPERAND_MUSTGATHER_JOB_IMAGE/{n;s/sha256.*/$MUSTGATHER_JOB_DIGEST\"/;}" "${CSV_FILE}"
-sed -i "/OPERAND_MUSTGATHER_SERVICE_IMAGE/{n;s/sha256.*/$MUSTGATHER_SERVICE_DIGEST\"/;}" "${CSV_FILE}"
+sed -i "/SYSTEM_HEALTHCHECK_SERVICE_IMAGE/{n;s/sha256.*/$HEALTHCHECK_DIGEST\"/;}" "${CSV_FILE}"
+sed -i "/ICP_MEMCACHED_IMAGE/{n;s/sha256.*/$MEMCACHED_DIGEST\"/;}" "${CSV_FILE}"
+sed -i "/MUST_GATHER_IMAGE/{n;s/sha256.*/$MUSTGATHER_JOB_DIGEST\"/;}" "${CSV_FILE}"
+sed -i "/MUST_GATHER_SERVICE_IMAGE/{n;s/sha256.*/$MUSTGATHER_SERVICE_DIGEST\"/;}" "${CSV_FILE}"
