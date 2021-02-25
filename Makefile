@@ -93,10 +93,6 @@ bump-up-csv: ## Bump up CSV version
 	@echo "bump-up-csv ${BASE_DIR} ${NEW_CSV_VERSION} ..."
 	@common/scripts/bump-up-csv.sh "${BASE_DIR}" "${NEW_CSV_VERSION}"
 
-update-digest: ## Update operand image digest
-	@echo "update digest ..."
-	@common/scripts/update-digest.sh
-
 ############################################################
 # work section
 ############################################################
