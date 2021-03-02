@@ -255,7 +255,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 					Containers: []corev1.Container{
 						{
 							Name:            hsName,
-							Image:           os.Getenv("OPERAND_HEALTHCHECK_IMAGE"),
+							Image:           os.Getenv("SYSTEM_HEALTHCHECK_SERVICE_IMAGE"),
 							ImagePullPolicy: corev1.PullIfNotPresent,
 							SecurityContext: &commonSecurityContext,
 							Env: []corev1.EnvVar{

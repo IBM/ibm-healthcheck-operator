@@ -169,7 +169,7 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instanc
 					Containers: []corev1.Container{
 						{
 							Name:            appName,
-							Image:           os.Getenv("OPERAND_MUSTGATHER_SERVICE_IMAGE"),
+							Image:           os.Getenv("MUST_GATHER_SERVICE_IMAGE"),
 							ImagePullPolicy: corev1.PullIfNotPresent,
 							Command:         defaultCommand,
 							SecurityContext: &commonSecurityContext,

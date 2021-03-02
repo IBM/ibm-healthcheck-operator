@@ -17,6 +17,9 @@
 # environment variables before build the repo.
 BUILD_LOCALLY ?= 1
 
+# The namespace that the test operator will be deployed in
+NAMESPACE=ibm-common-services
+
 # Image URL to use all building/pushing image targets;
 # Use your own docker registry and image name for dev/test by overridding the
 # IMAGE_REPO, IMAGE_NAME and RELEASE_TAG environment variable.
@@ -42,6 +45,7 @@ DEST := $(GOPATH)/src/$(GIT_HOST)/$(BASE_DIR)
 VERSION ?= $(shell git describe --exact-match 2> /dev/null || \
                 git describe --match=$(git rev-parse --short=8 HEAD) --always --dirty --abbrev=8)
 RELEASE_VERSION ?= $(shell cat ./version/version.go | grep "Version =" | awk '{ print $$3}' | tr -d '"')
+CSV_VERSION ?= $(RELEASE_VERSION)
 
 LOCAL_OS := $(shell uname)
 ifeq ($(LOCAL_OS),Linux)
@@ -55,13 +59,13 @@ else
 endif
 
 ARCH := $(shell uname -m)
-LOCAL_ARCH := "amd64"
+LOCAL_ARCH := amd64
 ifeq ($(ARCH),x86_64)
-    LOCAL_ARCH="amd64"
+    LOCAL_ARCH=amd64
 else ifeq ($(ARCH),ppc64le)
-    LOCAL_ARCH="ppc64le"
+    LOCAL_ARCH=ppc64le
 else ifeq ($(ARCH),s390x)
-    LOCAL_ARCH="s390x"
+    LOCAL_ARCH=s390x
 else
     $(error "This system's ARCH $(ARCH) isn't recognized/supported")
 endif
@@ -92,10 +96,6 @@ push-csv: ## Push CSV package to the catalog
 bump-up-csv: ## Bump up CSV version
 	@echo "bump-up-csv ${BASE_DIR} ${NEW_CSV_VERSION} ..."
 	@common/scripts/bump-up-csv.sh "${BASE_DIR}" "${NEW_CSV_VERSION}"
-
-update-digest: ## Update operand image digest
-	@echo "update digest ..."
-	@common/scripts/update-digest.sh
 
 ############################################################
 # work section
@@ -156,18 +156,52 @@ build-push-image: build-image push-image
 
 build-image: build
 	@echo "Building the $(IMAGE_NAME) docker image for $(LOCAL_ARCH)..."
-	@docker build -t $(IMAGE_REPO)/$(IMAGE_NAME)-$(LOCAL_ARCH):$(VERSION) -f build/Dockerfile .
+	@docker build -t $(IMAGE_REPO)/$(IMAGE_NAME)-$(LOCAL_ARCH):$(RELEASE_VERSION) -f build/Dockerfile .
 
 push-image: $(CONFIG_DOCKER_TARGET) build-image
 	@echo "Pushing the $(IMAGE_NAME) docker image for $(LOCAL_ARCH)..."
-	@docker push $(IMAGE_REPO)/$(IMAGE_NAME)-$(LOCAL_ARCH):$(VERSION)
+	@docker push $(IMAGE_REPO)/$(IMAGE_NAME)-$(LOCAL_ARCH):$(RELEASE_VERSION)
 
 ############################################################
 # multiarch-image section
 ############################################################
 multiarch-image: $(CONFIG_DOCKER_TARGET)
 	@common/scripts/multiarch_image.sh $(IMAGE_REPO) $(IMAGE_NAME) $(VERSION) $(RELEASE_VERSION)
-	
+
+############################################################
+# application section
+############################################################
+
+install: ## Install all resources (CR/CRD's, RBCA and Operator)
+	@echo ....... Set environment variables ......
+	- export DEPLOY_DIR=deploy/crds
+	- export WATCH_NAMESPACE=${NAMESPACE}
+	@echo ....... Applying CRDS and Operator .......
+	- for crd in $(shell ls deploy/crds/*_crd.yaml); do kubectl apply -f $${crd}; done
+	@echo ....... Applying RBAC .......
+	- kubectl apply -f deploy/service_account.yaml -n ${NAMESPACE}
+	- kubectl apply -f deploy/role.yaml -n ${NAMESPACE}
+	- cat deploy/role_binding.yaml | sed -e "s|namespace: ibm-healthcheck-operator|namespace: ${NAMESPACE}|g" | kubectl apply -f -
+	@echo ....... Applying Operator .......
+	- cat deploy/olm-catalog/${BASE_DIR}/${CSV_VERSION}/${BASE_DIR}.v${CSV_VERSION}.clusterserviceversion.yaml \
+		| sed -e "s|image: quay.io/opencloudio/ibm-healthcheck-operator.*|image: $(IMAGE_REPO)/$(IMAGE_NAME)-$(LOCAL_ARCH):$(RELEASE_VERSION)|g" \
+		| sed -e "s|namespace: placeholder|namespace: ${NAMESPACE}|g" | kubectl apply -f -
+	@echo ....... Creating the Instance .......
+	- for cr in $(shell ls deploy/crds/*_cr.yaml); do kubectl apply -f $${cr} -n ${NAMESPACE}; done
+
+uninstall: ## Uninstall all that all performed in the $ make install
+	@echo ....... Uninstalling .......
+	@echo ....... Deleting CR .......
+	- for cr in $(shell ls deploy/crds/*_cr.yaml); do kubectl delete -f $${cr} -n ${NAMESPACE}; done
+	@echo ....... Deleting Operator .......
+	- cat deploy/olm-catalog/${BASE_DIR}/${CSV_VERSION}/${BASE_DIR}.v${CSV_VERSION}.clusterserviceversion.yaml | sed -e "s|namespace: placeholder|namespace: ${NAMESPACE}|g" | kubectl delete -f -
+	@echo ....... Deleting CRDs.......
+	- for crd in $(shell ls deploy/crds/*_crd.yaml); do kubectl delete -f $${crd}; done
+	@echo ....... Deleting Rules and Service Account .......
+	- cat deploy/role_binding.yaml | sed -e "s|namespace: ibm-healthcheck-operator|namespace: ${NAMESPACE}|g" | kubectl delete -f -
+	- kubectl delete -f deploy/service_account.yaml -n ${NAMESPACE}
+	- kubectl delete -f deploy/role.yaml -n ${NAMESPACE}
+
 ############################################################
 # clean section
 ############################################################
