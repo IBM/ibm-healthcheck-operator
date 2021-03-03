@@ -160,7 +160,7 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 		serviceAccountName = cr.Spec.ServiceAccountName
 	}
 
-	image := os.Getenv("OPERAND_MUSTGATHER_JOB_IMAGE")
+	image := os.Getenv("MUST_GATHER_IMAGE")
 	if len(cr.Spec.Image.Repository) > 0 && len(cr.Spec.Image.Tag) > 0 {
 		image = cr.Spec.Image.Repository + ":" + cr.Spec.Image.Tag
 	}
