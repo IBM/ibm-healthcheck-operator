@@ -2,7 +2,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
   annotations:
-    olm.skipRange: '>=3.5.0 <3.9.2'
+    olm.skipRange: '>=3.5.0 <3.10.0'
     alm-examples: |-
       [
         {
@@ -148,7 +148,7 @@ metadata:
     description: You can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services.
     repository: https://github.com/IBM/ibm-healthcheck-operator
     support: IBM
-  name: ibm-healthcheck-operator.v3.9.2
+  name: ibm-healthcheck-operator.v3.10.0
   namespace: placeholder
   labels:
     operatorframework.io/arch.amd64: supported
@@ -468,7 +468,7 @@ spec:
   provider:
     name: IBM
   replaces: ibm-healthcheck-operator.v3.9.1
-  version: 3.9.2
+  version: 3.10.0
   links:
   - name: IBM Health Check Operator
     url: https://github.com/IBM/ibm-healthcheck-operator
