@@ -135,7 +135,14 @@ rules:
   resources:
   - clusterservicestatuses
   verbs:
-  - '*'
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+  - deletecollection  
 - apiGroups:
   - ''
   resources:
