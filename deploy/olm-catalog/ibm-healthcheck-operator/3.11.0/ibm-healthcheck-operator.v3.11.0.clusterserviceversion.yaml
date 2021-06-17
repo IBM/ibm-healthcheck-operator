@@ -148,7 +148,7 @@ metadata:
     description: You can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services.
     repository: https://github.com/IBM/ibm-healthcheck-operator
     support: IBM
-  name: ibm-healthcheck-operator.v3.9.1
+  name: ibm-healthcheck-operator.v3.11.0
   namespace: placeholder
   labels:
     operatorframework.io/arch.amd64: supported
@@ -308,13 +308,13 @@ spec:
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
                 - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/system-healthcheck-service:3.9.0"
+                  value: "quay.io/opencloudio/system-healthcheck-service:3.9.2"
                 - name: ICP_MEMCACHED_IMAGE
-                  value: "quay.io/opencloudio/icp-memcached:3.9.0"
+                  value: "quay.io/opencloudio/icp-memcached:3.9.1"
                 - name: MUST_GATHER_IMAGE
-                  value: "quay.io/opencloudio/must-gather:4.5.4"
+                  value: "quay.io/opencloudio/must-gather:4.5.6"
                 - name: MUST_GATHER_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/must-gather-service:1.2.1"
+                  value: "quay.io/opencloudio/must-gather-service:1.2.3"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
