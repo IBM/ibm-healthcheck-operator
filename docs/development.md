@@ -45,4 +45,4 @@ export REGISTRY=<YOUR_CUSTOMIZED_IMAGE_REGISTRY>
 make build-push-images
 ```
 
-> **Note:** You need to login to the docker registry before running the command above.
+> **Note:** You need to login the docker registry before running the command above.
