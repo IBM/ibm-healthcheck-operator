@@ -458,7 +458,7 @@ spec:
   - supported: true
     type: AllNamespaces
   maturity: alpha
-  minKubeVersion: 1.19
+  minKubeVersion: 1.19.0
   provider:
     name: IBM
   replaces: ibm-healthcheck-operator.v3.10.0
