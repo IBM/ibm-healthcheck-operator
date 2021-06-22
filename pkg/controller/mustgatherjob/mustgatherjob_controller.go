@@ -161,9 +161,6 @@ func newMustGatherJob(cr *operatorv1alpha1.MustGatherJob) *batchv1.Job {
 	}
 
 	image := os.Getenv("MUST_GATHER_IMAGE")
-	if len(cr.Spec.Image.Repository) > 0 && len(cr.Spec.Image.Tag) > 0 {
-		image = cr.Spec.Image.Repository + ":" + cr.Spec.Image.Tag
-	}
 
 	command := []string{"gather"}
 	if len(cr.Spec.MustGatherCommand) > 0 {
