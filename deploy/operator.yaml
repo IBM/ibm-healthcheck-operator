@@ -63,7 +63,7 @@ spec:
             - name: MUST_GATHER_IMAGE
               value: "quay.io/opencloudio/must-gather:4.5.6"
             - name: MUST_GATHER_SERVICE_IMAGE
-              value: "quay.io/opencloudio/must-gather-service:1.2.3"
+              value: "quay.io/opencloudio/must-gather-service:1.2.4"
           resources:
             limits:
               cpu: 160m
