@@ -176,7 +176,7 @@ spec:
         version: v1
       - kind: ingresses
         name: A Kubernetes Ingress
-        version: v1beta1
+        version: v1
       - kind: pods
         name: A Kubernetes Pod
         version: v1
@@ -338,6 +338,7 @@ spec:
       - rules:
         - apiGroups:
           - extensions
+          - networking.k8s.io
           resources:
           - ingresses
           verbs:

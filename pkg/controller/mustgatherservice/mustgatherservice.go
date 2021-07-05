@@ -27,7 +27,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
-	extensionsv1 "k8s.io/api/extensions/v1beta1"
+	networkingv1 "k8s.io/api/networking/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -350,7 +350,7 @@ func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceIngress(inst
 	// Define a new ingress
 	desired := r.desiredMustGatherServiceIngress(instance)
 	// Check if the ingress already exists, if not create a new one
-	current := &extensionsv1.Ingress{}
+	current := &networkingv1.Ingress{}
 	err := r.client.Get(context.TODO(), types.NamespacedName{Name: appName, Namespace: instance.Namespace}, current)
 	if err != nil && errors.IsNotFound(err) {
 		reqLogger.Info("Creating a new Ingress", "Ingress.Namespace", desired.Namespace, "Ingress.Name", desired.Name)
@@ -369,7 +369,7 @@ func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceIngress(inst
 }
 
 func (r *ReconcileMustGatherService) updateMustGatherServiceIngress(instance *operatorv1alpha1.MustGatherService,
-	current, desired *extensionsv1.Ingress) error {
+	current, desired *networkingv1.Ingress) error {
 	reqLogger := log.WithValues("Ingress.Namespace", current.Namespace, "Ingress.Name", current.Name)
 
 	updated := current.DeepCopy()
@@ -392,32 +392,37 @@ func (r *ReconcileMustGatherService) updateMustGatherServiceIngress(instance *op
 
 }
 
-func (r *ReconcileMustGatherService) desiredMustGatherServiceIngress(instance *operatorv1alpha1.MustGatherService) *extensionsv1.Ingress {
+func (r *ReconcileMustGatherService) desiredMustGatherServiceIngress(instance *operatorv1alpha1.MustGatherService) *networkingv1.Ingress {
 	appName := mustGatherResourceName
 	labels := labelsForMustGatherService(appName, instance.Name)
 	annotations := annotationsForMustGatherServiceIngress()
+	pathType := networkingv1.PathType("ImplementationSpecific")
 
 	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
 	reqLogger.Info("Building MustGatherService Ingress", "Ingress.Namespace", instance.Namespace, "Ingress.Name", appName)
 
-	ing := &extensionsv1.Ingress{
+	ing := &networkingv1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        appName,
 			Namespace:   instance.Namespace,
 			Labels:      labels,
 			Annotations: annotations,
 		},
-		Spec: extensionsv1.IngressSpec{
-			Rules: []extensionsv1.IngressRule{
+		Spec: networkingv1.IngressSpec{
+			Rules: []networkingv1.IngressRule{
 				{
-					IngressRuleValue: extensionsv1.IngressRuleValue{
-						HTTP: &extensionsv1.HTTPIngressRuleValue{
-							Paths: []extensionsv1.HTTPIngressPath{
+					IngressRuleValue: networkingv1.IngressRuleValue{
+						HTTP: &networkingv1.HTTPIngressRuleValue{
+							Paths: []networkingv1.HTTPIngressPath{
 								{
-									Path: "/must-gather/",
-									Backend: extensionsv1.IngressBackend{
-										ServiceName: appName,
-										ServicePort: intstr.IntOrString{Type: intstr.Int, IntVal: 6967}},
+									Path:     "/must-gather/",
+									PathType: &pathType,
+									Backend: networkingv1.IngressBackend{
+										Service: &networkingv1.IngressServiceBackend{
+											Name: appName,
+											Port: networkingv1.ServiceBackendPort{Number: 6967},
+										},
+									},
 								},
 							},
 						},

@@ -23,7 +23,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	extensionsv1 "k8s.io/api/extensions/v1beta1"
+	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -122,7 +122,16 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Ingress
-	err = c.Watch(&source.Kind{Type: &extensionsv1.Ingress{}}, &handler.EnqueueRequestForOwner{
+	/*err = c.Watch(&source.Kind{Type: &extensionsv1.Ingress{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType:    &operatorv1alpha1.HealthService{},
+	})
+	if err != nil {
+		return err
+	}*/
+
+	// Ingress
+	err = c.Watch(&source.Kind{Type: &networkingv1.Ingress{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
 		OwnerType:    &operatorv1alpha1.HealthService{},
 	})
