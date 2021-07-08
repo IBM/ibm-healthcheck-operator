@@ -312,7 +312,7 @@ spec:
                 - name: ICP_MEMCACHED_IMAGE
                   value: "quay.io/opencloudio/icp-memcached:3.9.1"
                 - name: MUST_GATHER_IMAGE
-                  value: "quay.io/opencloudio/must-gather:4.5.6"
+                  value: "quay.io/opencloudio/must-gather:4.5.7"
                 - name: MUST_GATHER_SERVICE_IMAGE
                   value: "quay.io/opencloudio/must-gather-service:1.2.4"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
