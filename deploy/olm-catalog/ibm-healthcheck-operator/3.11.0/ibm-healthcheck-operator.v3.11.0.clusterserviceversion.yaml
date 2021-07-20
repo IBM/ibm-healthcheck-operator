@@ -159,7 +159,7 @@ spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
-    - description: HealthService is the Schema for the healthservices API
+    - description: 'Documentation For additional details regarding install parameters check: https://ibm.biz/icpfs39install. License By installing this product you accept the license terms https://ibm.biz/icpfs39license'
       kind: HealthService
       name: healthservices.operator.ibm.com
       version: v1alpha1
@@ -203,22 +203,22 @@ spec:
       - description: MemcachedNodes are the names of the memcached pods
         displayName: Memcached Nodes
         path: memcachedNodes
-    - description: ClusterServiceStatus is the Schema for the clusterservicestatus API
+    - description: 'Documentation For additional details regarding install parameters check: https://ibm.biz/icpfs39install. License By installing this product you accept the license terms https://ibm.biz/icpfs39license'
       kind: ClusterServiceStatus
       name: clusterservicestatuses.clusterhealth.ibm.com
       version: v1
       displayName: IBM Health Services ClusterServiceStatus
-    - description: MustGatherService is the Schema for the mustgatherservices API
+    - description: 'Documentation For additional details regarding install parameters check: https://ibm.biz/icpfs39install. License By installing this product you accept the license terms https://ibm.biz/icpfs39license'
       kind: MustGatherService
       name: mustgatherservices.operator.ibm.com
       version: v1alpha1
       displayName: IBM Must Gather Services
-    - description: MustGatherJob is the Schema for the mustgatherjobs API
+    - description: 'Documentation For additional details regarding install parameters check: https://ibm.biz/icpfs39install. License By installing this product you accept the license terms https://ibm.biz/icpfs39license'
       kind: MustGatherJob
       name: mustgatherjobs.operator.ibm.com
       version: v1alpha1
       displayName: IBM Must Gather Jobs
-    - description: MustGatherConfig is the Schema for the mustgatherconfigs API
+    - description: 'Documentation For additional details regarding install parameters check: https://ibm.biz/icpfs39install. License By installing this product you accept the license terms https://ibm.biz/icpfs39license'
       kind: MustGatherConfig
       name: mustgatherconfigs.operator.ibm.com
       version: v1alpha1
@@ -474,4 +474,3 @@ spec:
   - Cloud
   - Monitoring
   - Healthcheck
-  
