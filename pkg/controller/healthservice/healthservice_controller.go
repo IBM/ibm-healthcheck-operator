@@ -122,15 +122,6 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Ingress
-	/*err = c.Watch(&source.Kind{Type: &extensionsv1.Ingress{}}, &handler.EnqueueRequestForOwner{
-		IsController: true,
-		OwnerType:    &operatorv1alpha1.HealthService{},
-	})
-	if err != nil {
-		return err
-	}*/
-
-	// Ingress
 	err = c.Watch(&source.Kind{Type: &networkingv1.Ingress{}}, &handler.EnqueueRequestForOwner{
 		IsController: true,
 		OwnerType:    &operatorv1alpha1.HealthService{},
