@@ -24,10 +24,11 @@ import (
 
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
 	common "github.com/IBM/ibm-healthcheck-operator/pkg/controller/common"
+	constant "github.com/IBM/ibm-healthcheck-operator/pkg/controller/constant"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	extensionsv1 "k8s.io/api/extensions/v1beta1"
+	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -122,7 +123,7 @@ func (r *ReconcileHealthService) createOrUpdateHealthServiceIngress(h *operatorv
 	// Define a new ingress
 	desired := r.desiredHealthServiceIngress(h)
 	// Check if the ingress already exists, if not create a new one
-	current := &extensionsv1.Ingress{}
+	current := &networkingv1.Ingress{}
 	err := r.client.Get(context.TODO(), types.NamespacedName{Name: hsName, Namespace: h.Namespace}, current)
 	if err != nil && errors.IsNotFound(err) {
 		reqLogger.Info("Creating a new Ingress", "Ingress.Namespace", desired.Namespace, "Ingress.Name", desired.Name)
@@ -306,7 +307,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 							LivenessProbe: &corev1.Probe{
 								Handler: corev1.Handler{
 									HTTPGet: &corev1.HTTPGetAction{
-										Port:   intstr.IntOrString{Type: intstr.Int, IntVal: 6967},
+										Port:   intstr.IntOrString{Type: intstr.Int, IntVal: constant.HealthServicePort},
 										Path:   "/v1alpha1/health",
 										Scheme: "HTTP",
 									},
@@ -320,7 +321,7 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 							ReadinessProbe: &corev1.Probe{
 								Handler: corev1.Handler{
 									HTTPGet: &corev1.HTTPGetAction{
-										Port:   intstr.IntOrString{Type: intstr.Int, IntVal: 6967},
+										Port:   intstr.IntOrString{Type: intstr.Int, IntVal: constant.HealthServicePort},
 										Path:   "/v1alpha1/health",
 										Scheme: "HTTP",
 									},
@@ -425,8 +426,8 @@ func (r *ReconcileHealthService) desiredHealthServiceService(h *operatorv1alpha1
 		Spec: corev1.ServiceSpec{
 			Ports: []corev1.ServicePort{
 				{
-					Port:       6967,
-					TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: 6967},
+					Port:       constant.HealthServicePort,
+					TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: constant.HealthServicePort},
 				},
 			},
 			Selector: labels,
@@ -442,7 +443,7 @@ func (r *ReconcileHealthService) desiredHealthServiceService(h *operatorv1alpha1
 	return svc
 }
 
-func (r *ReconcileHealthService) updateHealthServiceIngress(h *operatorv1alpha1.HealthService, current, desired *extensionsv1.Ingress) error {
+func (r *ReconcileHealthService) updateHealthServiceIngress(h *operatorv1alpha1.HealthService, current, desired *networkingv1.Ingress) error {
 	reqLogger := log.WithValues("Ingress.Namespace", current.Namespace, "Ingress.Name", current.Name)
 
 	updated := current.DeepCopy()
@@ -465,32 +466,37 @@ func (r *ReconcileHealthService) updateHealthServiceIngress(h *operatorv1alpha1.
 
 }
 
-func (r *ReconcileHealthService) desiredHealthServiceIngress(h *operatorv1alpha1.HealthService) *extensionsv1.Ingress {
+func (r *ReconcileHealthService) desiredHealthServiceIngress(h *operatorv1alpha1.HealthService) *networkingv1.Ingress {
 	hsName := healthResourceName
 	labels := labelsForHealthService(hsName, h.Name)
 	annotations := annotationsForHealthServiceIngress()
+	pathType := networkingv1.PathType(constant.IngPathType)
 
 	reqLogger := log.WithValues("HealthService.Namespace", h.Namespace, "HealthService.Name", h.Name)
 	reqLogger.Info("Building HealthService Ingress", "Ingress.Namespace", h.Namespace, "Ingress.Name", hsName)
 
-	ing := &extensionsv1.Ingress{
+	ing := &networkingv1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        hsName,
 			Namespace:   h.Namespace,
 			Labels:      labels,
 			Annotations: annotations,
 		},
-		Spec: extensionsv1.IngressSpec{
-			Rules: []extensionsv1.IngressRule{
+		Spec: networkingv1.IngressSpec{
+			Rules: []networkingv1.IngressRule{
 				{
-					IngressRuleValue: extensionsv1.IngressRuleValue{
-						HTTP: &extensionsv1.HTTPIngressRuleValue{
-							Paths: []extensionsv1.HTTPIngressPath{
+					IngressRuleValue: networkingv1.IngressRuleValue{
+						HTTP: &networkingv1.HTTPIngressRuleValue{
+							Paths: []networkingv1.HTTPIngressPath{
 								{
-									Path: "/cluster-health/",
-									Backend: extensionsv1.IngressBackend{
-										ServiceName: hsName,
-										ServicePort: intstr.IntOrString{Type: intstr.Int, IntVal: 6967}},
+									Path:     constant.HealthServiceRoute,
+									PathType: &pathType,
+									Backend: networkingv1.IngressBackend{
+										Service: &networkingv1.IngressServiceBackend{
+											Name: hsName,
+											Port: networkingv1.ServiceBackendPort{Number: constant.HealthServicePort},
+										},
+									},
 								},
 							},
 						},
