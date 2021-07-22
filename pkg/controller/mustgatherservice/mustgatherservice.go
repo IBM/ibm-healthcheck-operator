@@ -23,6 +23,7 @@ import (
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
 
 	common "github.com/IBM/ibm-healthcheck-operator/pkg/controller/common"
+	constant "github.com/IBM/ibm-healthcheck-operator/pkg/controller/constant"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -197,7 +198,7 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instanc
 							LivenessProbe: &corev1.Probe{
 								Handler: corev1.Handler{
 									HTTPGet: &corev1.HTTPGetAction{
-										Port:   intstr.IntOrString{Type: intstr.Int, IntVal: 6967},
+										Port:   intstr.IntOrString{Type: intstr.Int, IntVal: constant.MustgatherServicePort},
 										Path:   "/v1alpha1/healthz",
 										Scheme: "HTTP",
 									},
@@ -211,7 +212,7 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instanc
 							ReadinessProbe: &corev1.Probe{
 								Handler: corev1.Handler{
 									HTTPGet: &corev1.HTTPGetAction{
-										Port:   intstr.IntOrString{Type: intstr.Int, IntVal: 6967},
+										Port:   intstr.IntOrString{Type: intstr.Int, IntVal: constant.MustgatherServicePort},
 										Path:   "/v1alpha1/healthz",
 										Scheme: "HTTP",
 									},
@@ -326,8 +327,8 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceService(instance *o
 		Spec: corev1.ServiceSpec{
 			Ports: []corev1.ServicePort{
 				{
-					Port:       6967,
-					TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: 6967},
+					Port:       constant.MustgatherServicePort,
+					TargetPort: intstr.IntOrString{Type: intstr.Int, IntVal: constant.MustgatherServicePort},
 				},
 			},
 			Selector: labels,
@@ -396,7 +397,7 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceIngress(instance *o
 	appName := mustGatherResourceName
 	labels := labelsForMustGatherService(appName, instance.Name)
 	annotations := annotationsForMustGatherServiceIngress()
-	pathType := networkingv1.PathType("ImplementationSpecific")
+	pathType := networkingv1.PathType(constant.IngPathType)
 
 	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
 	reqLogger.Info("Building MustGatherService Ingress", "Ingress.Namespace", instance.Namespace, "Ingress.Name", appName)
@@ -415,12 +416,12 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceIngress(instance *o
 						HTTP: &networkingv1.HTTPIngressRuleValue{
 							Paths: []networkingv1.HTTPIngressPath{
 								{
-									Path:     "/must-gather/",
+									Path:     constant.MustgatherServiceRoute,
 									PathType: &pathType,
 									Backend: networkingv1.IngressBackend{
 										Service: &networkingv1.IngressServiceBackend{
 											Name: appName,
-											Port: networkingv1.ServiceBackendPort{Number: 6967},
+											Port: networkingv1.ServiceBackendPort{Number: constant.MustgatherServicePort},
 										},
 									},
 								},

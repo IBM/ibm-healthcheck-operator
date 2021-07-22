@@ -9,7 +9,6 @@ metadata:
     app.kubernetes.io/name: ibm-healthcheck-operator
 rules:
 - apiGroups:
-  - "extensions"
   - "networking.k8s.io"
   resources:
   - ingresses
