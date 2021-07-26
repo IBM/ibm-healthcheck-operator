@@ -316,7 +316,7 @@ spec:
                 - name: MUST_GATHER_SERVICE_IMAGE
                   value: "quay.io/opencloudio/must-gather-service:1.2.4"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
-                imagePullPolicy: Always
+                imagePullPolicy: imagePullPolicy
                 name: ibm-healthcheck-operator
                 resources:
                   limits:
