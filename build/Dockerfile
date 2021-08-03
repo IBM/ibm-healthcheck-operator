@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM hyc-cloud-private-edge-docker-local.artifactory.swg-devops.com/build-images/ubi8-minimal:latest
+FROM hyc-cloud-private-edge-docker-local.artifactory.swg-devops.com/build-images/ubi8-minimal
 ARG VCS_REF
 ARG VCS_URL
 
