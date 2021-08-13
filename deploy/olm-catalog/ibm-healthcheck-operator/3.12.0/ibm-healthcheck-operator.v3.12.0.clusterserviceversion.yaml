@@ -156,6 +156,17 @@ metadata:
     operatorframework.io/arch.s390x: supported
     operatorframework.io/os.linux: supported
 spec:
+  relatedImages:
+    - name: ibm-healthcheck-operator
+      image: quay.io/opencloudio/ibm-healthcheck-operator:latest
+    - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
+      image: quay.io/opencloudio/system-healthcheck-service:3.9.4
+    - name: ICP_MEMCACHED_IMAGE
+      image: quay.io/opencloudio/icp-memcached:3.9.3
+    - name: MUST_GATHER_IMAGE
+      image: quay.io/opencloudio/must-gather:4.5.8
+    - name: MUST_GATHER_SERVICE_IMAGE
+      image: quay.io/opencloudio/must-gather-service:1.2.5
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
