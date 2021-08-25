@@ -144,7 +144,7 @@ metadata:
     categories: Monitoring
     certified: "false"
     containerImage: quay.io/opencloudio/ibm-healthcheck-operator:latest
-    createdAt: "2021-08-17"
+    createdAt: "2021-08-25"
     description: You can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services.
     repository: https://github.com/IBM/ibm-healthcheck-operator
     support: IBM
