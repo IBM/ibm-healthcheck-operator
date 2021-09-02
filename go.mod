@@ -1,6 +1,6 @@
 module github.com/IBM/ibm-healthcheck-operator
 
-go 1.16
+go 1.17
 
 require (
 	github.com/emicklei/go-restful v2.9.6+incompatible // indirect
