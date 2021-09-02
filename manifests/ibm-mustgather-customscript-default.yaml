@@ -1,0 +1,24 @@
+###############################################################################
+# Licensed Materials - Property of IBM
+# 5737-E67
+# (C) Copyright IBM Corporation 2019, 2020 All Rights Reserved
+# US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+###############################################################################
+
+### This configmap is used to keep the default custom image location for the components who doesn't bring their own configmap
+### We recommend the product to bring their own configmap (with standard name , labels etc)
+###
+### Example of configmap data
+#####################################################
+#### data:
+###    comp: comp image location (with SHA manifest)
+###    component: component-image-location@sha256
+###    mycomp: quay.io/ujjwalchk_it/operator@sha256:a56fd4d
+#####################################################
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ibm-mustgather-customscript-default
+data:
+immutable: true

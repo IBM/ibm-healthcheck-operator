@@ -273,6 +273,21 @@ spec:
           verbs:
           - create
         serviceAccountName: ibm-mustgather-admin
+      - rules:
+        - apiGroups:
+          - '*'
+          resources:
+          - '*'
+          verbs:
+          - get
+          - list
+        - apiGroups:
+          - ''
+          resources:
+          - pods/exec
+          verbs:
+          - create
+        serviceAccountName: ibm-mustgather-custom-sa        
       deployments:
       - name: ibm-healthcheck-operator
         spec:
