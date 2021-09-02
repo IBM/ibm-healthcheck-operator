@@ -22,11 +22,11 @@ import (
 	"reflect"
 
 	operatorv1alpha1 "github.com/IBM/ibm-healthcheck-operator/pkg/apis/operator/v1alpha1"
-	"gopkg.in/yaml.v2"
 
 	common "github.com/IBM/ibm-healthcheck-operator/pkg/controller/common"
 	constant "github.com/IBM/ibm-healthcheck-operator/pkg/controller/constant"
 
+	"gopkg.in/yaml.v2"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
