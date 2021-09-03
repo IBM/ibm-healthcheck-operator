@@ -95,6 +95,15 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 		return err
 	}
 
+	// Configmap
+	err = c.Watch(&source.Kind{Type: &corev1.ConfigMap{}}, &handler.EnqueueRequestForOwner{
+		IsController: true,
+		OwnerType:    &operatorv1alpha1.MustGatherService{},
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -152,6 +161,11 @@ func (r *ReconcileMustGatherService) Reconcile(request reconcile.Request) (recon
 
 	if err = r.createOrUpdateMustGatherServiceIngress(instance); err != nil {
 		reqLogger.Error(err, "Failed to create or update Ingress for mustgather service")
+		return reconcile.Result{}, err
+	}
+
+	if err = r.createOrUpdateMustGatherServiceConfigmap(instance); err != nil {
+		reqLogger.Error(err, "Failed to create or update default custom configmap for mustgather service")
 		return reconcile.Result{}, err
 	}
 

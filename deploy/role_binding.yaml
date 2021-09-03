@@ -49,3 +49,20 @@ roleRef:
   kind: ClusterRole
   name: ibm-mustgather-admin
   apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: ibm-mustgather-custom-sa
+  labels:
+    app.kubernetes.io/instance: ibm-healthcheck-operator
+    app.kubernetes.io/managed-by: ibm-healthcheck-operator
+    app.kubernetes.io/name: ibm-mustgather-custom-sa
+subjects:
+- kind: ServiceAccount
+  name: ibm-mustgather-custom-sa
+  namespace: ibm-healthcheck-operator
+roleRef:
+  kind: ClusterRole
+  name: ibm-mustgather-custom-role
+  apiGroup: rbac.authorization.k8s.io

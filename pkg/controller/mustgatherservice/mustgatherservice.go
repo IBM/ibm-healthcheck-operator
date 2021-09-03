@@ -17,6 +17,7 @@ package mustgatherservice
 
 import (
 	"context"
+	"io/ioutil"
 	"os"
 	"reflect"
 
@@ -25,6 +26,7 @@ import (
 	common "github.com/IBM/ibm-healthcheck-operator/pkg/controller/common"
 	constant "github.com/IBM/ibm-healthcheck-operator/pkg/controller/constant"
 
+	"gopkg.in/yaml.v2"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
@@ -45,6 +47,8 @@ var trueVar = true
 var falseVar = false
 
 var mustGatherResourceName = "must-gather-service"
+
+var mustGatherCustomCMName = "ibm-mustgather-customscript-default"
 
 var commonSecurityContext = corev1.SecurityContext{
 	AllowPrivilegeEscalation: &falseVar,
@@ -344,6 +348,55 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceService(instance *o
 	return svc
 }
 
+func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceConfigmap(instance *operatorv1alpha1.MustGatherService) error {
+	appName := mustGatherResourceName
+	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
+	labels := labelsForMustGatherServiceCustomCM(appName, instance.Name)
+
+	//read configmap from yaml
+	yamlFile, err := os.Open("/manifests/ibm-mustgather-customscript-default.yaml")
+	if err != nil {
+		reqLogger.Error(err, "Error opening mustgather custom config file")
+	}
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer yamlFile.Close()
+	byteValue, _ := ioutil.ReadAll(yamlFile)
+
+	cm := new(corev1.ConfigMap)
+	if err := yaml.Unmarshal(byteValue, cm); err != nil {
+		reqLogger.Error(err, "Error parsing the configmap value from /manifests/ibm-mustgather-customscript-default.yaml")
+		return err
+	}
+	yamlFile.Close()
+
+	//setup configmap name, namespace and labels
+	cm.ObjectMeta.Name = mustGatherCustomCMName
+	cm.ObjectMeta.Namespace = instance.Namespace
+	cm.ObjectMeta.Labels = labels
+
+	// Set mustgatherservice instance as the owner and controller
+	if err := controllerutil.SetControllerReference(instance, cm, r.scheme); err != nil {
+		reqLogger.Error(err, "SetControllerReference failed", "configmap.Namespace", cm.Namespace, "configmap.Name", cm.Name)
+	}
+
+	// Check if the configmap already exists, if not create a new one
+	found := &corev1.ConfigMap{}
+	err = r.client.Get(context.TODO(), types.NamespacedName{Name: cm.Name, Namespace: cm.Namespace}, found)
+	if err != nil && errors.IsNotFound(err) {
+		// Define a new configmap
+		reqLogger.Info("Creating a new configmap", "configmap.Namespace", cm.Namespace, "configmap.Name", cm.Name)
+		if err := r.client.Create(context.TODO(), cm); err != nil {
+			reqLogger.Error(err, "Failed to create new configmap", "configmap.Namespace", cm.Namespace, "configmap.Name", cm.Name)
+			return err
+		}
+	} else if err != nil {
+		reqLogger.Error(err, "Failed to get configmap", "configmap.Namespace", found.Namespace, "configmap.Name", found.Name)
+		return err
+	}
+
+	return nil
+}
+
 func (r *ReconcileMustGatherService) createOrUpdateMustGatherServiceIngress(instance *operatorv1alpha1.MustGatherService) error {
 	appName := mustGatherResourceName
 	reqLogger := log.WithValues("MustGatherService.Namespace", instance.Namespace, "MustGatherService.Name", instance.Name)
@@ -557,6 +610,17 @@ func labelsForMustGatherService(name string, releaseName string) map[string]stri
 		"app.kubernetes.io/name":       name,
 		"app.kubernetes.io/instance":   releaseName,
 		"app.kubernetes.io/managed-by": "",
+	}
+}
+
+func labelsForMustGatherServiceCustomCM(name string, releaseName string) map[string]string {
+	return map[string]string{
+		"app":                          name,
+		"release":                      releaseName,
+		"app.kubernetes.io/name":       name,
+		"app.kubernetes.io/instance":   releaseName,
+		"app.kubernetes.io/managed-by": "",
+		"serviceability-addon":         "default",
 	}
 }
 
