@@ -160,13 +160,13 @@ spec:
     - name: ibm-healthcheck-operator
       image: quay.io/opencloudio/ibm-healthcheck-operator:latest
     - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
-      image: quay.io/opencloudio/system-healthcheck-service:3.9.6
+      image: quay.io/opencloudio/system-healthcheck-service:3.9.7
     - name: ICP_MEMCACHED_IMAGE
-      image: quay.io/opencloudio/icp-memcached:3.9.5
+      image: quay.io/opencloudio/icp-memcached:3.9.6
     - name: MUST_GATHER_IMAGE
-      image: quay.io/opencloudio/must-gather:4.5.10
+      image: quay.io/opencloudio/must-gather:4.5.11
     - name: MUST_GATHER_SERVICE_IMAGE
-      image: quay.io/opencloudio/must-gather-service:1.2.7
+      image: quay.io/opencloudio/must-gather-service:1.2.8
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
@@ -334,13 +334,13 @@ spec:
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
                 - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/system-healthcheck-service:3.9.6"
+                  value: "quay.io/opencloudio/system-healthcheck-service:3.9.7"
                 - name: ICP_MEMCACHED_IMAGE
-                  value: "quay.io/opencloudio/icp-memcached:3.9.5"
+                  value: "quay.io/opencloudio/icp-memcached:3.9.6"
                 - name: MUST_GATHER_IMAGE
-                  value: "quay.io/opencloudio/must-gather:4.5.10"
+                  value: "quay.io/opencloudio/must-gather:4.5.11"
                 - name: MUST_GATHER_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/must-gather-service:1.2.7"
+                  value: "quay.io/opencloudio/must-gather-service:1.2.8"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:latest
                 imagePullPolicy: IfNotPresent
                 name: ibm-healthcheck-operator
@@ -487,7 +487,7 @@ spec:
   minKubeVersion: 1.19.0
   provider:
     name: IBM
-  replaces: ibm-healthcheck-operator.v3.13.0
+  replaces: ibm-healthcheck-operator.v3.14.0
   version: 3.14.1
   links:
   - name: IBM Health Check Operator
