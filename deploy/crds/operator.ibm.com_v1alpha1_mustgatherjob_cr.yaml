@@ -2,6 +2,7 @@ apiVersion: operator.ibm.com/v1alpha1
 kind: MustGatherJob
 metadata:
   name: example-mustgatherjob
+  namespace: ibm-common-services
   labels:
     app.kubernetes.io/instance: ibm-healthcheck-operator
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
