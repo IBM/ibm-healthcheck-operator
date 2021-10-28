@@ -148,6 +148,7 @@ metadata:
     description: You can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services.
     repository: https://github.com/IBM/ibm-healthcheck-operator
     support: IBM
+    operators.operatorframework.io/operator-type: 'non-standalone'
   name: ibm-healthcheck-operator.v3.14.1
   namespace: placeholder
   labels:
