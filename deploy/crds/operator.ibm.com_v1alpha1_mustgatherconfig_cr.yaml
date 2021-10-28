@@ -2,6 +2,7 @@ apiVersion: operator.ibm.com/v1alpha1
 kind: MustGatherConfig
 metadata:
   name: must-gather-default-config
+  namespace: ibm-common-services
   labels:
     app.kubernetes.io/instance: ibm-healthcheck-operator
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
@@ -17,6 +18,7 @@ apiVersion: operator.ibm.com/v1alpha1
 kind: MustGatherConfig
 metadata:
   name: must-gather-common-service-config
+  namespace: ibm-common-services
   labels:
     app.kubernetes.io/instance: ibm-healthcheck-operator
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
