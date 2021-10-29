@@ -57,13 +57,13 @@ spec:
             - name: OPERATOR_NAME
               value: "ibm-healthcheck-operator"
             - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
-              value: "quay.io/opencloudio/system-healthcheck-service:3.9.6"
+              value: "quay.io/opencloudio/system-healthcheck-service:3.9.7"
             - name: ICP_MEMCACHED_IMAGE
-              value: "quay.io/opencloudio/icp-memcached:3.9.5"
+              value: "quay.io/opencloudio/icp-memcached:3.9.6"
             - name: MUST_GATHER_IMAGE
-              value: "quay.io/opencloudio/must-gather:4.5.10"
+              value: "quay.io/opencloudio/must-gather:4.5.11"
             - name: MUST_GATHER_SERVICE_IMAGE
-              value: "quay.io/opencloudio/must-gather-service:1.2.7"
+              value: "quay.io/opencloudio/must-gather-service:1.2.8"
           resources:
             limits:
               cpu: 160m
