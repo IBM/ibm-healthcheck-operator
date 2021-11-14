@@ -144,7 +144,7 @@ metadata:
     categories: Monitoring
     certified: "false"
     containerImage: quay.io/opencloudio/ibm-healthcheck-operator:latest
-    createdAt: "2020-09-16"
+    createdAt: "2021-11-11"
     description: You can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services.
     repository: https://github.com/IBM/ibm-healthcheck-operator
     support: IBM
@@ -156,6 +156,17 @@ metadata:
     operatorframework.io/arch.s390x: supported
     operatorframework.io/os.linux: supported
 spec:
+  relatedImages:
+    - name: ibm-healthcheck-operator
+      image: quay.io/opencloudio/ibm-healthcheck-operator:3.8.3
+    - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
+      image: quay.io/opencloudio/system-healthcheck-service:3.9.8
+    - name: ICP_MEMCACHED_IMAGE
+      image: quay.io/opencloudio/icp-memcached:3.9.7
+    - name: MUST_GATHER_IMAGE
+      image: quay.io/opencloudio/must-gather:4.5.12
+    - name: MUST_GATHER_SERVICE_IMAGE
+      image: quay.io/opencloudio/must-gather-service:1.2.9
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
@@ -315,13 +326,13 @@ spec:
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
                 - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/system-healthcheck-service:3.9.7"
+                  value: "quay.io/opencloudio/system-healthcheck-service:3.9.8"
                 - name: ICP_MEMCACHED_IMAGE
-                  value: "quay.io/opencloudio/icp-memcached:3.9.6"
+                  value: "quay.io/opencloudio/icp-memcached:3.9.7"
                 - name: MUST_GATHER_IMAGE
-                  value: "quay.io/opencloudio/must-gather:4.5.11"
+                  value: "quay.io/opencloudio/must-gather:4.5.12"
                 - name: MUST_GATHER_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/must-gather-service:1.2.8"
+                  value: "quay.io/opencloudio/must-gather-service:1.2.9"
                 image: quay.io/opencloudio/ibm-healthcheck-operator:3.8.3
                 imagePullPolicy: Always
                 name: ibm-healthcheck-operator
