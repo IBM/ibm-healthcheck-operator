@@ -245,6 +245,14 @@ spec:
       clusterPermissions:
       - rules:
         - apiGroups:
+          - security.openshift.io
+          resourceNames:
+          - restricted
+          resources:
+          - securitycontextconstraints
+          verbs:
+          - use
+        - apiGroups:
           - clusterhealth.ibm.com
           resources:
           - clusterservicestatuses
@@ -259,14 +267,24 @@ spec:
           - deletecollection
         - apiGroups:
           - ''
+          - "security.openshift.io"
           resources:
           - pods
           - nodes
+          - "securityContextConstraints"
           verbs:
           - get
           - list
         serviceAccountName: ibm-healthcheck-operator-cluster
       - rules:
+        - apiGroups:
+          - security.openshift.io
+          resourceNames:
+          - restricted
+          resources:
+          - securitycontextconstraints
+          verbs:
+          - use
         - apiGroups:
           - '*'
           resources:
@@ -282,6 +300,14 @@ spec:
           - create
         serviceAccountName: ibm-mustgather-admin
       - rules:
+        - apiGroups:
+          - security.openshift.io
+          resourceNames:
+          - restricted
+          resources:
+          - securitycontextconstraints
+          verbs:
+          - use
         - apiGroups:
           - '*'
           resources:
