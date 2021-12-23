@@ -131,6 +131,14 @@ metadata:
     app.kubernetes.io/name: ibm-healthcheck-operator-cluster
 rules:
 - apiGroups:
+  - security.openshift.io
+  resourceNames:
+  - restricted
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - use
+- apiGroups:
   - clusterhealth.ibm.com
   resources:
   - clusterservicestatuses
@@ -164,6 +172,14 @@ metadata:
     app.kubernetes.io/name: ibm-mustgather-admin
 rules:
 - apiGroups:
+  - security.openshift.io
+  resourceNames:
+  - restricted
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - use
+- apiGroups:
   - '*'
   resources:
   - '*'
@@ -188,6 +204,14 @@ metadata:
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
     app.kubernetes.io/name: ibm-mustgather-custom-role
 rules:
+- apiGroups:
+  - security.openshift.io
+  resourceNames:
+  - restricted
+  resources:
+  - securitycontextconstraints
+  verbs:
+  - use
 - apiGroups:
   - '*'
   resources:
