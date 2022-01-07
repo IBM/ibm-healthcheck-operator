@@ -229,9 +229,6 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instanc
 							},
 						},
 					},
-					NodeSelector: map[string]string{
-						"node-role.kubernetes.io/worker": "",
-					},
 					Tolerations: []corev1.Toleration{
 						{
 							Key:      "dedicated",
@@ -535,6 +532,7 @@ func (r *ReconcileMustGatherService) desiredMustGatherServicePVC(instance *opera
 		storageClassName = instance.Spec.PersistentVolumeClaim.StorageClassName
 	} else {
 		storageClassName = r.getDefaultStorageClass()
+		reqLogger.Info("Default Storage Class name", "PVC.Namespace", instance.Namespace, "PVC.Name", instance.Spec.PersistentVolumeClaim.Name, "storageClassName", storageClassName)
 	}
 
 	if val, ok := instance.Spec.PersistentVolumeClaim.Resources.Requests[v1.ResourceStorage]; ok {
@@ -569,12 +567,14 @@ func (r *ReconcileMustGatherService) desiredMustGatherServicePVC(instance *opera
 }
 
 func (r *ReconcileMustGatherService) getDefaultStorageClass() string {
+	reqLogger := log.WithValues("Inside Default Storage Class", "storageclass.name", "must-gather-pvc")
 	scList := &storagev1.StorageClassList{}
 	err := r.reader.List(context.TODO(), scList)
 	if err != nil {
 		return ""
 	}
 	if len(scList.Items) == 0 {
+		reqLogger.Info("Storage class list is empty")
 		return ""
 	}
 
@@ -583,9 +583,11 @@ func (r *ReconcileMustGatherService) getDefaultStorageClass() string {
 
 	for _, sc := range scList.Items {
 		if sc.Provisioner == "kubernetes.io/no-provisioner" {
+			reqLogger.Info("Storage class with no-provisioner")
 			continue
 		}
 		if sc.ObjectMeta.GetAnnotations()["storageclass.kubernetes.io/is-default-class"] == "true" {
+			reqLogger.Info("Storage class with no-default-class")
 			defaultSC = append(defaultSC, sc.GetName())
 			continue
 		}
@@ -593,10 +595,12 @@ func (r *ReconcileMustGatherService) getDefaultStorageClass() string {
 	}
 
 	if len(defaultSC) != 0 {
+		reqLogger.Info("Storage class from defaultSC array", defaultSC[0])
 		return defaultSC[0]
 	}
 
 	if len(nonDefaultSC) != 0 {
+		reqLogger.Info("Storage class from non-defaultSC array", nonDefaultSC[0])
 		return nonDefaultSC[0]
 	}
 
