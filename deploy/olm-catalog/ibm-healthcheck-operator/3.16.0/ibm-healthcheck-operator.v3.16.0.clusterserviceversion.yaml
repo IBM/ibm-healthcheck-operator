@@ -208,6 +208,13 @@ spec:
       - description: Memcached defines the desired state of HealthService.Memcached
         displayName: Memcached
         path: memcached
+      - description: an acceptable string
+        displayName: an acceptable string
+        path: license.accept
+        value:
+        - false
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:checkbox 
       statusDescriptors:
       - description: HealthCheckNodes are the names of the Healch Service pods
         displayName: Healch Service Nodes
