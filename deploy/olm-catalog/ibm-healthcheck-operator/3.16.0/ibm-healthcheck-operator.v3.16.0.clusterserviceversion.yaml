@@ -208,8 +208,8 @@ spec:
       - description: Memcached defines the desired state of HealthService.Memcached
         displayName: Memcached
         path: memcached
-      - description: an acceptable string
-        displayName: an acceptable string
+      - description: This is used by license.accept tool for the GUI instructions
+        displayName: License Accept
         path: license.accept
         value:
         - false
