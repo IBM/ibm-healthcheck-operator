@@ -217,9 +217,6 @@ func (r *ReconcileHealthService) desiredMemcachedDeployment(h *operatorv1alpha1.
 						},
 						Resources: *hmResources,
 					}},
-					NodeSelector: map[string]string{
-						"node-role.kubernetes.io/worker": "",
-					},
 					Tolerations: []corev1.Toleration{
 						{
 							Key:      "dedicated",
