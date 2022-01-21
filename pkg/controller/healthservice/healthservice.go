@@ -334,9 +334,6 @@ func (r *ReconcileHealthService) desiredHealthServiceDeployment(h *operatorv1alp
 							},
 						},
 					},
-					NodeSelector: map[string]string{
-						"node-role.kubernetes.io/worker": "",
-					},
 					Tolerations: []corev1.Toleration{
 						{
 							Key:      "dedicated",
