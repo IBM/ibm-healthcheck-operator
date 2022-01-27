@@ -229,9 +229,6 @@ func (r *ReconcileMustGatherService) desiredMustGatherServiceStatefulset(instanc
 							},
 						},
 					},
-					NodeSelector: map[string]string{
-						"node-role.kubernetes.io/worker": "",
-					},
 					Tolerations: []corev1.Toleration{
 						{
 							Key:      "dedicated",

@@ -319,7 +319,17 @@ spec:
           - pods/exec
           verbs:
           - create
-        serviceAccountName: ibm-mustgather-custom-sa        
+        serviceAccountName: ibm-mustgather-custom-sa
+      - rules:
+        - apiGroups:
+          - storage.k8s.io
+          resources:
+          - storageclasses
+          verbs:
+          - get
+          - list
+          - watch
+        serviceAccountName: ibm-healthcheck-operator         
       deployments:
       - name: ibm-healthcheck-operator
         spec:
