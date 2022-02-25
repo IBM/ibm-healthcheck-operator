@@ -72,7 +72,7 @@ To install the operator with the IBM Common Services Operator follow the the ins
 
 The IBM System Healthcheck service supports running with the OpenShift Container Platform 4.3 default restricted Security Context Constraints (SCCs).
 
-For more information about the OpenShift Container Platform Security Context Constraints, see [Managing Security Context Constraints](https://docs.openshift.com/container-platform/4.3/authentication/managing-security-context-constraints.html).
+For more information about the OpenShift Container Platform Security Context Constraints, see [Managing Security Context Constraints](https://docs.openshift.com/container-platform/4.9/authentication/managing-security-context-constraints.html).
 
 ## Developer guide
 
