@@ -17,7 +17,6 @@ package v1alpha1
 
 import (
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -29,7 +28,7 @@ type PersistentVolumeClaim struct {
 	// MustGatherService pvc name
 	Name string `json:"name"`
 	// resources defines the request storage size
-	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 	// storageClassName defines the storageclass name, default is default storageclass in cluster
 	StorageClassName string `json:"storageClassName,omitempty"`
 }

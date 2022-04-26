@@ -29,7 +29,6 @@ import (
 	"gopkg.in/yaml.v2"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
 	networkingv1 "k8s.io/api/networking/v1"
 	storagev1 "k8s.io/api/storage/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -534,7 +533,7 @@ func (r *ReconcileMustGatherService) desiredMustGatherServicePVC(instance *opera
 		storageClassName = r.getDefaultStorageClass()
 	}
 
-	if val, ok := instance.Spec.PersistentVolumeClaim.Resources.Requests[v1.ResourceStorage]; ok {
+	if val, ok := instance.Spec.PersistentVolumeClaim.Resources.Requests[corev1.ResourceStorage]; ok {
 		storageRequest = val
 	} else {
 		storageRequest = resource.MustParse("2Gi")
