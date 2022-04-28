@@ -143,7 +143,7 @@ metadata:
     capabilities: Basic Install
     categories: Monitoring
     certified: "false"
-    containerImage: quay.io/opencloudio/ibm-healthcheck-operator:latest
+    containerImage: icr.io/cpopen/ibm-healthcheck-operator:latest
     createdAt: "2022-04-12"
     description: You can use the ibm-healthcheck-operator to install the IBM System Healthcheck service. You can use IBM System Healthcheck service to check the service status of the IBM Cloud Paks and IBM Cloud Platform Common Services.
     repository: https://github.com/IBM/ibm-healthcheck-operator
@@ -159,15 +159,15 @@ metadata:
 spec:
   relatedImages:
     - name: ibm-healthcheck-operator
-      image: quay.io/opencloudio/ibm-healthcheck-operator:latest
+      image: icr.io/cpopen/ibm-healthcheck-operator:latest
     - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
-      image: quay.io/opencloudio/system-healthcheck-service:3.9.12
+      image: icr.io/cpopen/cpfs/system-healthcheck-service:3.9.12
     - name: ICP_MEMCACHED_IMAGE
-      image: quay.io/opencloudio/icp-memcached:3.9.11
+      image: icr.io/cpopen/cpfs/icp-memcached:3.9.11
     - name: MUST_GATHER_IMAGE
-      image: quay.io/opencloudio/must-gather:4.5.16
+      image: icr.io/cpopen/cpfs/must-gather:4.5.16
     - name: MUST_GATHER_SERVICE_IMAGE
-      image: quay.io/opencloudio/must-gather-service:1.2.13
+      image: icr.io/cpopen/cpfs/must-gather-service:1.2.13
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
@@ -376,14 +376,14 @@ spec:
                 - name: OPERATOR_NAME
                   value: ibm-healthcheck-operator
                 - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/system-healthcheck-service:3.9.12"
+                  value: "icr.io/cpopen/cpfs/system-healthcheck-service:3.9.12"
                 - name: ICP_MEMCACHED_IMAGE
-                  value: "quay.io/opencloudio/icp-memcached:3.9.11"
+                  value: "icr.io/cpopen/cpfs/icp-memcached:3.9.11"
                 - name: MUST_GATHER_IMAGE
-                  value: "quay.io/opencloudio/must-gather:4.5.16"
+                  value: "icr.io/cpopen/cpfs/must-gather:4.5.16"
                 - name: MUST_GATHER_SERVICE_IMAGE
-                  value: "quay.io/opencloudio/must-gather-service:1.2.13"
-                image: quay.io/opencloudio/ibm-healthcheck-operator:latest
+                  value: "icr.io/cpopen/cpfs/must-gather-service:1.2.13"
+                image: icr.io/cpopen/ibm-healthcheck-operator:latest
                 imagePullPolicy: IfNotPresent
                 name: ibm-healthcheck-operator
                 resources:
