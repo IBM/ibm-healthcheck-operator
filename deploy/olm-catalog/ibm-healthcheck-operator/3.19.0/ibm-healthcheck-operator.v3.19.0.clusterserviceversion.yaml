@@ -529,6 +529,7 @@ spec:
   minKubeVersion: 1.19.0
   provider:
     name: IBM
+  replaces: ibm-healthcheck-operator.v3.18.0
   version: 3.19.0
   links:
   - name: IBM Health Check Operator
