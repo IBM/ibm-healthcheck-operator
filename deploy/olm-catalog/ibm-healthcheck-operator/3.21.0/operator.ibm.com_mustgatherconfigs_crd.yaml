@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
     app.kubernetes.io/name: ibm-healthcheck-operator
 spec:
-  x-kubernetes-preserve-unknown-fields: true
   group: operator.ibm.com
   names:
     kind: MustGatherConfig
@@ -38,6 +37,7 @@ spec:
           metadata:
             type: object
           spec:
+            x-kubernetes-preserve-unknown-fields: true
             description: MustGatherConfigSpec defines the desired state of MustGatherConfig
             properties:
               gatherConfig:

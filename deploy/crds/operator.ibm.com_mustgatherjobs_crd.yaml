@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/managed-by: ibm-healthcheck-operator
     app.kubernetes.io/name: ibm-healthcheck-operator
 spec:
-  x-kubernetes-preserve-unknown-fields: true
   group: operator.ibm.com
   names:
     kind: MustGatherJob
@@ -38,6 +37,7 @@ spec:
           metadata:
             type: object
           spec:
+            x-kubernetes-preserve-unknown-fields: true
             description: MustGatherJobSpec defines the desired state of MustGatherJob
             properties:
               image:
