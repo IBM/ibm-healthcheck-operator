@@ -41,7 +41,7 @@ spec:
       containers:
         - name: ibm-healthcheck-operator
           # Replace this with the built image name
-          image: icr.io/cpopen/ibm-healthcheck-operator:3.20.4
+          image: icr.io/cpopen/ibm-healthcheck-operator:3.20.5
           command:
           - ibm-healthcheck-operator
           imagePullPolicy: IfNotPresent
@@ -57,13 +57,13 @@ spec:
             - name: OPERATOR_NAME
               value: "ibm-healthcheck-operator"
             - name: SYSTEM_HEALTHCHECK_SERVICE_IMAGE
-              value: "icr.io/cpopen/cpfs/system-healthcheck-service:3.10.5"
+              value: "icr.io/cpopen/cpfs/system-healthcheck-service:3.10.6"
             - name: ICP_MEMCACHED_IMAGE
-              value: "icr.io/cpopen/cpfs/icp-memcached:3.10.5"
+              value: "icr.io/cpopen/cpfs/icp-memcached:3.10.6"
             - name: MUST_GATHER_IMAGE
-              value: "icr.io/cpopen/cpfs/must-gather:4.6.5"
+              value: "icr.io/cpopen/cpfs/must-gather:4.6.6"
             - name: MUST_GATHER_SERVICE_IMAGE
-              value: "icr.io/cpopen/cpfs/must-gather-service:1.3.5"
+              value: "icr.io/cpopen/cpfs/must-gather-service:1.3.6"
           resources:
             limits:
               cpu: 160m
