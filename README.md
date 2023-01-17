@@ -15,7 +15,8 @@ Red Hat OpenShift Container Platform 4.3 or newer installed on one of the follow
 - Linux on IBM Z and LinuxONE
 
 ## Operator versions
-
+- 3.20.7
+    - Support for OpenShift 4.8, 4.9, 4.10 and 4.11.
 - 3.20.6
     - Support for OpenShift 4.8, 4.9, 4.10 and 4.11.
 - 3.20.5
