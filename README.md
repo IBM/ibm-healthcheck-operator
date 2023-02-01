@@ -16,8 +16,10 @@ Red Hat OpenShift Container Platform 4.3 or newer installed on one of the follow
 
 ## Operator versions
 
+- 3.25.0
+    - Support for OpenShift 4.8 and 4.9, 4.10, 4.11 and 4.12.
 - 3.24.0
-    - Support for OpenShift 4.7, 4.8 and 4.9, 4.10 and 4.11.
+    - Support for OpenShift 4.8 and 4.9, 4.10, 4.11 and 4.12.
 - 3.23.0
     - Support for OpenShift 4.7, 4.8 and 4.9, 4.10 and 4.11.
 - 3.22.0
