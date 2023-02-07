@@ -2,7 +2,7 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
   annotations:
-    olm.skipRange: '>=3.5.0 <3.25.0'
+    olm.skipRange: '>=3.5.0 <3.24.1'
     alm-examples: |-
       [
         {
@@ -149,7 +149,7 @@ metadata:
     repository: https://github.com/IBM/ibm-healthcheck-operator
     support: IBM
     operators.operatorframework.io/operator-type: 'non-standalone'
-  name: ibm-healthcheck-operator.v3.25.0
+  name: ibm-healthcheck-operator.v3.24.1
   namespace: placeholder
   labels:
     operatorframework.io/arch.amd64: supported
@@ -529,7 +529,7 @@ spec:
   minKubeVersion: 1.19.0
   provider:
     name: IBM
-  version: 3.25.0
+  version: 3.24.1
   links:
   - name: IBM Health Check Operator
     url: https://github.com/IBM/ibm-healthcheck-operator

@@ -41,7 +41,7 @@ spec:
       containers:
         - name: ibm-healthcheck-operator
           # Replace this with the built image name
-          image: icr.io/cpopen/ibm-healthcheck-operator:3.25.0
+          image: icr.io/cpopen/ibm-healthcheck-operator:3.24.1
           command:
           - ibm-healthcheck-operator
           imagePullPolicy: IfNotPresent
