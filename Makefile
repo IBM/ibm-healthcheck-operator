@@ -23,7 +23,7 @@ NAMESPACE=ibm-common-services
 # Image URL to use all building/pushing image targets;
 # Use your own docker registry and image name for dev/test by overridding the
 # IMAGE_REPO, IMAGE_NAME and RELEASE_TAG environment variable.
-IMAGE_REPO ?= hyc-cloud-private-integration-docker-local.artifactory.swg-devops.com/ibmcom
+IMAGE_REPO ?= docker-na-public.artifactory.swg-devops.com/hyc-cloud-private-integration-docker-local/ibmcom
 IMAGE_NAME ?= ibm-healthcheck-operator
 
 
