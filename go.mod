@@ -80,6 +80,7 @@ require (
 
 // Pinned to kubernetes-1.16.2
 replace (
+	github.com/emicklei/go-restful => github.com/emicklei/go-restful v2.16.0+incompatible
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 => golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
 	k8s.io/api => k8s.io/api v0.20.2
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.0.0-20191016113550-5357c4baaf65
