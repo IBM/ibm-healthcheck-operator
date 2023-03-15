@@ -480,6 +480,7 @@ func (r *ReconcileHealthService) desiredHealthServiceIngress(h *operatorv1alpha1
 			Annotations: annotations,
 		},
 		Spec: networkingv1.IngressSpec{
+			IngressClassName: "ibm-management-ingress-do-not-modify",
 			Rules: []networkingv1.IngressRule{
 				{
 					IngressRuleValue: networkingv1.IngressRuleValue{
