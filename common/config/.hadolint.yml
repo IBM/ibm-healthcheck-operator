@@ -8,4 +8,5 @@ trustedRegistries:
   - quay.io
   - registry.access.redhat.com
   - docker-na-public.artifactory.swg-devops.com/hyc-cloud-private-edge-docker-local
+  - docker-na-public.artifactory.swg-devops.com/hyc-cloud-private-integration-docker-local
   - icr.io
