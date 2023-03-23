@@ -9,4 +9,5 @@ trustedRegistries:
   - registry.access.redhat.com
   - docker-na-public.artifactory.swg-devops.com/hyc-cloud-private-edge-docker-local
   - docker-na-public.artifactory.swg-devops.com/hyc-cloud-private-integration-docker-local
+  - docker-na-public.artifactory.swg-devops.com/hyc-cloud-private-edge-docker-local/build-images/ubi8-minimal
   - icr.io
