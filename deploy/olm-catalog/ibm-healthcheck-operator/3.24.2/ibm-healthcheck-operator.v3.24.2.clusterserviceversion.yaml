@@ -529,7 +529,7 @@ spec:
   minKubeVersion: 1.19.0
   provider:
     name: IBM
-  version: 3.24.1
+  version: 3.24.2
   links:
   - name: IBM Health Check Operator
     url: https://github.com/IBM/ibm-healthcheck-operator
