@@ -1,7 +1,7 @@
 channels:
   - currentCSV: ibm-healthcheck-operator.v3.8.0
     name: beta
-  - currentCSV: ibm-healthcheck-operator.v3.24.6
+  - currentCSV: ibm-healthcheck-operator.v3.24.7
     name: dev
   - currentCSV: ibm-healthcheck-operator.v3.7.2
     name: stable-v1
